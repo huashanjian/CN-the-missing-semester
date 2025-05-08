@@ -1,0 +1,563 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>元编程 - 计算机的缺失课程</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              'moon-white': '#F5F5F5',
+              'sky-blue-tint': '#F0F9FF',
+              'silver-rat-grey': '#E5E7EB',
+              'ink-black': '#111827',
+              'crow-blue': '#1E40AF',
+              'medium-grey': '#6B7280',
+              'indigo-highlight': '#0EA5E9',
+            },
+            fontFamily: {
+              'sans-cn': ['"Source Han Sans SC"', 'PingFang SC', 'sans-serif'],
+              'sans-en': ['Inter', 'Manrope', 'sans-serif'],
+            }
+          }
+        }
+      }
+    </script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&family=Manrope:wght@400;700&family=Noto+Sans+SC:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+      body { font-family: theme('fontFamily.sans-cn'); }
+      .font-sans-en { font-family: theme('fontFamily.sans-en'); }
+      .font-sans-cn { font-family: theme('fontFamily.sans-cn'); }
+      pre[class*="language-"], .custom-code-block { background-color: #1E293B; color: #E2E8F0; padding: theme('spacing.6'); border-radius: theme('borderRadius.xl'); overflow-x: auto; margin-top: theme('spacing.4'); margin-bottom: theme('spacing.6'); }
+      code:not(pre code), .custom-inline-code { background-color: theme('colors.slate.700'); color: theme('colors.slate.200'); padding: theme('spacing.1') theme('spacing.2'); border-radius: theme('borderRadius.md'); font-size: 0.9em; }
+      kbd { background-color: theme('colors.slate.600'); color: theme('colors.slate.100'); padding: theme('spacing.px') theme('spacing.1'); border-radius: theme('borderRadius.md'); font-family: theme('fontFamily.mono'); font-size: 0.85em; border: 1px solid theme('colors.slate.500'); box-shadow: 1px 1px 1px theme('colors.slate.900'); }
+    </style>
+</head>
+<body class="bg-slate-900 text-slate-200"> 
+
+    <header class="py-4 shadow-lg sticky top-0 bg-slate-800/90 backdrop-blur-md z-50 border-b border-slate-700">
+        <nav class="container mx-auto px-6 md:px-8 flex justify-between items-center">
+            <a href="index.html" class="text-2xl font-bold font-sans-cn">
+                <span class="text-moon-white">缺失</span><span class="text-indigo-highlight">环节</span>
+            </a>
+            <div>
+                <a href="index.html#bento-grid" class="font-sans-cn text-slate-300 hover:text-indigo-highlight ml-6">课程列表</a>
+            </div>
+        </nav>
+    </header>
+
+    <main class="container mx-auto p-4 md:p-8">
+        <section class="mb-12 pt-8 text-center">
+            <h1 class="font-sans-cn font-bold text-5xl md:text-7xl text-moon-white mb-2">
+                元编程
+            </h1>
+            <p class="font-sans-en text-lg md:text-xl text-medium-grey">
+                 Metaprogramming
+            </p>
+        </section>
+
+        <div class="space-y-8 md:space-y-12">
+            <!-- Metaprogramming Introduction -->
+            <div class="bg-slate-800 shadow-2xl rounded-xl overflow-hidden">
+                <div class="p-6 md:p-8">
+                    <h2 class="font-sans-cn text-3xl font-bold text-indigo-highlight mb-6 text-center">什么是元编程？</h2>
+                    <div class="space-y-4 text-slate-300 text-base leading-relaxed">
+                        <p>通常，"元编程"指编写能操作其他程序的程序（如编译器、解释器）。但在本讲中，我们更侧重于讨论那些围绕<strong class="font-bold">代码编写、构建、测试和依赖管理的过程与工具</strong>。</p>
+                        <p>这些技能在日常学习中可能不显眼，但在处理大型项目或进入实际工作环境后至关重要。本讲将探讨：</p>
+                         <ul class="list-disc list-inside space-y-1 text-slate-300 text-sm pl-4">
+                            <li>构建系统 (Build Systems)</li>
+                            <li>依赖管理 (Dependency Management)</li>
+                            <li>持续集成 (Continuous Integration, CI)</li>
+                            <li>测试简介 (A brief aside on testing)</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Build Systems Card 1: Intro & Make -->
+            <div class="bg-slate-800 shadow-2xl rounded-xl overflow-hidden">
+                <div class="p-6 md:p-8">
+                    <h2 class="font-sans-cn text-3xl font-bold text-indigo-highlight mb-6 text-center">构建系统 (Build Systems) - Make</h2>
+                    <div class="space-y-4 text-slate-300 text-base leading-relaxed">
+                        <p>大多数项目（无论是否为代码）都有一个"构建过程"——一系列从输入源文件生成最终产品所需的步骤。例如，编译代码、运行测试、生成文档、打包发布等。</p>
+                        <p>构建系统就是用于自动化和管理这个过程的工具。它们的核心思想是定义<strong class="font-bold">依赖关系 (dependencies)</strong>、<strong class="font-bold">目标 (targets)</strong> 以及从依赖生成目标的<strong class="font-bold">规则 (rules)</strong>。构建系统会分析依赖关系图，并智能地执行必要的规则来生成你想要的目标，同时避免重复执行那些依赖未改变的任务（增量构建）。</p>
+                        
+                        <h3 class="font-sans-cn text-xl font-semibold text-indigo-highlight/80 mt-8 mb-3"><code class="custom-inline-code">make</code> 简介</h3>
+                        <p><code class="custom-inline-code">make</code> 是一个非常经典和广泛使用的构建系统，几乎所有 UNIX 系统都自带。它通过读取当前目录下的 <code class="custom-inline-code">Makefile</code> 文件来工作。</p>
+                        <pre class="custom-code-block"><code class="language-makefile"># Makefile 示例：构建 PDF 论文
+
+# 目标: 依赖1 依赖2 ...
+#   规则命令 (必须以 Tab 开头)
+
+paper.pdf: paper.tex plot-data.png
+\tpdflatex paper.tex # 使用 Tab 缩进
+
+# 模式规则: %.png 依赖于 %.dat 和 plot.py
+plot-%.png: %.dat plot.py
+\t./plot.py -i $*.dat -o $@ # 使用 Tab 缩进
+
+# 伪目标 (不是真实文件名)，用于执行清理等操作
+.PHONY: clean
+clean:
+\trm -f *.pdf *.aux *.log *.png # 使用 Tab 缩进
+</code></pre>
+                         <ul class="list-disc list-inside space-y-1 text-slate-300 text-sm pl-4 mt-2">
+                            <li><strong class="font-bold">规则 (Rule):</strong> 定义了如何从依赖生成目标。</li>
+                            <li><strong class="font-bold">目标 (Target):</strong> 规则要生成的文件 (冒号左侧)。第一个目标通常是默认目标。</li>
+                            <li><strong class="font-bold">依赖 (Dependency):</strong> 生成目标所需的文件或前提条件 (冒号右侧)。</li>
+                            <li><strong class="font-bold">命令 (Command):</strong> 在 Tab 缩进后执行的 Shell 命令，用于实际生成目标。</li>
+                             <li><strong class="font-bold">模式规则 (<code class="custom-inline-code">%</code>):</strong> 允许定义通用的规则，<code class="custom-inline-code">%</code> 匹配任意字符串。</li>
+                            <li><strong class="font-bold">自动变量:</strong>
+                                <ul class="list-disc list-inside space-y-1 text-slate-300 text-xs pl-5 mt-1">
+                                     <li><code class="custom-inline-code">$@</code>: 当前规则的目标文件名。</li>
+                                     <li><code class="custom-inline-code">$*</code>: 模式规则中 <code class="custom-inline-code">%</code> 匹配的部分（不含后缀）。</li>
+                                     <li><code class="custom-inline-code">$&lt;</code>: 第一个依赖项的文件名。</li>
+                                     <li><code class="custom-inline-code">$^</code>: 所有依赖项的文件名列表（去重）。</li>
+                                </ul>
+                            </li>
+                            <li><strong class="font-bold"><code class="custom-inline-code">.PHONY</code>:</strong> 声明目标不是一个真实的文件，这样即使存在同名文件，make 也会执行其命令。</li>
+                         </ul>
+                        
+                        <h4 class="font-sans-cn text-lg font-semibold text-moon-white mt-6 mb-3">`make` 执行演示</h4>
+                         <ol class="list-decimal list-inside space-y-1 text-slate-300 text-sm pl-4">
+                            <li><strong class="font-bold">首次构建:</strong> 运行 <code class="custom-inline-code">make</code> (或 <code class="custom-inline-code">make paper.pdf</code>)。它会先构建依赖 <code class="custom-inline-code">plot-data.png</code> (运行 <code class="custom-inline-code">plot.py</code>)，然后构建 <code class="custom-inline-code">paper.pdf</code> (运行 <code class="custom-inline-code">pdflatex</code>)。</li>
+                            <li><strong class="font-bold">再次构建 (无改动):</strong> 运行 <code class="custom-inline-code">make</code>。Make 检测到目标文件比其所有依赖都新，会提示 "'paper.pdf' is up to date."，不执行任何命令。</li>
+                            <li><strong class="font-bold">修改依赖后构建:</strong> 如果修改了 <code class="custom-inline-code">paper.tex</code>，再次运行 <code class="custom-inline-code">make</code> 只会重新执行 <code class="custom-inline-code">pdflatex</code> 命令。如果修改了 <code class="custom-inline-code">data.dat</code> 或 <code class="custom-inline-code">plot.py</code>，则会先重新生成 <code class="custom-inline-code">plot-data.png</code>，再重新生成 <code class="custom-inline-code">paper.pdf</code>。</li>
+                            <li><strong class="font-bold">指定目标:</strong> 运行 <code class="custom-inline-code">make clean</code> 会执行 clean 规则下的命令。</li>
+                        </ol>
+
+                         <h4 class="font-sans-cn text-lg font-semibold text-moon-white mt-6 mb-3">`make` 实用技巧</h4>
+                         <ul class="list-disc list-inside space-y-2 text-slate-300 text-sm pl-4">
+                             <li><strong class="font-bold">变量:</strong> 使用变量（如 <code class="custom-inline-code">CC=gcc</code>, <code class="custom-inline-code">CFLAGS=-Wall</code>）使 Makefile 更易维护和配置。</li>
+                             <li><strong class="font-bold">通用目标:</strong> 定义如 <code class="custom-inline-code">all</code>, <code class="custom-inline-code">clean</code>, <code class="custom-inline-code">install</code>, <code class="custom-inline-code">test</code> 等标准目标。</li>
+                         </ul>
+                    </div>
+                </div>
+            </div>
+            <!-- Build Systems Card 2: Modern Systems -->
+            <div class="bg-slate-800 shadow-2xl rounded-xl overflow-hidden">
+                <div class="p-6 md:p-8">
+                    <h2 class="font-sans-cn text-3xl font-bold text-indigo-highlight mb-6 text-center">现代构建系统</h2>
+                    <div class="space-y-4 text-slate-300 text-base leading-relaxed">
+                        <p>虽然 <code class="custom-inline-code">make</code> 功能强大且普遍存在，但对于大型项目或特定编程语言生态，存在许多更现代、功能更丰富的构建系统。它们通常能更好地处理复杂的依赖关系、提供更快的构建速度（尤其是增量构建和并行构建）以及更易于维护的配置方式。</p>
+                        
+                        <h3 class="font-sans-cn text-xl font-semibold text-indigo-highlight/80 mt-6 mb-3">常见的现代构建系统</h3>
+                        <div class="mt-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                            <!-- Column 1 -->
+                            <div class="bg-slate-700 p-4 rounded-xl shadow-lg space-y-3">
+                                <div>
+                                    <h4 class="font-semibold text-moon-white mb-1"><i class="fas fa-cogs mr-1 text-indigo-highlight"></i>CMake</h4>
+                                    <p class="text-xs">主要用于 C/C++。生成原生构建系统文件 (如 Makefiles, VS 项目)。跨平台性好。</p>
+                                </div>
+                                 <div>
+                                    <h4 class="font-semibold text-moon-white mb-1"><i class="fas fa-robot mr-1 text-indigo-highlight"></i>Gradle</h4>
+                                    <p class="text-xs">用于 JVM 语言 (Java, Kotlin, Android)。使用 Groovy/Kotlin DSL，灵活强大，插件生态丰富。</p>
+                                </div>
+                                 <div>
+                                    <h4 class="font-semibold text-moon-white mb-1"><i class="fab fa-java mr-1 text-indigo-highlight"></i>Maven</h4>
+                                    <p class="text-xs">流行的 Java 构建工具。遵循"约定优于配置"，有标准项目结构和生命周期。</p>
+                                </div>
+                            </div>
+                            <!-- Column 2 -->
+                             <div class="bg-slate-700 p-4 rounded-xl shadow-lg space-y-3">
+                                 <div>
+                                    <h4 class="font-semibold text-moon-white mb-1"><i class="fas fa-fighter-jet mr-1 text-indigo-highlight"></i>Ninja</h4>
+                                    <p class="text-xs">小型、快速的构建系统，通常与 CMake 等元构建系统配合使用，专注于速度。</p>
+                                </div>
+                                <div>
+                                    <h4 class="font-semibold text-moon-white mb-1"><i class="fas fa-building mr-1 text-indigo-highlight"></i>Bazel / Buck</h4>
+                                    <p class="text-xs">Google/Facebook 开发，为大型单体仓库 (monorepo)、多语言项目设计，强调速度和可复现性。</p>
+                                </div>
+                                <div>
+                                    <h4 class="font-semibold text-moon-white mb-1"><i class="fab fa-node-js mr-1 text-indigo-highlight"></i>JS/TS 构建</h4>
+                                    <p class="text-xs"><code class="custom-inline-code">npm</code>/<code class="custom-inline-code">yarn</code> 脚本配合 Webpack, Rollup, Parcel, esbuild, Vite 等打包和构建工具。</p>
+                                </div>
+                            </div>
+                             <!-- Column 3 -->
+                             <div class="bg-slate-700 p-4 rounded-xl shadow-lg space-y-3">
+                                 <div>
+                                    <h4 class="font-semibold text-moon-white mb-1"><i class="fab fa-python mr-1 text-indigo-highlight"></i>Python 构建</h4>
+                                    <p class="text-xs">现代项目使用 <code class="custom-inline-code">pyproject.toml</code> 配合 Poetry, PDM, Hatch, Flit 等管理构建和依赖。</p>
+                                </div>
+                                 <div>
+                                    <h4 class="font-semibold text-moon-white mb-1"><i class="fab fa-rust mr-1 text-indigo-highlight"></i>Rust (Cargo)</h4>
+                                    <p class="text-xs">Cargo 是 Rust 的官方构建系统和包管理器，功能全面。</p>
+                                </div>
+                                <div>
+                                    <h4 class="font-semibold text-moon-white mb-1"><i class="fab fa-golang mr-1 text-indigo-highlight"></i>Go 构建</h4>
+                                    <p class="text-xs">Go 语言自带强大的构建工具 (<code class="custom-inline-code">go build</code>, <code class="custom-inline-code">go test</code>)。</p>
+                                </div>
+                            </div>
+                        </div>
+                        <p class="mt-6">选择哪个构建系统取决于你的项目需求、语言生态和团队熟悉度。</p>
+                    </div>
+                </div>
+            </div>
+            <!-- Dependency Management Card 1: Intro, Versioning, SemVer -->
+            <div class="bg-slate-800 shadow-2xl rounded-xl overflow-hidden">
+                <div class="p-6 md:p-8">
+                    <h2 class="font-sans-cn text-3xl font-bold text-indigo-highlight mb-6 text-center">依赖管理 (Dependency Management)</h2>
+                    <div class="space-y-4 text-slate-300 text-base leading-relaxed">
+                        <p>现代软件开发很少从零开始，我们通常会依赖大量的外部库、框架或系统工具。有效地管理这些<strong class="font-bold">依赖 (dependencies)</strong> 对于项目的构建、维护和协作至关重要。</p>
+                        
+                        <h3 class="font-sans-cn text-xl font-semibold text-indigo-highlight/80 mt-6 mb-3">包管理器与仓库</h3>
+                        <p>大多数生态系统都有集中的<strong class="font-bold">包仓库 (package repositories)</strong> 来托管可重用的软件（包、库、模块），并提供<strong class="font-bold">包管理器 (package managers)</strong> 工具来方便地查找、下载、安装和管理这些依赖。</p>
+                         <div class="mt-4 bg-slate-700 p-4 rounded-xl shadow-lg">
+                            <h4 class="font-sans-cn text-lg font-semibold text-moon-white mb-3 flex items-center"><i class="fas fa-boxes mr-2 text-indigo-highlight"></i>常见生态系统示例:</h4>
+                            <ul class="list-disc list-inside space-y-1 text-slate-300 text-xs pl-4 columns-2 gap-x-8">
+                                <li>Linux (Debian/Ubuntu): <code class="custom-inline-code">apt</code></li>
+                                <li>macOS: <code class="custom-inline-code">Homebrew</code></li>
+                                <li>Windows: <code class="custom-inline-code">Chocolatey</code>, <code class="custom-inline-code">winget</code></li>
+                                <li>Node.js: npm Registry (<code class="custom-inline-code">npm</code>, <code class="custom-inline-code">yarn</code>)</li>
+                                <li>Python: PyPI (<code class="custom-inline-code">pip</code>), Conda</li>
+                                <li>Java: Maven Central (<code class="custom-inline-code">Maven</code>, <code class="custom-inline-code">Gradle</code>)</li>
+                                <li>Rust: Crates.io (<code class="custom-inline-code">Cargo</code>)</li>
+                                <li>Ruby: RubyGems (<code class="custom-inline-code">gem</code>)</li>
+                                <li>PHP: Packagist (<code class="custom-inline-code">Composer</code>)</li>
+                                <li>.NET: NuGet</li>
+                                <li>Go: Go Modules (<code class="custom-inline-code">go get</code>)</li>
+                            </ul>
+                        </div>
+                        
+                        <h3 class="font-sans-cn text-xl font-semibold text-indigo-highlight/80 mt-8 mb-3">版本控制 (Versioning)</h3>
+                        <p>为了确保项目的稳定性和可重复构建，依赖项通常会发布带有<strong class="font-bold">版本号</strong>（如 <code class="custom-inline-code">1.2.3</code>）的不同版本。这允许项目声明它依赖于某个特定版本或版本范围。</p>
+                        <p>例如，如果一个库的新版本重命名了某个函数，依赖旧版本的项目可以通过继续使用旧版本号来避免构建失败。但这引出了另一个问题：如何安全地获取 Bug 修复或向后兼容的新功能呢？</p>
+
+                        <h3 class="font-sans-cn text-xl font-semibold text-indigo-highlight/80 mt-8 mb-3">语义化版本控制 (Semantic Versioning, SemVer)</h3>
+                        <p><a href="https://semver.org/lang/zh-CN/" target="_blank" class="text-indigo-highlight hover:underline">语义化版本控制 (SemVer)</a> 是一个广泛采用的标准，旨在通过版本号的结构来传达更改的性质。</p>
+                         <p>版本格式：<code class="custom-inline-code">主版本号.次版本号.修订号</code> (MAJOR.MINOR.PATCH)</p>
+                         <div class="mt-4 bg-slate-700 p-4 rounded-xl shadow-lg">
+                             <h4 class="font-sans-cn text-lg font-semibold text-moon-white mb-3 flex items-center"><i class="fas fa-sort-numeric-down mr-2 text-indigo-highlight"></i>SemVer 核心规则:</h4>
+                            <ol class="list-decimal list-inside space-y-1 text-slate-300 text-sm pl-4">
+                                <li><strong class="font-bold">修订号 (PATCH):</strong> 做了向后兼容的 Bug 修复。</li>
+                                <li><strong class="font-bold">次版本号 (MINOR):</strong> 添加了向后兼容的新功能。</li>
+                                <li><strong class="font-bold">主版本号 (MAJOR):</strong> 做了不向后兼容的 API 修改。</li>
+                            </ol>
+                         </div>
+                         <p>使用 SemVer，依赖管理工具可以更智能地选择版本。例如，如果你的项目依赖 <code class="custom-inline-code">^1.3.7</code>，包管理器可以安全地升级到 <code class="custom-inline-code">1.3.8</code> 或 <code class="custom-inline-code">1.6.1</code>（因为它们保证 API 向后兼容），但不会升级到 <code class="custom-inline-code">2.0.0</code>。</p>
+                         <p class="text-xs text-slate-400 mt-2">常见的版本范围指定符： <code class="custom-inline-code">~1.2.3</code> (允许 patch 更新), <code class="custom-inline-code">^1.2.3</code> (允许 minor 和 patch 更新), <code class="custom-inline-code">&gt;=1.2.3, &lt;1.5.0</code> (明确范围)。</p>
+                    </div>
+                </div>
+            </div>
+            <!-- Dependency Management Card 2: Lock Files, Vendoring, Tips -->
+            <div class="bg-slate-800 shadow-2xl rounded-xl overflow-hidden">
+                 <div class="p-6 md:p-8">
+                    <h2 class="font-sans-cn text-3xl font-bold text-indigo-highlight mb-6 text-center">依赖管理：锁文件与实践</h2>
+                    <div class="space-y-4 text-slate-300 text-base leading-relaxed">
+
+                        <h3 class="font-sans-cn text-xl font-semibold text-indigo-highlight/80 mt-6 mb-3">锁文件 (Lock Files)</h3>
+                        <p>在使用包管理器时，你通常会遇到一个"锁文件"，例如 <code class="custom-inline-code">package-lock.json</code> (npm), <code class="custom-inline-code">yarn.lock</code>, <code class="custom-inline-code">poetry.lock</code>, <code class="custom-inline-code">Pipfile.lock</code>, <code class="custom-inline-code">Gemfile.lock</code>, <code class="custom-inline-code">composer.lock</code> 等。</p>
+                        <p>这个文件精确记录了项目当前使用的<strong class="font-bold">每一个依赖（包括间接依赖）的确切版本号</strong>。通常，这个文件是自动生成的，并且你应该将它提交到版本控制中。</p>
+                        <div class="mt-4 bg-slate-700 p-4 rounded-xl shadow-lg">
+                             <h4 class="font-sans-cn text-lg font-semibold text-moon-white mb-3 flex items-center"><i class="fas fa-lock mr-2 text-indigo-highlight"></i>锁文件的主要目的:</h4>
+                            <ol class="list-decimal list-inside space-y-1 text-slate-300 text-sm pl-4">
+                                <li><strong class="font-bold">可复现构建 (Reproducible Builds):</strong> 确保团队成员和 CI/CD 环境安装完全相同的依赖版本，避免"在我机器上能跑"的问题。</li>
+                                <li><strong class="font-bold">防止意外升级:</strong> 即使你指定了版本范围（如 <code class="custom-inline-code">^1.2.3</code>），锁文件也能确保不会自动安装可能引入问题的最新版本，除非你显式更新依赖（如 <code class="custom-inline-code">npm update</code>）。</li>
+                                <li><strong class="font-bold">传递依赖确定性:</strong> 锁定所有间接依赖的版本，确保整个依赖树的稳定。</li>
+                            </ol>
+                         </div>
+
+                        <h3 class="font-sans-cn text-xl font-semibold text-indigo-highlight/80 mt-8 mb-3">供应商化 (Vendoring)</h3>
+                        <p>这是一种更极端的依赖管理方式，即将所有外部依赖的源代码<strong class="font-bold">直接复制</strong>到你的项目仓库中进行管理。</p>
+                         <div class="mt-4 grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div class="bg-slate-700 p-4 rounded-xl shadow-lg">
+                                <h5 class="font-semibold text-emerald-400 mb-2">优点 <i class="fas fa-check-circle"></i></h5>
+                                <ul class="list-disc list-inside space-y-1 text-slate-300 text-xs pl-4">
+                                    <li>完全控制依赖代码。</li>
+                                    <li>不受外部仓库可用性影响，可离线构建。</li>
+                                </ul>
+                            </div>
+                             <div class="bg-slate-700 p-4 rounded-xl shadow-lg">
+                                <h5 class="font-semibold text-red-400 mb-2">缺点 <i class="fas fa-times-circle"></i></h5>
+                                <ul class="list-disc list-inside space-y-1 text-slate-300 text-xs pl-4">
+                                    <li>手动更新依赖困难。</li>
+                                    <li>项目仓库体积增大。</li>
+                                    <li>需仔细处理所有依赖的许可证。</li>
+                                </ul>
+                            </div>
+                        </div>
+                        <p class="text-xs text-slate-400 mt-2">Go 语言曾经广泛使用 Vendoring，但现在更推荐 Go Modules。</p>
+
+                        <h3 class="font-sans-cn text-xl font-semibold text-indigo-highlight/80 mt-8 mb-3">依赖管理实用技巧</h3>
+                        <div class="mt-4 bg-slate-700 p-4 rounded-xl shadow-lg">
+                            <ul class="list-disc list-inside space-y-2 text-slate-300 text-sm pl-4">
+                                <li><strong class="font-bold">使用虚拟环境 (Virtual Environments):</strong> 特别是对于 Python (<code class="custom-inline-code">venv</code>, <code class="custom-inline-code">conda</code>, <code class="custom-inline-code">poetry</code>) 和 Ruby (<code class="custom-inline-code">rvm</code>, <code class="custom-inline-code">rbenv</code> + Bundler)，为每个项目创建隔离的依赖环境，避免全局冲突。</li>
+                                <li><strong class="font-bold">定期更新依赖:</strong> 制定策略定期（但有控制地）更新依赖项，以获取安全补丁和新特性。可以利用 GitHub Dependabot 或 Snyk 等工具自动化此过程。</li>
+                                <li><strong class="font-bold">依赖审计 (Auditing):</strong> 定期使用工具检查项目依赖中是否存在已知的安全漏洞（如 <code class="custom-inline-code">npm audit</code>, <code class="custom-inline-code">pip-audit</code>, <code class="custom-inline-code">cargo audit</code>, <code class="custom-inline-code">bundle-audit</code>）。</li>
+                            </ul>
+                        </div>
+                    </div>
+                 </div>
+            </div>
+            <!-- Continuous Integration (CI) Card -->
+            <div class="bg-slate-800 shadow-2xl rounded-xl overflow-hidden">
+                 <div class="p-6 md:p-8">
+                    <h2 class="font-sans-cn text-3xl font-bold text-indigo-highlight mb-6 text-center">持续集成 (Continuous Integration, CI)</h2>
+                    <div class="space-y-4 text-slate-300 text-base leading-relaxed">
+                        <p>随着项目复杂度增加，每次代码变更后可能需要执行一系列任务，如编译、运行测试、构建文档、打包发布等。手动执行这些任务既繁琐又容易出错。<strong class="font-bold">持续集成 (CI)</strong> 就是用来自动化这些流程的实践和工具集合。</p>
+                        <p>CI/CD (持续集成/持续交付或部署) 系统会在代码仓库发生特定事件（如推送代码、创建拉取请求）时自动触发预定义的<strong class="font-bold">工作流 (workflow)</strong>。</p>
+                        
+                        <h3 class="font-sans-cn text-xl font-semibold text-indigo-highlight/80 mt-6 mb-3">主流 CI/CD 服务</h3>
+                        <div class="mt-4 bg-slate-700 p-4 rounded-xl shadow-lg">
+                             <ul class="list-disc list-inside space-y-1 text-slate-300 text-sm pl-4 columns-2 gap-x-8">
+                                <li>GitHub Actions</li>
+                                <li>GitLab CI/CD</li>
+                                <li>Jenkins (开源, 自托管)</li>
+                                <li>Travis CI</li>
+                                <li>CircleCI</li>
+                                <li>Azure Pipelines</li>
+                                <!-- Add others if necessary -->
+                             </ul>
+                        </div>
+                        <p class="text-xs text-slate-400">这些服务通常对开源项目免费或提供免费额度。</p>
+
+                        <h3 class="font-sans-cn text-xl font-semibold text-indigo-highlight/80 mt-8 mb-3">CI 核心流程</h3>
+                         <div class="mt-4 bg-slate-700 p-4 rounded-xl shadow-lg">
+                            <ol class="list-decimal list-inside space-y-1 text-slate-300 text-sm pl-4">
+                                <li><strong class="font-bold">触发 (Trigger):</strong> 代码推送或 PR 事件触发工作流。</li>
+                                <li><strong class="font-bold">获取代码 (Checkout):</strong> CI 服务器检出相关代码。</li>
+                                <li><strong class="font-bold">环境准备:</strong> 设置运行环境（如特定版本的语言、依赖）。</li>
+                                <li><strong class="font-bold">构建 (Build):</strong> 编译代码、打包应用（如果需要）。</li>
+                                <li><strong class="font-bold">测试 (Test):</strong> 运行各种测试（单元、集成等）。</li>
+                                <li><strong class="font-bold">报告 (Report):</strong> 生成并报告构建和测试结果。</li>
+                                <li><strong class="font-bold">(可选) 部署 (Deploy):</strong> 自动部署到测试或生产环境 (CD 部分)。</li>
+                             </ol>
+                         </div>
+
+                         <h3 class="font-sans-cn text-xl font-semibold text-indigo-highlight/80 mt-8 mb-3">GitHub Actions 示例</h3>
+                         <p>GitHub Actions 通过在仓库的 <code class="custom-inline-code">.github/workflows/</code> 目录下定义 YAML 文件来配置工作流。例如，一个简单的 Python 项目 CI 配置可能如下：</p>
+                         <pre class="custom-code-block"><code class="language-yaml">name: Python CI
+
+on: [push, pull_request] # 触发条件
+
+jobs:
+  build:
+    runs-on: ubuntu-latest # 运行环境
+    strategy:
+      matrix:
+        python-version: ["3.8", "3.9", "3.10"] # 可测试多个 Python 版本
+
+    steps:
+    - uses: actions/checkout@v4 # 步骤1: 检出代码
+
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v5 # 步骤2: 设置 Python 环境
+      with:
+        python-version: ${{ matrix.python-version }}
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt # 步骤3: 安装依赖
+        pip install pytest # 假设使用 pytest
+
+    - name: Test with pytest
+      run: |
+        pytest # 步骤4: 运行测试
+</code></pre>
+                        <p class="text-xs text-slate-400">本课程网站就是使用 GitHub Actions (GitHub Pages) 自动构建和部署的。</p>
+
+                         <h3 class="font-sans-cn text-xl font-semibold text-indigo-highlight/80 mt-8 mb-3">CI 的好处</h3>
+                         <div class="mt-4 bg-slate-700 p-4 rounded-xl shadow-lg">
+                             <ul class="list-disc list-inside space-y-1 text-slate-300 text-sm pl-4">
+                                <li><strong class="font-bold">快速反馈:</strong> 每次提交都能快速知道代码是否破坏了构建或测试。</li>
+                                <li><strong class="font-bold">自动化:</strong> 减少重复性劳动，保证流程一致性。</li>
+                                <li><strong class="font-bold">提升代码质量:</strong> 可以集成静态分析、测试覆盖率检查等。</li>
+                                <li><strong class="font-bold">更可靠的发布:</strong> 确保主分支始终处于可部署状态。</li>
+                             </ul>
+                         </div>
+                    </div>
+                 </div>
+            </div>
+            <!-- Testing Intro Card -->
+            <div class="bg-slate-800 shadow-2xl rounded-xl overflow-hidden">
+                 <div class="p-6 md:p-8">
+                    <h2 class="font-sans-cn text-3xl font-bold text-indigo-highlight mb-6 text-center">测试简介</h2>
+                    <div class="space-y-4 text-slate-300 text-base leading-relaxed">
+                        <p>虽然不是本讲的重点，但了解软件测试的基本概念和术语对于理解完整的开发流程非常有帮助。大多数大型项目都依赖广泛的测试来保证质量。</p>
+                        
+                        <div class="mt-6 bg-slate-700 p-6 rounded-xl shadow-lg">
+                             <h4 class="font-sans-cn text-xl font-semibold text-moon-white mb-4">常见测试类型与术语</h4>
+                             <div class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4">
+                                 <div class="space-y-3">
+                                    <p><strong class="font-bold text-indigo-highlight/90">测试套件 (Test Suite):</strong> 项目中所有测试的总称。</p>
+                                    <p><strong class="font-bold text-indigo-highlight/90">单元测试 (Unit Test):</strong> 针对最小可测试单元（如函数、类方法）进行的测试，通常速度快、数量多、隔离性强。</p>
+                                    <p><strong class="font-bold text-indigo-highlight/90">集成测试 (Integration Test):</strong> 测试多个单元或模块协同工作的情况，检查它们之间的交互是否正确（例如服务与数据库的交互）。</p>
+                                     <p><strong class="font-bold text-indigo-highlight/90">端到端测试 (End-to-End Test, E2E):</strong> 从用户视角出发，测试整个应用程序的完整流程，模拟真实用户场景。</p>
+                                </div>
+                                <div class="space-y-3">
+                                    <p><strong class="font-bold text-indigo-highlight/90">回归测试 (Regression Test):</strong> 针对过去修复的 bug 编写的测试，确保该 bug 不会再次出现。</p>
+                                     <p><strong class="font-bold text-indigo-highlight/90">模拟/存根/伪造 (Mocking/Stubbing/Faking):</strong> 用于隔离被测单元的技术。Mock 侧重验证交互，Stub 提供预设返回值，Fake 提供简化的真实实现。</p>
+                                     <p><strong class="font-bold text-indigo-highlight/90">代码覆盖率 (Code Coverage):</strong> 衡量测试代码执行了多少比例的源代码（行、分支等）。高覆盖率不等于高质量测试，但低覆盖率通常意味着测试不足。</p>
+                                      <p><strong class="font-bold text-indigo-highlight/90">测试驱动开发 (TDD):</strong> 先写失败测试，再写代码让测试通过，然后重构的开发方法论（红-绿-重构）。</p>
+                                      <p><strong class="font-bold text-indigo-highlight/90">行为驱动开发 (BDD):</strong> TDD 的扩展，使用更自然的语言（如 Gherkin 的 Given-When-Then）描述系统行为作为测试规范。</p>
+                                </div>
+                             </div>
+                        </div>
+                        <h4 class="font-sans-cn text-xl font-semibold text-indigo-highlight/80 mt-8 mb-3">常用测试框架</h4>
+                         <div class="mt-4 bg-slate-700 p-4 rounded-xl shadow-lg">
+                             <ul class="list-disc list-inside space-y-1 text-slate-300 text-xs pl-4 columns-2 gap-x-8">
+                                <li>Python: <code class="custom-inline-code">unittest</code>, <code class="custom-inline-code">pytest</code>, <code class="custom-inline-code">Nose2</code></li>
+                                <li>JS: <code class="custom-inline-code">Jest</code>, <code class="custom-inline-code">Mocha</code>, <code class="custom-inline-code">Jasmine</code>, <code class="custom-inline-code">Cypress</code> (E2E), <code class="custom-inline-code">Playwright</code> (E2E)</li>
+                                <li>Java: <code class="custom-inline-code">JUnit</code>, <code class="custom-inline-code">TestNG</code>, <code class="custom-inline-code">Mockito</code></li>
+                                <li>Go: <code class="custom-inline-code">testing</code> (内置)</li>
+                                <li>Rust: 内置测试支持 (<code class="custom-inline-code">cargo test</code>)</li>
+                             </ul>
+                         </div>
+                    </div>
+                 </div>
+            </div>
+            <!-- Exercises Card -->
+            <div class="bg-slate-800 shadow-2xl rounded-xl overflow-hidden">
+                <div class="p-6 md:p-8">
+                    <h2 class="font-sans-cn text-3xl font-bold text-indigo-highlight mb-6 text-center">练习 (Exercises)</h2>
+                    <ol class="list-decimal list-inside space-y-8 text-slate-300 text-sm pl-4">
+                        
+                        <li class="pt-6 border-t border-slate-700">
+                            <p>为本讲 <code class="custom-inline-code">make</code> 示例中的 <code class="custom-inline-code">Makefile</code> 实现一个 <code class="custom-inline-code">clean</code> 目标，用于删除所有构建生成的文件 (<code class="custom-inline-code">paper.pdf</code>, <code class="custom-inline-code">plot-data.png</code>, <code class="custom-inline-code">*.aux</code>, <code class="custom-inline-code">*.log</code>)。记得将其声明为 <code class="custom-inline-code">.PHONY</code>。</p>
+                             <details class="mt-3 bg-slate-700 p-3 rounded-lg">
+                                <summary class="cursor-pointer text-indigo-highlight/80 hover:text-indigo-highlight text-xs font-semibold">查看解答提示</summary>
+                                <div class="pt-3 text-slate-300 text-xs space-y-2">
+                                    <pre class="custom-code-block text-xs whitespace-pre-wrap"><code class="language-makefile">.PHONY: clean
+clean:
+\trm -f paper.pdf plot-data.png *.aux *.log</code></pre>
+                                    <p>(注意 <code class="custom-inline-code">\t</code> 代表 Tab 字符)</p>
+                                </div>
+                            </details>
+                        </li>
+
+                        <li class="pt-6 border-t border-slate-700">
+                            <p>研究 Rust Cargo 的 <a href="https://doc.rust-lang.org/cargo/reference/specifying-dependencies.html" target="_blank" class="text-indigo-highlight hover:underline">依赖规范</a>。对于插入符 (<code class="custom-inline-code">^</code>)、波浪号 (<code class="custom-inline-code">~</code>)、通配符 (<code class="custom-inline-code">*</code>)、比较运算符 (<code class="custom-inline-code">&gt;=</code>, <code class="custom-inline-code">&lt;</code>) 等不同的版本要求方式，各想一个合理的使用场景。</p>
+                             <details class="mt-3 bg-slate-700 p-3 rounded-lg">
+                                <summary class="cursor-pointer text-indigo-highlight/80 hover:text-indigo-highlight text-xs font-semibold">查看解答提示</summary>
+                                <div class="pt-3 text-slate-300 text-xs space-y-2">
+                                    <ul>
+                                        <li><code class="custom-inline-code">^1.2.3</code> (默认): 最常用。接受不破坏兼容性的更新 (1.2.3 <= version < 2.0.0)。</li>
+                                        <li><code class="custom-inline-code">~1.2.3</code>: 只接受补丁更新 (1.2.3 <= version < 1.3.0)。当对 minor 版本的兼容性不太确定时使用。</li>
+                                        <li><code class="custom-inline-code">*</code>: 任何版本。非常不推荐，可能随时引入破坏性更新。</li>
+                                        <li><code class="custom-inline-code">=1.2.3</code>: 精确固定版本。当需要确保某个特定版本的行为时。</li>
+                                        <li><code class="custom-inline-code">&gt;=1.2, &lt;1.5</code>: 需要某个范围内的特性或修复。</li>
+                                    </ul>
+                                </div>
+                            </details>
+                        </li>
+
+                        <li class="pt-6 border-t border-slate-700">
+                            <p>编写一个 Git 的 <code class="custom-inline-code">pre-commit</code> 钩子脚本 (放在仓库的 <code class="custom-inline-code">.git/hooks/pre-commit</code>，确保有执行权限)。该脚本运行 <code class="custom-inline-code">make paper.pdf</code>，如果命令失败（退出码非零），则阻止本次提交。</p>
+                              <details class="mt-3 bg-slate-700 p-3 rounded-lg">
+                                <summary class="cursor-pointer text-indigo-highlight/80 hover:text-indigo-highlight text-xs font-semibold">查看解答提示 (示例脚本)</summary>
+                                <div class="pt-3 text-slate-300 text-xs space-y-2">
+                                    <pre class="custom-code-block text-xs whitespace-pre-wrap"><code class="language-bash">#!/bin/sh
+echo "Running pre-commit hook: Building paper..."
+
+# Attempt to build the paper
+make paper.pdf
+
+# Check the exit status of make
+if [ $? -ne 0 ]; then
+  echo "Error: Build failed. Commit aborted." >&2
+  exit 1 # Non-zero exit status aborts the commit
+fi
+
+echo "Build successful. Proceeding with commit..."
+exit 0 # Zero exit status allows the commit</code></pre>
+                                     <p>(需要将此内容保存到 <code class="custom-inline-code">.git/hooks/pre-commit</code> 并 <code class="custom-inline-code">chmod +x .git/hooks/pre-commit</code>)</p>
+                                </div>
+                            </details>
+                        </li>
+                        
+                        <li class="pt-6 border-t border-slate-700">
+                            <p>使用 GitHub Pages 搭建一个简单的个人静态网站（可以只有一个 <code class="custom-inline-code">index.html</code>）。然后，配置一个 GitHub Action 工作流，在每次推送到主分支时，自动对仓库中的所有 <code class="custom-inline-code">.sh</code> 文件运行 <code class="custom-inline-code">shellcheck</code>。</p>
+                              <details class="mt-3 bg-slate-700 p-3 rounded-lg">
+                                <summary class="cursor-pointer text-indigo-highlight/80 hover:text-indigo-highlight text-xs font-semibold">查看解答提示 (GitHub Action YAML 示例)</summary>
+                                <div class="pt-3 text-slate-300 text-xs space-y-2">
+                                    <p>在 <code class="custom-inline-code">.github/workflows/shellcheck.yml</code> 文件中:</p>
+                                    <pre class="custom-code-block text-xs whitespace-pre-wrap"><code class="language-yaml">name: ShellCheck
+
+on: [push]
+
+jobs:
+  shellcheck:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - name: Run ShellCheck
+      uses: ludeeus/action-shellcheck@master # 使用社区 action</code></pre>
+                                     <p>(创建或修改一个 <code class="custom-inline-code">.sh</code> 文件并引入 shellcheck 能发现的错误，然后推送，查看 Action 运行结果。)</p>
+                                </div>
+                            </details>
+                        </li>
+
+                        <li class="pt-6 border-t border-slate-700">
+                            <p>(挑战) 创建一个自定义的 GitHub Action，对仓库中所有的 Markdown 文件 (<code class="custom-inline-code">*.md</code>) 运行 <code class="custom-inline-code">proselint</code> 或 <code class="custom-inline-code">write-good</code> 检查写作风格。提交一个包含常见语法或风格问题的 PR 来测试它。</p>
+                               <details class="mt-3 bg-slate-700 p-3 rounded-lg">
+                                <summary class="cursor-pointer text-indigo-highlight/80 hover:text-indigo-highlight text-xs font-semibold">查看解答提示 (思路)</summary>
+                                <div class="pt-3 text-slate-300 text-xs space-y-2">
+                                    <p>需要创建一个 Action workflow YAML 文件，其中包含步骤：</p>
+                                    <ol class="list-decimal list-inside text-xs">
+                                         <li>Checkout 代码。</li>
+                                         <li>设置运行环境 (如 Python)。</li>
+                                         <li>安装 <code class="custom-inline-code">proselint</code> 或 <code class="custom-inline-code">write-good</code> (可能需要 npm)。</li>
+                                         <li>使用 <code class="custom-inline-code">find</code> 或类似命令找到所有 <code class="custom-inline-code">.md</code> 文件。</li>
+                                         <li>对找到的文件运行 linter 命令。</li>
+                                    </ol>
+                                     <pre class="custom-code-block text-xs whitespace-pre-wrap"><code class="language-yaml"># .github/workflows/proselint.yml (简化示例)
+name: Lint Markdown
+on: [pull_request]
+jobs:
+  proselint:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - uses: actions/setup-python@v5
+      with:
+        python-version: '3.x'
+    - name: Install proselint
+      run: pip install proselint
+    - name: Run proselint
+      run: proselint **/*.md # Adapt glob as needed</code></pre>
+                                </div>
+                            </details>
+                        </li>
+
+                    </ol>
+                </div>
+            </div>
+        </div>
+
+        <!-- 导航 -->
+        <nav class="mt-16 flex justify-between items-center">
+            <a href="lecture-7.html" class="px-6 py-3 text-indigo-highlight hover:bg-indigo-highlight/10 rounded-md font-sans-cn">
+                &larr; 上一单元 (调试与性能分析)
+            </a>
+            <a href="lecture-9.html" class="px-6 py-3 text-indigo-highlight hover:bg-indigo-highlight/10 rounded-md font-sans-cn">
+                下一单元 (安全与密码学) &rarr;
+            </a>
+        </nav>
+    </main>
+
+    <footer class="mt-20 py-10 bg-slate-800 border-t border-slate-700 text-center">
+        <p class="font-sans-cn text-slate-400">
+            &copy; 2025 Missing Semester 中文版. 基于 MIT 原始课程.
+        </p>
+        <p class="font-sans-en text-slate-500 text-sm mt-2">
+            <a href="https://missing.csail.mit.edu/" target="_blank" class="hover:text-indigo-highlight">原始课程链接</a> | 
+            <a href="#" class="hover:text-indigo-highlight">GitHub 仓库</a>
+        </p>
+        <p class="font-sans-cn text-slate-400 text-sm mt-2">
+            由 <a href="https://huashanjian.github.io/" target="_blank" class="hover:text-indigo-highlight">Junhua Yao</a> 创建和维护
+        </p>
+    </footer>
+    
+    <script src="https://cdn.jsdelivr.net/npm/framer-motion@latest/dist/framer-motion.js"></script>
+    <script>
+        // Placeholder for Framer Motion scripts
+    </script>
+</body>
+</html> 

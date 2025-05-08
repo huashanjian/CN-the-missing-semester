@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-G">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>计算机的缺失课程 - The Missing Semester</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              'moon-white': '#F5F5F5',
+              'sky-blue-tint': '#F0F9FF',
+              'silver-rat-grey': '#E5E7EB',
+              'ink-black': '#111827',
+              'crow-blue': '#1E40AF',
+              'medium-grey': '#6B7280',
+              'indigo-highlight': '#0EA5E9',
+            },
+            fontFamily: {
+              'sans-cn': ['"Source Han Sans SC"', 'PingFang SC', 'sans-serif'],
+              'sans-en': ['Inter', 'Manrope', 'sans-serif'],
+            }
+          }
+        }
+      }
+    </script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&family=Manrope:wght@400;700&family=Noto+Sans+SC:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+      /* Additional styles for fonts if needed, or to ensure Source Han Sans SC is prioritized */
+      body {
+        font-family: theme('fontFamily.sans-cn'); /* Default to Chinese font */
+      }
+      .font-sans-en {
+        font-family: theme('fontFamily.sans-en');
+      }
+      .font-sans-cn {
+        font-family: theme('fontFamily.sans-cn');
+      }
+    </style>
+</head>
+<body class="bg-sky-blue-tint text-ink-black pt-20">
+    <!-- 页眉 (Header) -->
+    <header class="fixed top-0 left-0 right-0 z-50 py-4 shadow-md bg-moon-white/90 backdrop-blur-md">
+        <nav class="container mx-auto px-6 md:px-8 flex justify-between items-center">
+            <a href="index.html" class="text-2xl font-bold font-sans-cn">
+                <span class="text-ink-black">缺失</span><span class="text-indigo-highlight">环节</span>
+                <span class="text-sm font-sans-en text-medium-grey ml-1">Missing Semester</span>
+            </a>
+            <div>
+                <a href="#bento-grid" class="font-sans-cn text-crow-blue hover:text-indigo-highlight ml-6">课程单元</a>
+                <!-- 其他导航链接 -->
+            </div>
+        </nav>
+    </header>
+
+    <!-- 主要内容区域 (Main Content Area) -->
+    <main>
+        <!-- Hero 区域 -->
+        <section id="hero" class="min-h-screen flex flex-col justify-center items-center text-center p-8 bg-sky-blue-tint">
+            <hr class="w-24 h-0.5 my-8 bg-indigo-highlight border-0 rounded">
+            <h1 class="font-sans-cn font-bold text-7xl md:text-8xl lg:text-9xl text-ink-black mb-4">
+                计算机的缺失课程
+            </h1>
+            <p class="font-sans-en text-xl md:text-2xl text-medium-grey mb-2">
+                The Missing Semester of Your CS Education
+            </p>
+            <p class="font-sans-cn text-xs text-medium-grey/80 mb-10">
+                基于 <a href="https://missing.csail.mit.edu/" target="_blank" class="text-indigo-highlight hover:underline">MIT missing-semester</a> 课程改编，内容仅供参考与学习。
+            </p>
+            <div class="mt-8 mb-8">
+                <a href="#bento-grid" class="px-10 py-4 bg-indigo-highlight text-white font-sans-cn text-lg rounded-lg hover:bg-opacity-90 transition-colors shadow-lg hover:shadow-xl">
+                    开始学习
+                </a>
+            </div>
+            <hr class="w-24 h-0.5 my-8 bg-indigo-highlight border-0 rounded">
+        </section>
+
+        <!-- Bento Grid 核心内容区 -->
+        <section id="bento-grid" class="container mx-auto p-8">
+            <h2 class="font-sans-cn text-4xl md:text-5xl font-bold text-center mb-16 text-indigo-highlight">课程单元</h2>
+            <!-- Bento Grid 布局 -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                
+                <!-- 固定的介绍性卡片 -->
+                <div class="sm:col-span-2 lg:col-span-2 p-6 bg-sky-blue-tint rounded-xl shadow-lg flex flex-col justify-center">
+                    <h3 class="font-sans-cn text-3xl font-bold text-ink-black mb-3">我们为何教授此课?</h3>
+                    <p class="font-sans-cn text-medium-grey mb-4">了解这些工具和技能将如何提升您的计算机科学实践能力。</p>
+                    <a href="lecture-0.html" class="font-sans-cn text-indigo-highlight hover:underline self-start">阅读更多 &rarr;</a>
+                </div>
+                <div class="p-6 bg-gray-50 rounded-xl shadow-lg flex flex-col justify-center">
+                    <h3 class="font-sans-cn text-3xl font-bold text-indigo-highlight mb-3">您将学到什么?</h3>
+                    <p class="font-sans-cn text-medium-grey">涵盖 Shell、Vim、Git 等核心工具，以及调试、安全等关键概念。</p>
+                </div>
+
+                <!-- 动态生成的课程单元格子将从这里开始 -->
+                <a href="lecture-1.html" class="block p-6 bg-gray-50 rounded-xl shadow-lg border border-silver-rat-grey hover:border-indigo-highlight hover:shadow-2xl transition-all duration-300 ease-in-out transform hover:-translate-y-1">
+                    <h4 class="font-sans-cn text-2xl font-bold text-indigo-highlight mb-1">
+                        <span class="mr-2">1.</span>课程概览与 Shell
+                    </h4>
+                    <p class="font-sans-en text-sm text-medium-grey mb-3">Course Overview + The Shell</p>
+                    <span class="font-sans-cn text-indigo-highlight text-sm">开始学习 &rarr;</span>
+                </a>
+                <a href="lecture-2.html" class="block p-6 bg-gray-50 rounded-xl shadow-lg border border-silver-rat-grey hover:border-indigo-highlight hover:shadow-2xl transition-all duration-300 ease-in-out transform hover:-translate-y-1">
+                    <h4 class="font-sans-cn text-2xl font-bold text-indigo-highlight mb-1">
+                        <span class="mr-2">2.</span>Shell 工具与脚本
+                    </h4>
+                    <p class="font-sans-en text-sm text-medium-grey mb-3">Shell Tools and Scripting</p>
+                    <span class="font-sans-cn text-indigo-highlight text-sm">开始学习 &rarr;</span>
+                </a>
+                <a href="lecture-3.html" class="block p-6 bg-gray-50 rounded-xl shadow-lg border border-silver-rat-grey hover:border-indigo-highlight hover:shadow-2xl transition-all duration-300 ease-in-out transform hover:-translate-y-1">
+                    <h4 class="font-sans-cn text-2xl font-bold text-indigo-highlight mb-1">
+                        <span class="mr-2">3.</span>编辑器 (Vim)
+                    </h4>
+                    <p class="font-sans-en text-sm text-medium-grey mb-3">Editors (Vim)</p>
+                    <span class="font-sans-cn text-indigo-highlight text-sm">开始学习 &rarr;</span>
+                </a>
+                <a href="lecture-4.html" class="block p-6 bg-gray-50 rounded-xl shadow-lg border border-silver-rat-grey hover:border-indigo-highlight hover:shadow-2xl transition-all duration-300 ease-in-out transform hover:-translate-y-1">
+                    <h4 class="font-sans-cn text-2xl font-bold text-indigo-highlight mb-1">
+                        <span class="mr-2">4.</span>数据整理
+                    </h4>
+                    <p class="font-sans-en text-sm text-medium-grey mb-3">Data Wrangling</p>
+                    <span class="font-sans-cn text-indigo-highlight text-sm">开始学习 &rarr;</span>
+                </a>
+                <a href="lecture-5.html" class="block p-6 bg-gray-50 rounded-xl shadow-lg border border-silver-rat-grey hover:border-indigo-highlight hover:shadow-2xl transition-all duration-300 ease-in-out transform hover:-translate-y-1">
+                    <h4 class="font-sans-cn text-2xl font-bold text-indigo-highlight mb-1">
+                        <span class="mr-2">5.</span>命令行环境
+                    </h4>
+                    <p class="font-sans-en text-sm text-medium-grey mb-3">Command-line Environment</p>
+                    <span class="font-sans-cn text-indigo-highlight text-sm">开始学习 &rarr;</span>
+                </a>
+                <a href="lecture-6.html" class="block p-6 bg-gray-50 rounded-xl shadow-lg border border-silver-rat-grey hover:border-indigo-highlight hover:shadow-2xl transition-all duration-300 ease-in-out transform hover:-translate-y-1">
+                    <h4 class="font-sans-cn text-2xl font-bold text-indigo-highlight mb-1">
+                        <span class="mr-2">6.</span>版本控制 (Git)
+                    </h4>
+                    <p class="font-sans-en text-sm text-medium-grey mb-3">Version Control (Git)</p>
+                    <span class="font-sans-cn text-indigo-highlight text-sm">开始学习 &rarr;</span>
+                </a>
+                 <a href="lecture-7.html" class="block p-6 bg-gray-50 rounded-xl shadow-lg border border-silver-rat-grey hover:border-indigo-highlight hover:shadow-2xl transition-all duration-300 ease-in-out transform hover:-translate-y-1">
+                    <h4 class="font-sans-cn text-2xl font-bold text-indigo-highlight mb-1">
+                        <span class="mr-2">7.</span>调试与性能分析
+                    </h4>
+                    <p class="font-sans-en text-sm text-medium-grey mb-3">Debugging & Profiling</p>
+                    <span class="font-sans-cn text-indigo-highlight text-sm">开始学习 &rarr;</span>
+                </a>
+                <a href="lecture-8.html" class="block p-6 bg-gray-50 rounded-xl shadow-lg border border-silver-rat-grey hover:border-indigo-highlight hover:shadow-2xl transition-all duration-300 ease-in-out transform hover:-translate-y-1">
+                    <h4 class="font-sans-cn text-2xl font-bold text-indigo-highlight mb-1">
+                        <span class="mr-2">8.</span>元编程
+                    </h4>
+                    <p class="font-sans-en text-sm text-medium-grey mb-3">Metaprogramming</p>
+                    <span class="font-sans-cn text-indigo-highlight text-sm">开始学习 &rarr;</span>
+                </a>
+                <a href="lecture-9.html" class="block p-6 bg-gray-50 rounded-xl shadow-lg border border-silver-rat-grey hover:border-indigo-highlight hover:shadow-2xl transition-all duration-300 ease-in-out transform hover:-translate-y-1">
+                    <h4 class="font-sans-cn text-2xl font-bold text-indigo-highlight mb-1">
+                        <span class="mr-2">9.</span>安全与密码学
+                    </h4>
+                    <p class="font-sans-en text-sm text-medium-grey mb-3">Security & Cryptography</p>
+                    <span class="font-sans-cn text-indigo-highlight text-sm">开始学习 &rarr;</span>
+                </a>
+                <a href="lecture-10.html" class="block p-6 bg-gray-50 rounded-xl shadow-lg border border-silver-rat-grey hover:border-indigo-highlight hover:shadow-2xl transition-all duration-300 ease-in-out transform hover:-translate-y-1">
+                    <h4 class="font-sans-cn text-2xl font-bold text-indigo-highlight mb-1">
+                        <span class="mr-2">10.</span>杂项
+                    </h4>
+                    <p class="font-sans-en text-sm text-medium-grey mb-3">Potpourri</p>
+                    <span class="font-sans-cn text-indigo-highlight text-sm">开始学习 &rarr;</span>
+                </a>
+                <a href="lecture-11.html" class="block p-6 bg-gray-50 rounded-xl shadow-lg border border-silver-rat-grey hover:border-indigo-highlight hover:shadow-2xl transition-all duration-300 ease-in-out transform hover:-translate-y-1">
+                    <h4 class="font-sans-cn text-2xl font-bold text-indigo-highlight mb-1">
+                        <span class="mr-2">11.</span>问与答 (Q&A)
+                    </h4>
+                    <p class="font-sans-en text-sm text-medium-grey mb-3">Q&A</p>
+                    <span class="font-sans-cn text-indigo-highlight text-sm">开始学习 &rarr;</span>
+                </a>
+
+            </div>
+        </section>
+    </main>
+
+    <!-- 页脚 (Footer) -->
+    <footer class="mt-20 py-10 bg-silver-rat-grey">
+        <div class="container mx-auto px-6 md:px-8 text-center">
+            <p class="font-sans-cn text-medium-grey text-sm">
+                &copy; 2025 计算机的缺失课程 - 中文版笔记.
+                灵感来源于 <a href="https://missing.csail.mit.edu/" target="_blank" class="text-indigo-highlight hover:underline">MIT Missing Semester</a>.
+            </p>
+            <p class="font-sans-en text-medium-grey text-xs mt-2">
+                <a href="#" class="text-indigo-highlight hover:underline">GitHub 仓库</a>
+            </p>
+            <p class="font-sans-cn text-medium-grey text-xs mt-2">
+                由 <a href="https://huashanjian.github.io/" target="_blank" class="text-indigo-highlight hover:underline">Junhua Yao</a> 创建和维护
+            </p>
+        </div>
+    </footer>
+
+   
+</body>
+</html> 

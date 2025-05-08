@@ -1,0 +1,851 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>命令行环境 - 计算机的缺失课程</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              'moon-white': '#F5F5F5',
+              'sky-blue-tint': '#F0F9FF',
+              'silver-rat-grey': '#E5E7EB',
+              'ink-black': '#111827',
+              'crow-blue': '#1E40AF',
+              'medium-grey': '#6B7280',
+              'indigo-highlight': '#0EA5E9',
+            },
+            fontFamily: {
+              'sans-cn': ['"Source Han Sans SC"', 'PingFang SC', 'sans-serif'],
+              'sans-en': ['Inter', 'Manrope', 'sans-serif'],
+            }
+          }
+        }
+      }
+    </script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&family=Manrope:wght@400;700&family=Noto+Sans+SC:wght@400;700&display=swap" rel="stylesheet">
+    <!-- Add PrismJS for syntax highlighting -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-okaidia.min.css" rel="stylesheet" />
+    <style>
+      body { font-family: theme('fontFamily.sans-cn'); }
+      .font-sans-en { font-family: theme('fontFamily.sans-en'); }
+      .font-sans-cn { font-family: theme('fontFamily.sans-cn'); }
+      pre[class*="language-"], .custom-code-block { background-color: #1E293B; color: #E2E8F0; padding: theme('spacing.6'); border-radius: theme('borderRadius.xl'); overflow-x: auto; margin-top: theme('spacing.4'); margin-bottom: theme('spacing.6'); }
+      code:not(pre code), .custom-inline-code { background-color: theme('colors.slate.700'); color: theme('colors.slate.200'); padding: theme('spacing.1') theme('spacing.2'); border-radius: theme('borderRadius.md'); font-size: 0.9em; }
+      kbd { background-color: theme('colors.slate.600'); color: theme('colors.slate.100'); padding: theme('spacing.px') theme('spacing.1'); border-radius: theme('borderRadius.md'); font-family: theme('fontFamily.mono'); font-size: 0.85em; border: 1px solid theme('colors.slate.500'); box-shadow: 1px 1px 1px theme('colors.slate.900'); }
+    </style>
+</head>
+<body class="bg-slate-900 text-slate-200"> 
+
+    <header class="py-4 shadow-lg sticky top-0 bg-slate-800/90 backdrop-blur-md z-50 border-b border-slate-700">
+        <nav class="container mx-auto px-6 md:px-8 flex justify-between items-center">
+            <a href="index.html" class="text-2xl font-bold font-sans-cn">
+                <span class="text-moon-white">缺失</span><span class="text-indigo-highlight">环节</span>
+            </a>
+            <div>
+                <a href="index.html#bento-grid" class="font-sans-cn text-slate-300 hover:text-indigo-highlight ml-6">课程列表</a>
+            </div>
+        </nav>
+    </header>
+
+    <main class="container mx-auto p-4 md:p-8">
+        <section class="mb-12 pt-8 text-center">
+            <h1 class="font-sans-cn font-bold text-5xl md:text-7xl text-moon-white mb-2">
+                命令行环境 
+            </h1>
+            <p class="font-sans-en text-lg md:text-xl text-medium-grey">
+                 Command-Line Environment
+            </p>
+        </section>
+
+        <div class="space-y-8 md:space-y-12">
+            <!-- Job Control Card -->
+            <div class="bg-slate-800 shadow-2xl rounded-xl overflow-hidden">
+                <div class="p-6 md:p-8">
+                    <h2 class="font-sans-cn text-3xl font-bold text-indigo-highlight mb-6 text-center">作业控制 (Job Control)</h2>
+                    <div class="space-y-4 text-slate-300 text-base leading-relaxed">
+                        <p>在 Shell 中工作时，我们经常需要管理正在运行的多个进程。作业控制允许我们中断、暂停、并在后台或前台恢复这些进程。</p>
+                        
+                        <h3 class="font-sans-cn text-xl font-semibold text-indigo-highlight/80 mt-6 mb-3">终止进程 (Killing a process)</h3>
+                        <p>当你需要停止一个命令（例如它花费了太长时间），通常可以按 <code class="custom-inline-code">Ctrl-C</code>。这会向进程发送一个 <code class="custom-inline-code">SIGINT</code> (中断信号)。</p>
+                        <p>Shell 使用 <strong class="font-bold">信号 (signal)</strong> 这种 UNIX 通信机制向进程传递信息。信号是软件中断，进程接收到信号后会暂停当前执行，处理信号，并可能改变其执行流程。</p>
+                        <p>有时进程会捕获 <code class="custom-inline-code">SIGINT</code> 并选择不停止。在这种情况下，你可以使用 <code class="custom-inline-code">Ctrl-\</code> (Ctrl + 反斜杠) 发送 <code class="custom-inline-code">SIGQUIT</code> 信号，这通常会强制进程退出并可能生成一个核心转储文件用于调试。</p>
+                        <pre class="custom-code-block"><code class="language-python">#!/usr/bin/env python
+import signal, time
+
+def handler(signum, frame):
+    print("\nI got a SIGINT, but I am not stopping")
+
+signal.signal(signal.SIGINT, handler)
+i = 0
+while True:
+    time.sleep(.1)
+    print("\r{}".format(i), end="")
+    i += 1</code></pre>
+                        <p class="text-xs text-slate-400">上述 Python 脚本会捕获 <code class="custom-inline-code">SIGINT</code>。用 <code class="custom-inline-code">Ctrl-\</code> (SIGQUIT) 可以终止它。</p>
+                        
+                        <div class="mt-6 bg-slate-700 p-4 rounded-xl shadow-lg">
+                            <h4 class="font-sans-cn text-lg font-semibold text-moon-white mb-3 flex items-center">
+                                <i class="fas fa-exclamation-triangle mr-2 text-indigo-highlight"></i>常用信号总结:
+                            </h4>
+                            <ul class="list-disc list-inside space-y-2 text-slate-300 text-sm pl-4">
+                                <li><strong class="font-bold">SIGINT (2):</strong> 中断信号。由 <code class="custom-inline-code">Ctrl-C</code> 发送。可被捕获，通常请求程序优雅停止。</li>
+                                <li><strong class="font-bold">SIGQUIT (3):</strong> 退出信号。由 <code class="custom-inline-code">Ctrl-\</code> 发送。通常导致进程终止并进行核心转储。</li>
+                                <li><strong class="font-bold">SIGTERM (15):</strong> 终止信号。 <code class="custom-inline-code">kill</code> 命令默认发送此信号。标准请求进程终止，可被捕获以进行清理。(<code class="custom-inline-code">kill -TERM &lt;PID&gt;</code> 或 <code class="custom-inline-code">kill -15 &lt;PID&gt;</code>)</li>
+                                <li><strong class="font-bold">SIGKILL (9):</strong> 强制终止信号。<strong>不可被捕获、阻塞或忽略</strong>。立即终止进程，应作为最后手段 (<code class="custom-inline-code">kill -9 &lt;PID&gt;</code>)。</li>
+                                <li><strong class="font-bold">SIGSTOP (19):</strong> 停止信号 (不可捕获)。暂停进程执行，类似 <code class="custom-inline-code">Ctrl-Z</code> 但不可忽略。</li>
+                                <li><strong class="font-bold">SIGTSTP (20):</strong> 终端停止信号。由 <code class="custom-inline-code">Ctrl-Z</code> 发送。可被捕获。</li>
+                                <li><strong class="font-bold">SIGCONT (18):</strong> 继续信号。使已停止的进程恢复执行 (<code class="custom-inline-code">bg</code>, <code class="custom-inline-code">fg</code> 命令发送)。</li>
+                                <li><strong class="font-bold">SIGHUP (1):</strong> 挂起信号。终端关闭时发送给关联进程。常用于守护进程重载配置。</li>
+                            </ul>
+                            <p class="text-xs text-slate-400 mt-3">更多信息请查阅 <code class="custom-inline-code">man 7 signal</code> 或 <code class="custom-inline-code">kill -l</code>。</p>
+                        </div>
+
+                        <h3 class="font-sans-cn text-xl font-semibold text-indigo-highlight/80 mt-8 mb-3">暂停和后台运行进程 (Pausing and backgrounding processes)</h3>
+                        <p>除了终止，信号也可以暂停进程。例如，<code class="custom-inline-code">SIGSTOP</code> 会暂停进程。在终端中，按 <code class="custom-inline-code">Ctrl-Z</code> 会发送 <code class="custom-inline-code">SIGTSTP</code> (终端停止信号)。</p>
+                        <p>已暂停的作业可以使用 <code class="custom-inline-code">fg</code> (foreground) 在前台恢复，或使用 <code class="custom-inline-code">bg</code> (background) 在后台恢复。</p>
+                        <p><code class="custom-inline-code">jobs</code> 命令列出当前终端会话中未完成的作业。你可以通过 PID (用 <code class="custom-inline-code">pgrep</code> 查找) 或作业号 (<code class="custom-inline-code">%N</code>，由 <code class="custom-inline-code">jobs</code> 显示) 来引用它们。特殊参数 <code class="custom-inline-code">$!</code> 引用最后一个置于后台的作业。</p>
+                        <p>在命令末尾添加 <code class="custom-inline-code">&</code> 后缀会在后台运行该命令，并立即返回提示符。但它仍会使用 Shell 的 STDOUT，建议使用重定向：</p>
+                        <pre class="custom-code-block"><code class="language-bash">my_long_command > output.log 2> error.log &</code></pre>
+                        <p>要将已运行的程序置于后台，可以按 <code class="custom-inline-code">Ctrl-Z</code> 然后输入 <code class="custom-inline-code">bg</code>。注意，后台进程仍是终端的子进程，关闭终端会发送 <code class="custom-inline-code">SIGHUP</code> 终止它们。</p>
+                        <p>为防止关闭终端时后台进程被终止，可使用 <code class="custom-inline-code">nohup</code> (忽略 SIGHUP 的包装器) 运行程序，或对已启动的进程使用 <code class="custom-inline-code">disown</code>。终端多路复用器 (如 tmux) 是更高级的解决方案。</p>
+
+                        <h4 class="font-sans-cn text-lg font-semibold text-moon-white mt-6 mb-3">示例会话:</h4>
+                        <pre class="custom-code-block"><code class="language-bash">$ sleep 10000
+^Z # 按 Ctrl-Z
+  + 18653 suspended  sleep 1000
+
+$ nohup sleep 2000 &
+[1] 18745
+nohup: appending output to 'nohup.out'
+
+$ jobs
+[1]-  Suspended              sleep 10000
+[2]+  Running                nohup sleep 2000 &
+
+$ bg %1 # 将作业 %1 (sleep 10000) 转到后台继续执行
+[1]+ sleep 10000 &
+
+$ jobs
+[1]+  Running                sleep 10000 &
+[2]-  Running                nohup sleep 2000 &
+
+$ kill -STOP %1 # 发送 SIGSTOP 信号给作业 %1
+[1]+  Stopped (signal)       sleep 10000
+
+$ jobs
+[1]+  Stopped (signal)       sleep 10000
+[2]-  Running                nohup sleep 2000 &
+
+$ kill -SIGHUP %1 # 发送 SIGHUP 给作业 %1 (通常导致程序终止)
+[1]+  Hangup                 sleep 10000
+
+$ jobs # 作业1已终止
+[2]+  Running                nohup sleep 2000 &
+
+$ kill -SIGHUP %2 # nohup 包装的进程会忽略 SIGHUP
+# (通常没有输出，进程继续运行)
+
+$ jobs
+[2]+  Running                nohup sleep 2000 &
+
+$ kill %2 # 默认发送 SIGTERM
+[2]+  Terminated             nohup sleep 2000
+
+$ jobs # 所有作业都已结束</code></pre>
+                        <p class="text-xs text-slate-400 mt-1">注意: <code class="custom-inline-code">jobs</code> 的输出格式和作业状态指示符 (+, -) 可能因 Shell 和配置而异。示例中的 PID 和作业号仅为演示。</p>
+                    </div>
+                </div>
+            </div>
+            <!-- Terminal Multiplexers Card -->
+            <div class="bg-slate-800 shadow-2xl rounded-xl overflow-hidden">
+                <div class="p-6 md:p-8">
+                    <h2 class="font-sans-cn text-3xl font-bold text-indigo-highlight mb-6 text-center">终端多路复用器 (Terminal Multiplexers)</h2>
+                    <div class="space-y-4 text-slate-300 text-base leading-relaxed">
+                        <p>在命令行工作时，我们经常希望同时运行和查看多个任务。虽然可以打开多个终端窗口，但使用终端多路复用器（如 <code class="custom-inline-code">tmux</code>）是更通用和强大的解决方案。</p>
+                        <p><code class="custom-inline-code">tmux</code> 允许你在单个终端窗口内创建和管理多个 Shell 会话，这些会话可以组织在窗格 (panes) 和窗口 (windows) 中。更重要的是，你可以从一个 <code class="custom-inline-code">tmux</code> 会话中<strong>分离 (detach)*</strong>，然后在稍后<strong>重新连接 (attach)</strong>，即使关闭了原来的终端窗口，会话及其中的进程也会继续运行。这对于远程服务器工作尤其有用。</p>
+                        
+                        <h3 class="font-sans-cn text-xl font-semibold text-indigo-highlight/80 mt-6 mb-3"><code class="custom-inline-code">tmux</code> 基础</h3>
+                        <p><code class="custom-inline-code">tmux</code> 的操作主要通过快捷键完成，默认的前缀键是 <code class="custom-inline-code">Ctrl-b</code> (按下 <kbd>Ctrl</kbd>+<kbd>b</kbd>，释放，然后再按后续键)。</p>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-6">
+                            <!-- Sessions -->
+                            <div class="bg-slate-700 p-4 rounded-xl shadow-lg">
+                                <h4 class="font-sans-cn text-lg font-semibold text-moon-white mb-3 flex items-center"><i class="fas fa-layer-group mr-2 text-indigo-highlight"></i>会话 (Sessions)</h4>
+                                <ul class="list-disc list-inside space-y-1 text-slate-300 text-xs">
+                                    <li><code class="custom-inline-code">tmux</code> 或 <code class="custom-inline-code">tmux new</code>: 启动新会话。</li>
+                                    <li><code class="custom-inline-code">tmux new -s &lt;name&gt;</code>: 命名新会话。</li>
+                                    <li><code class="custom-inline-code">tmux ls</code>: 列出所有会话。</li>
+                                    <li><code class="custom-inline-code">&lt;Ctrl-b&gt; d</code>: 分离当前会话。</li>
+                                    <li><code class="custom-inline-code">tmux a</code>: 重新连接最后分离的会话。</li>
+                                    <li><code class="custom-inline-code">tmux a -t &lt;name&gt;</code>: 连接指定会话。</li>
+                                </ul>
+                            </div>
+                            <!-- Windows -->
+                            <div class="bg-slate-700 p-4 rounded-xl shadow-lg">
+                                <h4 class="font-sans-cn text-lg font-semibold text-moon-white mb-3 flex items-center"><i class="far fa-window-maximize mr-2 text-indigo-highlight"></i>窗口 (Windows)</h4>
+                                <ul class="list-disc list-inside space-y-1 text-slate-300 text-xs">
+                                    <li><code class="custom-inline-code">&lt;Ctrl-b&gt; c</code>: 创建新窗口。</li>
+                                    <li><code class="custom-inline-code">&lt;Ctrl-b&gt; &lt;0-9&gt;</code>: 跳转到第 N 个窗口。</li>
+                                    <li><code class="custom-inline-code">&lt;Ctrl-b&gt; p</code>: 上一个窗口。</li>
+                                    <li><code class="custom-inline-code">&lt;Ctrl-b&gt; n</code>: 下一个窗口。</li>
+                                    <li><code class="custom-inline-code">&lt;Ctrl-b&gt; ,</code>: 重命名当前窗口。</li>
+                                    <li><code class="custom-inline-code">&lt;Ctrl-b&gt; w</code>: 列出所有窗口 (可选择)。</li>
+                                     <li><code class="custom-inline-code">&lt;Ctrl-b&gt; &</code>: 关闭当前窗口 (需确认)。</li>
+                                </ul>
+                            </div>
+                            <!-- Panes -->
+                            <div class="bg-slate-700 p-4 rounded-xl shadow-lg">
+                                <h4 class="font-sans-cn text-lg font-semibold text-moon-white mb-3 flex items-center"><i class="fas fa-columns mr-2 text-indigo-highlight"></i>窗格 (Panes)</h4>
+                                <ul class="list-disc list-inside space-y-1 text-slate-300 text-xs">
+                                    <li><code class="custom-inline-code">&lt;Ctrl-b&gt; %</code>: 垂直分割。</li>
+                                    <li><code class="custom-inline-code">&lt;Ctrl-b&gt; "</code>: 水平分割。</li>
+                                    <li><code class="custom-inline-code">&lt;Ctrl-b&gt; &lt;方向键&gt;</code>: 移动到指定方向窗格。</li>
+                                    <li><code class="custom-inline-code">&lt;Ctrl-b&gt; o</code>: 循环切换窗格。</li>
+                                    <li><code class="custom-inline-code">&lt;Ctrl-b&gt; z</code>: 缩放/恢复当前窗格。</li>
+                                    <li><code class="custom-inline-code">&lt;Ctrl-b&gt; [</code>: 进入复制模式 (向上滚动/搜索)。</li>
+                                    <li><code class="custom-inline-code">&lt;Ctrl-b&gt; ]</code>: 粘贴复制内容。</li>
+                                    <li><code class="custom-inline-code">&lt;Ctrl-b&gt; x</code>: 关闭当前窗格 (需确认)。</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <h4 class="font-sans-cn text-lg font-semibold text-moon-white mt-6 mb-3">复制模式 (Copy Mode)</h4>
+                        <p>进入复制模式 (<code class="custom-inline-code">&lt;Ctrl-b&gt; [</code> 或 <code class="custom-inline-code">&lt;Ctrl-b&gt; PageUp</code>) 后：</p>
+                        <ul class="list-disc list-inside space-y-1 text-slate-300 text-sm pl-4">
+                            <li>使用类似 Vi 的键位移动: <kbd>h</kbd><kbd>j</kbd><kbd>k</kbd><kbd>l</kbd>, <kbd>Ctrl</kbd>+<kbd>u</kbd>/<kbd>d</kbd>, <kbd>g</kbd><kbd>g</kbd>, <kbd>G</kbd>。</li>
+                            <li><kbd>/</kbd> 进行搜索。</li>
+                            <li>按 <kbd>Space</kbd> 开始选择，移动光标扩展选区。</li>
+                            <li>按 <kbd>Enter</kbd> 复制选区到 tmux 粘贴板并退出复制模式。</li>
+                            <li><kbd>q</kbd> 退出复制模式。</li>
+                        </ul>
+
+                        <p class="mt-6 text-xs text-slate-400">
+                            更多资源: 
+                            <a href="https://www.hamvocke.com/blog/a-quick-and-easy-guide-to-tmux/" target="_blank" class="text-indigo-highlight hover:underline">tmux 快速教程</a>, 
+                            <a href="https://danielmiessler.com/study/tmux/" target="_blank" class="text-indigo-highlight hover:underline">更详细的文章</a> (也包含 screen 命令)。
+                            <code class="custom-inline-code">screen</code> 是另一个较早的终端多路复用器，其前缀键是 <code class="custom-inline-code">Ctrl-a</code>。
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <!-- Aliases Card -->
+            <div class="bg-slate-800 shadow-2xl rounded-xl overflow-hidden">
+                <div class="p-6 md:p-8">
+                    <h2 class="font-sans-cn text-3xl font-bold text-indigo-highlight mb-6 text-center">别名 (Aliases)</h2>
+                    <div class="space-y-4 text-slate-300 text-base leading-relaxed">
+                        <p>键入包含许多选项或冗长参数的长命令可能会很繁琐。大多数 Shell 都支持<strong>别名 (aliasing)</strong> 功能，允许你为长命令创建简短的替代品。</p>
+                        <p>Shell 别名是另一个命令的简写，当你在 Shell 中输入别名时，它会自动被替换为完整的命令。例如，在 bash 中定义别名的基本语法是：</p>
+                        <pre class="custom-code-block"><code class="language-bash">alias alias_name="command_to_alias arg1 arg2"</code></pre>
+                        <p class="text-xs text-slate-400">注意：等号 <code class="custom-inline-code">=</code> 周围没有空格。</p>
+
+                        <h3 class="font-sans-cn text-xl font-semibold text-indigo-highlight/80 mt-6 mb-3">别名的妙用</h3>
+                        <div class="mt-6 bg-slate-700 p-4 rounded-xl shadow-lg">
+                             <h4 class="font-sans-cn text-lg font-semibold text-moon-white mb-3 flex items-center"><i class="fas fa-magic mr-2 text-indigo-highlight"></i>示例:</h4>
+                            <ul class="list-disc list-inside space-y-2 text-slate-300 text-sm pl-4">
+                                <li><strong>为常用选项创建简写:</strong>
+                                    <pre class="custom-code-block text-xs mt-1 mb-2"><code class="language-bash">alias ls='ls --color=auto' # 大多数发行版默认配置
+alias ll='ls -alFh'      # F:分类, a:所有, l:长格式, h:人类可读
+alias l.='ls -d .* --color=auto' # 仅列出隐藏文件</code></pre>
+                                </li>
+                                <li><strong>为常用命令节省输入:</strong>
+                                    <pre class="custom-code-block text-xs mt-1 mb-2"><code class="language-bash">alias gs='git status'
+alias ga='git add'
+alias gc='git commit'
+alias v='vim' # 或 nvim</code></pre>
+                                </li>
+                                <li><strong>防止输错命令 (幽默示例):</strong>
+                                    <pre class="custom-code-block text-xs mt-1 mb-2"><code class="language-bash">alias sl='ls' # 如果你不小心输入 sl</code></pre>
+                                </li>
+                                <li><strong>覆盖现有命令以获得更好/更安全的默认行为:</strong>
+                                    <pre class="custom-code-block text-xs mt-1 mb-2"><code class="language-bash">alias mv='mv -i'         # -i: 覆盖前提示
+alias cp='cp -i'
+alias rm='rm -I'         # -I: 删除多个文件或递归删除时提示一次 (更安全)
+alias mkdir='mkdir -p'   # -p: 按需创建父目录
+alias df='df -h'         # -h: 人类可读格式
+alias du='du -h'</code></pre>
+                                </li>
+                            </ul>
+                        </div>
+                        
+                        <h3 class="font-sans-cn text-xl font-semibold text-indigo-highlight/80 mt-6 mb-3">管理别名</h3>
+                        <ul class="list-disc list-inside space-y-2 text-slate-300 text-sm pl-4">
+                            <li>要临时忽略一个别名，在其前面加上反斜杠 <code class="custom-inline-code">\</code> (例如 <code class="custom-inline-code">\ls</code>)。</li>
+                            <li>使用 <code class="custom-inline-code">unalias alias_name</code> 可以完全禁用一个别名。</li>
+                            <li>输入 <code class="custom-inline-code">alias alias_name</code> 可以查看该别名的定义。</li>
+                            <li>只输入 <code class="custom-inline-code">alias</code> 会列出所有当前已定义的别名。</li>
+                        </ul>
+                        <p class="mt-4">注意：默认情况下，别名仅在当前 Shell 会话中有效。要使别名持久化，需要将它们添加到 Shell 的启动配置文件中（例如 <code class="custom-inline-code">.bashrc</code> 或 <code class="custom-inline-code">.zshrc</code>），我们将在下一节讨论 Dotfiles 时详细介绍。</p>
+                    </div>
+                </div>
+            </div>
+            <!-- Dotfiles Card 1: Introduction -->
+            <div class="bg-slate-800 shadow-2xl rounded-xl overflow-hidden">
+                <div class="p-6 md:p-8">
+                    <h2 class="font-sans-cn text-3xl font-bold text-indigo-highlight mb-6 text-center">Dotfiles (配置文件)</h2>
+                    <div class="space-y-4 text-slate-300 text-base leading-relaxed">
+                        <p>许多程序使用纯文本文件进行配置，这些文件通常被称为 <strong>dotfiles</strong>，因为它们的文件名以点 <code class="custom-inline-code">.</code> 开头 (例如 <code class="custom-inline-code">~/.vimrc</code>, <code class="custom-inline-code">~/.bash_profile</code>)，这使得它们在默认情况下被 <code class="custom-inline-code">ls</code> 等命令隐藏。</p>
+                        <p>Shell 就是一个典型的例子。启动时，你的 Shell 会读取一系列配置文件来加载其设置。这个过程可能根据 Shell 类型（如 bash, zsh）、是否为登录 Shell 或交互式 Shell 而有所不同。对于 bash，编辑 <code class="custom-inline-code">~/.bashrc</code> (用于交互式非登录 Shell) 或 <code class="custom-inline-code">~/.bash_profile</code> (用于登录 Shell，通常会加载 <code class="custom-inline-code">.bashrc</code>) 是常见的做法。你可以在这些文件中包含启动时需要运行的命令，比如我们之前讨论的别名，或者修改 <code class="custom-inline-code">PATH</code> 环境变量等。</p>
+                        
+                        <h3 class="font-sans-cn text-xl font-semibold text-indigo-highlight/80 mt-6 mb-3">常见使用 Dotfiles 的工具</h3>
+                        <div class="mt-4 bg-slate-700 p-4 rounded-xl shadow-lg">
+                            <ul class="list-disc list-inside space-y-2 text-slate-300 text-sm pl-4 columns-2">
+                                <li><code class="custom-inline-code">bash</code>: ~/.bashrc, ~/.bash_profile</li>
+                                <li><code class="custom-inline-code">zsh</code>: ~/.zshrc, ~/.zprofile, ~/.zshenv</li>
+                                <li><code class="custom-inline-code">git</code>: ~/.gitconfig, project/.git/config</li>
+                                <li><code class="custom-inline-code">vim</code>: ~/.vimrc, ~/.vim/</li>
+                                <li><code class="custom-inline-code">nvim</code>: ~/.config/nvim/init.vim (或 .lua)</li>
+                                <li><code class="custom-inline-code">ssh</code>: ~/.ssh/config</li>
+                                <li><code class="custom-inline-code">tmux</code>: ~/.tmux.conf</li>
+                                <!-- Add more if relevant from the markdown -->
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Dotfiles Card 2: Management & Tools -->
+            <div class="bg-slate-800 shadow-2xl rounded-xl overflow-hidden">
+                <div class="p-6 md:p-8">
+                    <h3 class="font-sans-cn text-2xl font-bold text-indigo-highlight mb-6 text-center">管理你的 Dotfiles</h3>
+                    <div class="space-y-4 text-slate-300 text-base leading-relaxed">
+                        <p>将你的 dotfiles 进行版本控制并集中管理有许多好处：</p>
+                        <ul class="list-disc list-inside space-y-2 text-slate-300 text-sm pl-4 mb-4">
+                            <li><strong class="font-bold">易于安装：</strong> 在新机器上应用你的个性化设置非常快捷。</li>
+                            <li><strong class="font-bold">可移植性：</strong> 确保你的工具在任何地方都以相同的方式工作。</li>
+                            <li><strong class="font-bold">同步：</strong> 方便地在多台设备间同步和更新配置。</li>
+                            <li><strong class="font-bold">变更跟踪：</strong> 对配置的修改进行版本控制，便于回顾和管理。</li>
+                        </ul>
+                        <p>那么，应该在 dotfiles 中包含哪些内容呢？你可以通过阅读官方文档、<code class="custom-inline-code">man</code> 页面或搜索相关的博客文章来了解特定工具的配置选项。查看其他人的 dotfiles 也是一个很好的学习途径 (例如 GitHub 上的 <a href="https://dotfiles.github.io/" target="_blank" class="text-indigo-highlight hover:underline">Dotfiles.GitHub.io</a> 集合)。</p>
+                        <p class="text-xs text-slate-400">本课程讲师的 dotfiles 示例: 
+                            <a href="https://github.com/anishathalye/dotfiles" target="_blank" class="text-indigo-highlight hover:underline">Anish</a>, 
+                            <a href="https://github.com/jonhoo/configs" target="_blank" class="text-indigo-highlight hover:underline">Jon</a>, 
+                            <a href="https://github.com/joseluisq/dotfiles" target="_blank" class="text-indigo-highlight hover:underline">Jose</a>.
+                        </p>
+
+                        <h4 class="font-sans-cn text-xl font-semibold text-indigo-highlight/80 mt-6 mb-3">组织和部署 Dotfiles 的方法</h4>
+                        <p>推荐将所有 dotfiles 存放在一个专用文件夹中，进行版本控制 (如 Git)，然后使用脚本或工具将它们符号链接 (symlink) 到各自在主目录中的正确位置。</p>
+                        <div class="mt-6 bg-slate-700 p-4 rounded-xl shadow-lg">
+                             <h5 class="font-sans-cn text-lg font-semibold text-moon-white mb-3 flex items-center"><i class="fas fa-tools mr-2 text-indigo-highlight"></i>常用管理工具/方法:</h5>
+                            <ul class="list-disc list-inside space-y-2 text-slate-300 text-sm pl-4">
+                                <li><strong>手动创建符号链接:</strong> 最直接，但文件多时不易管理。</li>
+                                <li><strong>自定义脚本:</strong> 编写 Shell 脚本来自动化符号链接的创建。</li>
+                                <li><strong>专用工具:</strong>
+                                    <ul class="list-disc list-inside space-y-1 text-slate-300 text-xs pl-5 mt-1">
+                                        <li><code class="custom-inline-code">GNU Stow</code>: 流行选择，按程序组织 dotfiles 子目录。</li>
+                                        <li><code class="custom-inline-code">rcm</code>: 另一个 dotfile 管理器。</li>
+                                        <li><code class="custom-inline-code">chezmoi</code>: 功能更强大，支持模板和密码管理。</li>
+                                        <li>其他: <code class="custom-inline-code">yadm</code>, <code class="custom-inline-code">dotbot</code> 等。</li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Dotfiles Card 3: Portability -->
+            <div class="bg-slate-800 shadow-2xl rounded-xl overflow-hidden">
+                <div class="p-6 md:p-8">
+                    <h3 class="font-sans-cn text-2xl font-bold text-indigo-highlight mb-6 text-center">Dotfiles 的可移植性</h3>
+                    <div class="space-y-4 text-slate-300 text-base leading-relaxed">
+                        <p>在多台具有不同操作系统或 Shell 的机器上工作时，确保 dotfiles 的可移植性是一个常见的挑战。某些配置可能在一台机器上有效，但在另一台机器上无效，或者你可能希望某些设置仅应用于特定机器。</p>
+                        
+                        <h4 class="font-sans-cn text-xl font-semibold text-indigo-highlight/80 mt-6 mb-3">处理可移植性的技巧</h4>
+                        <div class="mt-6 bg-slate-700 p-4 rounded-xl shadow-lg">
+                            <ul class="list-disc list-inside space-y-3 text-slate-300 text-sm pl-4">
+                                <li>
+                                    <strong class="font-bold">条件逻辑:</strong> 在配置文件中使用条件语句 (如 Shell中的 <code class="custom-inline-code">if</code>) 来应用特定于机器或操作系统的设置。
+                                    <pre class="custom-code-block text-xs mt-2"><code class="language-bash"># 示例：根据操作系统设置不同的 ls 别名
+if [[ "$(uname)" == "Linux" ]]; then
+  alias ls='ls --color=auto -F'
+elif [[ "$(uname)" == "Darwin" ]]; then # macOS
+  alias ls='ls -GF'
+fi
+
+# 示例：根据主机名应用特定设置
+if [[ "$(hostname)" == "myAwesomeServer" ]]; then
+  export HTTP_PROXY="http://proxy.example.com:8080"
+fi
+
+# 示例：检查 Shell 类型 (zsh 特定设置)
+# if [[ "$SHELL" == *"/zsh"* ]]; then 
+#   source ~/.zsh_plugins/zsh-syntax-highlighting.zsh
+# fi</code></pre>
+                                </li>
+                                <li>
+                                    <strong class="font-bold">使用 Include 指令:</strong> 如果配置文件支持 (例如 <code class="custom-inline-code">~/.gitconfig</code>)，使用 <code class="custom-inline-code">include</code> 指令加载特定于机器的配置片段。
+                                    <pre class="custom-code-block text-xs mt-2"><code class="language-ini"># ~/.gitconfig
+[include]
+    path = ~/.gitconfig_local # 本地特定配置</code></pre>
+                                    <p class="text-xs text-slate-400 mt-1">然后 <code class="custom-inline-code">~/.gitconfig_local</code> 文件可以包含特定于当前机器的设置，并且可以被主 dotfiles 仓库忽略或单独管理。</p>
+                                </li>
+                                <li>
+                                    <strong class="font-bold">共享配置片段:</strong> 对于希望在不同程序间共享的配置 (例如 bash 和 zsh 共享别名)，可以将它们写入一个单独的文件 (如 <code class="custom-inline-code">~/.aliases</code>)，然后在各自的配置文件中 source 这个文件。
+                                    <pre class="custom-code-block text-xs mt-2"><code class="language-bash"># 在 .bashrc 或 .zshrc 中
+if [ -f ~/.aliases ]; then
+    source ~/.aliases
+fi</code></pre>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Remote Machines Card 1: SSH Basics -->
+            <div class="bg-slate-800 shadow-2xl rounded-xl overflow-hidden">
+                <div class="p-6 md:p-8">
+                    <h2 class="font-sans-cn text-3xl font-bold text-indigo-highlight mb-6 text-center">远程计算机 (Remote Machines)</h2>
+                    <div class="space-y-4 text-slate-300 text-base leading-relaxed">
+                        <p>程序员在日常工作中经常需要与远程服务器进行交互，无论是部署应用还是利用更强大的计算资源。<strong>安全 Shell (SSH)</strong>是为此目的设计的关键工具，它允许你安全地连接和操作远程计算机。</p>
+                        
+                        <h3 class="font-sans-cn text-xl font-semibold text-indigo-highlight/80 mt-6 mb-3">SSH 基本连接</h3>
+                        <p>要通过 SSH 连接到服务器，基本命令格式如下：</p>
+                        <pre class="custom-code-block"><code class="language-bash">ssh username@hostname_or_ip</code></pre>
+                        <p>例如，<code class="custom-inline-code">ssh foo@bar.mit.edu</code> 会尝试以用户 <code class="custom-inline-code">foo</code> 的身份连接到服务器 <code class="custom-inline-code">bar.mit.edu</code>。服务器地址也可以是 IP 地址，如 <code class="custom-inline-code">ssh foobar@192.168.1.42</code>。</p>
+
+                        <h4 class="font-sans-cn text-lg font-semibold text-moon-white mt-6 mb-3">远程执行命令</h4>
+                        <p><code class="custom-inline-code">ssh</code> 一个常被忽视的功能是直接在远程服务器上执行命令并将结果返回到本地终端，而无需完全登录远程 Shell：</p>
+                        <pre class="custom-code-block"><code class="language-bash"># 在远程服务器的 foobar 用户主目录下执行 ls
+ssh foobar@server ls
+
+# 远程执行 ls，并在本地 grep 其输出
+ssh foobar@server ls | grep PATTERN
+
+# 将本地文件的内容通过管道传给远程服务器上的 grep 命令
+cat localfile | ssh foobar@server "grep PATTERN"</code></pre>
+                        <p class="text-xs text-slate-400">理解数据流向 (本地 vs 远程执行) 对于构建有效的命令管道非常重要。</p>
+                    </div>
+                </div>
+            </div>
+            <!-- Remote Machines Card 2: SSH Keys -->
+            <div class="bg-slate-800 shadow-2xl rounded-xl overflow-hidden">
+                <div class="p-6 md:p-8">
+                    <h3 class="font-sans-cn text-2xl font-bold text-indigo-highlight mb-6 text-center">SSH 密钥认证</h3>
+                    <div class="space-y-4 text-slate-300 text-base leading-relaxed">
+                        <p>基于密钥的身份验证使用公钥密码学，允许你在不直接暴露私钥的情况下向服务器证明你拥有该私钥，从而避免每次连接都输入密码。你的私钥 (通常是 <code class="custom-inline-code">~/.ssh/id_rsa</code> 或更现代的 <code class="custom-inline-code">~/.ssh/id_ed25519</code>) 非常重要，务必妥善保管。</p>
+                        
+                        <h4 class="font-sans-cn text-xl font-semibold text-indigo-highlight/80 mt-6 mb-3">密钥生成</h4>
+                        <p>你可以使用 <code class="custom-inline-code">ssh-keygen</code> 命令生成 SSH 密钥对：</p>
+                        <pre class="custom-code-block"><code class="language-bash">ssh-keygen -o -a 100 -t ed25519 -f ~/.ssh/id_ed25519 -C "your_email@example.com"
+# -o: 使用新的 OpenSSH 格式保存私钥 (更抗暴力破解)
+# -a 100: KDF (密钥派生函数) 轮数，增加破解难度
+# -t ed25519: 指定密钥类型为 Ed25519 (现代、安全、快速)
+# -f ~/.ssh/id_ed25519: 指定密钥文件路径
+# -C "your_email@example.com": 注释，通常是你的邮箱，方便识别</code></pre>
+                        <p>在生成过程中，强烈建议为你的私钥设置一个<strong>密码短语 (passphrase)*</strong>。这层额外的保护可以防止在你的私钥文件被他人获取时，对方能立即使用它。配合使用 <code class="custom-inline-code">ssh-agent</code> 或 <code class="custom-inline-code">gpg-agent</code>，你可以在会话开始时输入一次密码短语，之后无需重复输入。</p>
+                        <p class="text-xs text-slate-400">要检查现有私钥是否设置了密码短语，可以运行: <code class="custom-inline-code">ssh-keygen -y -f /path/to/private_key_file</code>。</p>
+
+                        <h4 class="font-sans-cn text-xl font-semibold text-indigo-highlight/80 mt-6 mb-3">在服务器上设置公钥</h4>
+                        <p>SSH 服务器通过检查目标用户主目录下的 <code class="custom-inline-code">~/.ssh/authorized_keys</code> 文件来确定允许哪些客户端公钥连接。要将你的公钥添加到远程服务器的此文件中，可以使用以下方法：</p>
+                        <div class="mt-4 bg-slate-700 p-4 rounded-xl shadow-lg">
+                            <h5 class="font-sans-cn text-lg font-semibold text-moon-white mb-3 flex items-center"><i class="fas fa-key mr-2 text-indigo-highlight"></i>方法1: 手动复制 (确保权限正确)</h5>
+                            <pre class="custom-code-block text-xs"><code class="language-bash">cat ~/.ssh/id_ed25519.pub | ssh username@remote_server \
+  'mkdir -p ~/.ssh && chmod 700 ~/.ssh && cat >> ~/.ssh/authorized_keys && chmod 600 ~/.ssh/authorized_keys'</code></pre>
+                            <h5 class="font-sans-cn text-lg font-semibold text-moon-white mb-3 mt-4 flex items-center"><i class="fas fa-copy mr-2 text-indigo-highlight"></i>方法2: 使用 <code class="custom-inline-code">ssh-copy-id</code> (推荐)</h5>
+                            <pre class="custom-code-block text-xs"><code class="language-bash">ssh-copy-id -i ~/.ssh/id_ed25519.pub username@remote_server
+# 如果你只有一个主要的公钥，可以省略 -i ~/.ssh/id_ed25519.pub</code></pre>
+                            <p class="text-xs text-slate-400 mt-1"><code class="custom-inline-code">ssh-copy-id</code> 会自动处理远程目录和文件的创建及权限设置。</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Remote Machines Card 3: Copying Files over SSH -->
+            <div class="bg-slate-800 shadow-2xl rounded-xl overflow-hidden">
+                <div class="p-6 md:p-8">
+                    <h3 class="font-sans-cn text-2xl font-bold text-indigo-highlight mb-6 text-center">通过 SSH 复制文件</h3>
+                    <div class="space-y-4 text-slate-300 text-base leading-relaxed">
+                        <p>有多种方法可以通过 SSH 在本地和远程计算机之间复制文件：</p>
+                        
+                        <div class="mt-6 bg-slate-700 p-4 rounded-xl shadow-lg">
+                            <h4 class="font-sans-cn text-lg font-semibold text-moon-white mb-3 flex items-center"><i class="fas fa-exchange-alt mr-2 text-indigo-highlight"></i>常用复制方法:</h4>
+                            <ul class="list-none space-y-4 text-slate-300 text-sm">
+                                <li>
+                                    <strong class="font-bold text-indigo-highlight/90">1. <code class="custom-inline-code">ssh</code> 配合 <code class="custom-inline-code">tee</code> 或 <code class="custom-inline-code">cat</code> (简单重定向):</strong>
+                                    <p class="text-xs mt-1 mb-2">适用于将本地文件内容写入远程单个文件。</p>
+                                    <pre class="custom-code-block text-xs"><code class="language-bash"># 将 localfile 的内容写入远程服务器上的 serverfile (tee 会同时输出到STDOUT)
+cat localfile | ssh username@remote_server "tee serverfile"
+
+# 或者，如果只想写入文件不看输出:
+cat localfile | ssh username@remote_server "cat > serverfile"</code></pre>
+                                </li>
+                                <li>
+                                    <strong class="font-bold text-indigo-highlight/90">2. <code class="custom-inline-code">scp</code> (Secure Copy):</strong>
+                                    <p class="text-xs mt-1 mb-2">当需要复制大量文件或整个目录时，<code class="custom-inline-code">scp</code> 更方便，支持递归复制。</p>
+                                    <pre class="custom-code-block text-xs"><code class="language-bash"># 复制本地文件到远程
+scp /path/to/local_file username@remote_host:/path/to/remote_file
+
+# 从远程复制文件到本地
+scp username@remote_host:/path/to/remote_file /path/to/local_file
+
+# 递归复制目录 (使用 -r 选项)
+scp -r local_directory/ username@remote_host:/remote_parent_directory/</code></pre>
+                                </li>
+                                <li>
+                                    <strong class="font-bold text-indigo-highlight/90">3. <code class="custom-inline-code">rsync</code> (Remote Sync):</strong>
+                                    <p class="text-xs mt-1 mb-2"><code class="custom-inline-code">rsync</code> 是一个更强大和灵活的文件同步工具。它能通过比较本地和远程文件，仅传输差异部分，从而避免不必要的复制。它还支持从中断的传输中恢复，并提供对符号链接、权限等的细粒度控制。</p>
+                                    <pre class="custom-code-block text-xs"><code class="language-bash"># 常用 rsync 命令示例 (将本地同步到远程)
+rsync -avz --progress local_source_directory/ username@remote_host:remote_destination_directory/
+
+# 常用选项解释:
+#   -a: 归档模式 (递归，保留符号链接、权限、时间戳、所有者、组等)
+#   -v: 详细输出模式
+#   -z: 传输时压缩文件数据
+#   --progress: 显示传输进度
+#   --delete: 删除目标目录中源目录不存在的文件 (用于使两边完全一致)
+# 注意源路径末尾的 / 会影响行为 (是否复制目录本身或其内容)</code></pre>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Remote Machines Card 4: Port Forwarding -->
+            <div class="bg-slate-800 shadow-2xl rounded-xl overflow-hidden">
+                <div class="p-6 md:p-8">
+                    <h3 class="font-sans-cn text-2xl font-bold text-indigo-highlight mb-6 text-center">SSH 端口转发 (Port Forwarding)</h3>
+                    <div class="space-y-4 text-slate-300 text-base leading-relaxed">
+                        <p>在很多情况下，远程服务器上的软件会监听特定的网络端口，但这些端口可能无法从外部网络直接访问。SSH 端口转发允许你在本地计算机和远程服务器之间建立一个安全的通道，使得本地端口可以映射到远程服务器上的端口（反之亦然）。</p>
+                        
+                        <div class="mt-6 bg-slate-700 p-6 rounded-xl shadow-lg">
+                            <h4 class="font-sans-cn text-xl font-semibold text-moon-white mb-4 flex items-center"><i class="fas fa-network-wired mr-2 text-indigo-highlight"></i>本地端口转发 (Local Port Forwarding)</h4>
+                            <p class="mb-2">这是最常见的端口转发类型。它允许你将本地机器上的一个端口转发到 SSH 服务器可以访问的某个目标主机和端口（通常是 SSH 服务器自身上的服务）。</p>
+                            <p class="mb-1 font-semibold">命令格式:</p>
+                            <pre class="custom-code-block text-sm"><code class="language-bash">ssh -L local_port:destination_host:destination_port यूजर@ssh_server</code></pre>
+                            <p class="text-xs text-slate-400 mt-1 mb-2">（<code class="custom-inline-code">destination_host</code> 通常是 <code class="custom-inline-code">localhost</code>，指相对于 <code class="custom-inline-code">ssh_server</code> 而言）</p>
+                            <p class="mb-2"><strong>示例:</strong> 假设远程服务器 <code class="custom-inline-code">remote_server</code> 上运行了一个 Jupyter Notebook，监听其自身的 <code class="custom-inline-code">localhost:8888</code>。要通过本地机器的 <code class="custom-inline-code">localhost:9999</code> 访问它，可以执行：</p>
+                            <pre class="custom-code-block text-sm"><code class="language-bash">ssh -L 9999:localhost:8888 foobar@remote_server</code></pre>
+                            <p>之后，在本地浏览器中访问 <code class="custom-inline-code">http://localhost:9999</code> 即可连接到远程的 Jupyter Notebook。</p>
+                        </div>
+
+                        <div class="mt-8 bg-slate-700 p-6 rounded-xl shadow-lg">
+                            <h4 class="font-sans-cn text-xl font-semibold text-moon-white mb-4 flex items-center"><i class="fas fa-globe-americas mr-2 text-indigo-highlight"></i>远程端口转发 (Remote Port Forwarding)</h4>
+                            <p class="mb-2">这种方式不太常见，但用于将远程 SSH 服务器上的某个端口转发到你本地机器（或本地网络中其他机器）上的服务。这允许外部通过该 SSH 服务器访问你本地的服务。</p>
+                            <p class="mb-1 font-semibold">命令格式:</p>
+                            <pre class="custom-code-block text-sm"><code class="language-bash">ssh -R remote_server_port:destination_host:destination_port यूजर@ssh_server</code></pre>
+                             <p class="text-xs text-slate-400 mt-1 mb-2">（<code class="custom-inline-code">destination_host</code> 通常是 <code class="custom-inline-code">localhost</code>，指相对于你执行 ssh 命令的本地机器而言）</p>
+                            <p class="mb-2"><strong>示例:</strong> 假设你的本地开发机器上有一个 Web 服务运行在 <code class="custom-inline-code">localhost:3000</code>。你想让远程服务器 <code class="custom-inline-code">ssh_server</code> 上的 <code class="custom-inline-code">8080</code> 端口能够访问到这个本地服务：</p>
+                            <pre class="custom-code-block text-sm"><code class="language-bash">ssh -R 8080:localhost:3000 user@ssh_server</code></pre>
+                            <p>现在，在 <code class="custom-inline-code">ssh_server</code> 上访问 <code class="custom-inline-code">localhost:8080</code> 的请求会被转发到你本地机器的 <code class="custom-inline-code">localhost:3000</code>。</p>
+                            <p class="text-xs text-slate-400 mt-3">注意：为了使远程端口能被 <code class="custom-inline-code">ssh_server</code> 以外的机器访问，可能需要在服务器的 <code class="custom-inline-code">/etc/ssh/sshd_config</code> 文件中将 <code class="custom-inline-code">GatewayPorts</code> 设置为 <code class="custom-inline-code">yes</code> 或 <code class="custom-inline-code">clientspecified</code>。</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Remote Machines Card 5: SSH Config File -->
+            <div class="bg-slate-800 shadow-2xl rounded-xl overflow-hidden">
+                <div class="p-6 md:p-8">
+                    <h3 class="font-sans-cn text-2xl font-bold text-indigo-highlight mb-6 text-center">SSH 配置文件 (~/.ssh/config)</h3>
+                    <div class="space-y-4 text-slate-300 text-base leading-relaxed">
+                        <p>对于复杂的 SSH 连接参数 (如指定端口、密钥文件、端口转发等)，反复在命令行输入会非常繁琐。虽然可以使用 Shell 别名，但 SSH 自身提供了一个更强大和集中的解决方案：配置文件 <code class="custom-inline-code">~/.ssh/config</code>。</p>
+                        <p>通过在这个文件中定义主机及其参数，你可以简化 SSH 命令，例如用 <code class="custom-inline-code">ssh my_server</code> 代替一长串复杂的命令。更重要的是，其他依赖 SSH 的工具（如 <code class="custom-inline-code">scp</code>, <code class="custom-inline-code">rsync</code>, <code class="custom-inline-code">git</code>）也能读取和使用这些配置。</p>
+
+                        <h4 class="font-sans-cn text-xl font-semibold text-indigo-highlight/80 mt-6 mb-3">~/.ssh/config 示例与常用选项</h4>
+                        <pre class="custom-code-block"><code class="language-ini"># ~/.ssh/config
+
+Host vm_alias  # 定义一个主机别名
+    User foobar
+    HostName 172.16.174.141  # 实际的 IP 地址或域名
+    Port 2222                # 自定义 SSH 端口
+    IdentityFile ~/.ssh/id_ed25519_vm # 为此主机指定特定密钥文件
+    LocalForward 9999 localhost:8888   # 配置本地端口转发
+    # RequestTTY yes                   # 有时需要强制分配 TTY (伪终端)
+    # ServerAliveInterval 60           # 每60秒发送心跳包保持连接
+
+# 可以使用通配符配置一组主机
+Host *.mit.edu
+    User your_mit_username
+    # ForwardAgent yes                 # 谨慎使用：允许远程主机使用本地 ssh-agent 验证其他主机
+    # ControlMaster auto               # 启用 SSH 连接共享
+    # ControlPath ~/.ssh/cm-%r@%h:%p   # 连接共享的控制路径
+    # ControlPersist 600               # 保持主连接在后台600秒，加快后续连接
+
+Host github.com
+    User git
+    HostName github.com
+    IdentityFile ~/.ssh/id_github    # GitHub 使用的特定密钥
+    # IdentitiesOnly yes             # 仅使用 IdentityFile 指定的密钥进行认证
+</code></pre>
+                        <div class="mt-4 bg-slate-700 p-4 rounded-xl shadow-lg">
+                            <h5 class="font-sans-cn text-lg font-semibold text-moon-white mb-3 flex items-center"><i class="fas fa-info-circle mr-2 text-indigo-highlight"></i>关键点:</h5>
+                            <ul class="list-disc list-inside space-y-2 text-slate-300 text-sm pl-4">
+                                <li><strong class="font-bold">Host:</strong> 定义一个配置块的开始，后面跟一个主机别名或模式。</li>
+                                <li><strong class="font-bold">HostName:</strong> 指定实际连接的主机名或 IP 地址。</li>
+                                <li><strong class="font-bold">User:</strong> 指定连接时使用的用户名。</li>
+                                <li><strong class="font-bold">Port:</strong> 指定远程 SSH 服务器的端口（默认为 22）。</li>
+                                <li><strong class="font-bold">IdentityFile:</strong> 指定用于身份验证的私钥文件路径。</li>
+                                <li><strong class="font-bold">LocalForward / RemoteForward:</strong> 配置端口转发。</li>
+                                <li><strong class="font-bold">ForwardAgent:</strong> 是否允许转发 ssh-agent 的连接。</li>
+                                <li><strong class="font-bold">ControlMaster, ControlPath, ControlPersist:</strong> 用于 SSH 连接复用，可以显著加快对同一主机的后续连接速度，因为它复用已建立的 TCP 连接。</li>
+                            </ul>
+                        </div>
+                        <p class="mt-4 text-sm">当你将 <code class="custom-inline-code">~/.ssh/config</code> 文件作为 dotfiles 的一部分并公开分享时，请注意其中可能包含的敏感信息，如服务器地址、用户名、开放端口等，这些信息可能被恶意利用。</p>
+                        <p class="text-xs text-slate-400 mt-2">服务器端的 SSH 配置通常在 <code class="custom-inline-code">/etc/ssh/sshd_config</code> 文件中进行。在这里可以进行更全局的设置，如禁用密码认证、更改 SSH 监听端口、启用或禁用 X11 转发等。</p>
+                    </div>
+                </div>
+            </div>
+            <!-- Remote Machines Card 6: Other SSH Tools & Tips -->
+            <div class="bg-slate-800 shadow-2xl rounded-xl overflow-hidden">
+                <div class="p-6 md:p-8">
+                    <h3 class="font-sans-cn text-2xl font-bold text-indigo-highlight mb-6 text-center">SSH 相关工具与技巧</h3>
+                    <div class="space-y-6 text-slate-300 text-base leading-relaxed">
+                        
+                        <div class="bg-slate-700 p-6 rounded-xl shadow-lg">
+                            <h4 class="font-sans-cn text-xl font-semibold text-moon-white mb-3 flex items-center">
+                                <i class="fas fa-rocket mr-2 text-indigo-highlight"></i>Mosh (Mobile Shell)
+                            </h4>
+                            <p>当网络连接不稳定或需要在不同网络间切换（例如笔记本电脑合盖再打开）时，标准的 SSH 连接很容易断开，这会非常令人沮丧。<code class="custom-inline-code">Mosh</code> 是 SSH 的一个优秀替代品和补充，它提供了更强大的连接鲁棒性：</p>
+                            <ul class="list-disc list-inside space-y-1 text-slate-300 text-sm pl-4 mt-2">
+                                <li>支持漫游连接和间歇性连接：即使 IP 地址改变或网络暂时中断，Mosh 也能尝试保持或恢复会话。</li>
+                                <li>智能本地回显：对于输入字符等操作，Mosh 会在本地立即显示，减少了高延迟连接下的卡顿感。</li>
+                                <li>通常与 SSH 协同工作进行初始认证，然后通过 UDP 建立自己的连接。</li>
+                            </ul>
+                        </div>
+
+                        <div class="bg-slate-700 p-6 rounded-xl shadow-lg">
+                            <h4 class="font-sans-cn text-xl font-semibold text-moon-white mb-3 flex items-center">
+                                <i class="fas fa-folder-open mr-2 text-indigo-highlight"></i>sshfs (SSH Filesystem)
+                            </h4>
+                            <p><code class="custom-inline-code">sshfs</code> 是一个基于 FUSE (Filesystem in Userspace) 的工具，它允许你将远程服务器上的一个目录挂载到本地文件系统的一个挂载点上。一旦挂载成功，你就可以像操作本地文件和目录一样，使用本地的编辑器、文件管理器等工具来访问和修改远程文件。</p>
+                            <pre class="custom-code-block text-sm mt-2"><code class="language-bash"># 示例：将远程服务器的 ~/remote_projects 目录挂载到本地的 ~/mnt/server_projects
+mkdir -p ~/mnt/server_projects
+sshfs username@remote_server:~/remote_projects ~/mnt/server_projects
+
+# 完成后卸载:
+fusermount -u ~/mnt/server_projects</code></pre>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+                       <!-- Shells & Frameworks Card -->
+                       <div class="bg-slate-800 shadow-2xl rounded-xl overflow-hidden">
+                        <div class="p-6 md:p-8">
+                            <h2 class="font-sans-cn text-3xl font-bold text-indigo-highlight mb-6 text-center">Shells 和框架 (Shells & Frameworks)</h2>
+                            <div class="space-y-4 text-slate-300 text-base leading-relaxed">
+                                <p>虽然我们主要介绍了 bash Shell，因为它是最普遍且通常是系统默认的 Shell，但存在许多其他的 Shell 可供选择，它们提供了不同的功能和用户体验。</p>
+        
+                                <div class="mt-6 bg-slate-700 p-6 rounded-xl shadow-lg">
+                                    <h4 class="font-sans-cn text-xl font-semibold text-moon-white mb-3 flex items-center"><i class="fab fa-linux mr-2 text-indigo-highlight"></i>Zsh (Z Shell)</h4>
+                                    <p><code class="custom-inline-code">Zsh</code> 是 bash 的一个流行替代品，它基本上是 bash 的超集，并内置了许多便捷功能，例如：</p>
+                                    <ul class="list-disc list-inside space-y-1 text-slate-300 text-sm pl-4 mt-2">
+                                        <li>更智能的通配符展开 (Globbing)，如 <code class="custom-inline-code">**/*</code> 可递归匹配。</li>
+                                        <li>内联通配符展开。</li>
+                                        <li>拼写纠正建议。</li>
+                                        <li>改进的 Tab 自动补全和选择界面。</li>
+                                        <li>路径展开 (例如输入 <code class="custom-inline-code">cd /u/lo/b</code> 然后按 Tab 可能展开为 <code class="custom-inline-code">/usr/local/bin</code>)。</li>
+                                        <li>更强大的数组和哈希表处理能力。</li>
+                                    </ul>
+                                </div>
+        
+                                <div class="mt-8 bg-slate-700 p-6 rounded-xl shadow-lg">
+                                    <h4 class="font-sans-cn text-xl font-semibold text-moon-white mb-3 flex items-center"><i class="fas fa-puzzle-piece mr-2 text-indigo-highlight"></i>Shell 框架 (Frameworks)</h4>
+                                    <p>框架可以进一步增强你的 Shell 功能和外观。一些流行的通用框架（主要针对 Zsh）包括:</p>
+                                    <ul class="list-disc list-inside space-y-1 text-slate-300 text-sm pl-4 mt-2 mb-4">
+                                        <li><a href="https://github.com/sorin-ionescu/prezto" target="_blank" class="text-indigo-highlight hover:underline">Prezto</a></li>
+                                        <li><a href="https://ohmyz.sh/" target="_blank" class="text-indigo-highlight hover:underline">Oh My Zsh</a></li>
+                                    </ul>
+                                    <p>还有许多专注于特定功能的小型插件/框架，例如：</p>
+                                     <ul class="list-disc list-inside space-y-1 text-slate-300 text-sm pl-4 mt-2">
+                                        <li><a href="https://github.com/zsh-users/zsh-syntax-highlighting" target="_blank" class="text-indigo-highlight hover:underline">zsh-syntax-highlighting</a> (命令语法高亮)</li>
+                                        <li><a href="https://github.com/zsh-users/zsh-autosuggestions" target="_blank" class="text-indigo-highlight hover:underline">zsh-autosuggestions</a> (基于历史记录的灰色自动建议)</li>
+                                        <li><a href="https://github.com/zsh-users/zsh-history-substring-search" target="_blank" class="text-indigo-highlight hover:underline">zsh-history-substring-search</a> (输入部分命令按上下键搜索历史)</li>
+                                     </ul>
+                                </div>
+        
+                                <div class="mt-8 bg-slate-700 p-6 rounded-xl shadow-lg">
+                                     <h4 class="font-sans-cn text-xl font-semibold text-moon-white mb-3 flex items-center"><i class="fas fa-fish mr-2 text-indigo-highlight"></i>Fish Shell (Friendly Interactive Shell)</h4>
+                                     <p><code class="custom-inline-code">Fish</code> 是另一个以用户友好为设计目标的现代 Shell。它开箱即用地包含了许多 Zsh 需要通过插件实现的功能，例如：</p>
+                                     <ul class="list-disc list-inside space-y-1 text-slate-300 text-sm pl-4 mt-2">
+                                         <li>默认启用的语法高亮。</li>
+                                         <li>智能且即时的自动建议 (灰色显示)。</li>
+                                         <li>基于 Man 手册的参数自动补全。</li>
+                                         <li>更简洁的脚本语法 (可能与 POSIX Shell 不完全兼容)。</li>
+                                         <li>丰富的提示符主题和配置选项。</li>
+                                     </ul>
+                                </div>
+                                <p class="mt-6 text-sm">在使用功能丰富的 Shell 或添加大量框架/插件时，需要注意它们可能会增加 Shell 的启动时间和响应延迟。如果感觉到卡顿，可以尝试分析配置 (<code class="custom-inline-code">time zsh -i -c exit</code> 可以粗略测量启动时间) 并禁用不常用或影响性能的功能。</p>
+                            </div>
+                        </div>
+                    </div>
+            <!-- Terminal Emulators Card -->
+            <div class="bg-slate-800 shadow-2xl rounded-xl overflow-hidden">
+                <div class="p-6 md:p-8">
+                    <h2 class="font-sans-cn text-3xl font-bold text-indigo-highlight mb-6 text-center">终端模拟器 (Terminal Emulators)</h2>
+                    <div class="space-y-4 text-slate-300 text-base leading-relaxed">
+                        <p>除了自定义 Shell 本身，花时间选择并配置你的<strong>终端模拟器 (Terminal Emulator)</strong> 也同样重要。终端模拟器是你与 Shell 交互的图形界面窗口。</p>
+                        <p>市面上有许多不同的终端模拟器可供选择 ([这里有一个比较列表](https://wiki.archlinux.org/title/List_of_terminal_emulators))。考虑到你可能会在终端上花费大量时间，研究并调整其设置以符合你的偏好和工作流程是非常值得的。</p>
+
+                        <h3 class="font-sans-cn text-xl font-semibold text-indigo-highlight/80 mt-6 mb-3">值得考虑的终端配置方面</h3>
+                        <div class="mt-4 bg-slate-700 p-4 rounded-xl shadow-lg">
+                            <ul class="list-disc list-inside space-y-2 text-slate-300 text-sm pl-4 columns-2 gap-x-8">
+                                <li><strong>字体选择:</strong> 使用适合编程的等宽字体，例如支持连字 (ligatures) 的 Fira Code, JetBrains Mono, Cascadia Code。</li>
+                                <li><strong>配色方案:</strong> 选择一个你喜欢且对比度合适的配色主题，如 Solarized, Dracula, Gruvbox, Nord 等。</li>
+                                <li><strong>键盘快捷键:</strong> 自定义复制、粘贴、新建标签页/窗口等操作的快捷键。</li>
+                                <li><strong>标签页/窗格支持:</strong> 虽然 tmux 功能更强，但一些终端也内置了基本的标签页和窗格管理。</li>
+                                <li><strong>回滚配置:</strong> 调整终端保留的历史输出行数 (scrollback buffer size)。</li>
+                                <li><strong>性能:</strong> 一些较新的终端模拟器利用 GPU 加速来提高渲染速度和响应性。</li>
+                            </ul>
+                        </div>
+
+                        <h4 class="font-sans-cn text-lg font-semibold text-moon-white mt-6 mb-3">一些现代终端模拟器示例:</h4>
+                         <ul class="list-disc list-inside space-y-1 text-slate-300 text-sm pl-4">
+                             <li><a href="https://alacritty.org/" target="_blank" class="text-indigo-highlight hover:underline">Alacritty</a> (跨平台, GPU 加速, 配置驱动)</li>
+                             <li><a href="https://sw.kovidgoyal.net/kitty/" target="_blank" class="text-indigo-highlight hover:underline">kitty</a> (跨平台, GPU 加速, 功能丰富, 可扩展)</li>
+                             <li><a href="https://wezfurlong.org/wezterm/" target="_blank" class="text-indigo-highlight hover:underline">WezTerm</a> (跨平台, GPU 加速, Lua 配置, 内置 Multiplexing)</li>
+                             <li><a href="https://hyper.is/" target="_blank" class="text-indigo-highlight hover:underline">Hyper</a> (基于 Web 技术构建, 跨平台, 可定制性强)</li>
+                             <li><a href="https://apps.microsoft.com/store/detail/windows-terminal/9N0DX20HK701" target="_blank" class="text-indigo-highlight hover:underline">Windows Terminal</a> (现代 Windows 终端，支持多 Shell, GPU 加速)</li>
+                         </ul>
+                    </div>
+                </div>
+            </div>
+            <!-- Exercises Card -->
+            <div class="bg-slate-800 shadow-2xl rounded-xl overflow-hidden">
+                <div class="p-6 md:p-8">
+                    <h2 class="font-sans-cn text-3xl font-bold text-indigo-highlight mb-6 text-center">练习 (Exercises)</h2>
+                    <ol class="list-decimal list-inside space-y-8 text-slate-300 text-sm pl-4">
+                        
+                        <li class="pt-6 border-t border-slate-700">
+                            <p class="font-semibold text-base mb-2">1. 作业控制:</p>
+                            <ul class="list-disc list-inside space-y-3 pl-4">
+                                <li>启动一个 <code class="custom-inline-code">sleep 10000</code> 作业，用 <kbd>Ctrl</kbd>+<kbd>Z</kbd> 将其置于后台，并用 <code class="custom-inline-code">bg</code> 继续执行。然后使用 <code class="custom-inline-code">pgrep</code> 找到其 PID，并使用 <code class="custom-inline-code">pkill</code> 在不直接输入 PID 的情况下终止它 (提示: <code class="custom-inline-code">pgrep -af</code> 和 <code class="custom-inline-code">pkill -af</code>)。</li>
+                                <li>如何让一个进程等待另一个后台进程完成后再执行？例如，启动 <code class="custom-inline-code">sleep 60 &</code>，然后让 <code class="custom-inline-code">ls</code> 等待它完成后执行 (提示: <code class="custom-inline-code">wait</code> 命令和 <code class="custom-inline-code">$!</code> 变量)。</li>
+                                <li>编写一个名为 <code class="custom-inline-code">pidwait</code> 的 bash 函数，它接受一个 PID 作为参数，并阻塞直到该 PID 对应的进程完成。使用 <code class="custom-inline-code">kill -0 &lt;PID&gt;</code> (检查进程是否存在，成功退出码为 0) 和 <code class="custom-inline-code">sleep</code> 来避免 CPU 浪费。</li>
+                            </ul>
+                            <details class="mt-4 bg-slate-700 p-3 rounded-lg">
+                                <summary class="cursor-pointer text-indigo-highlight/80 hover:text-indigo-highlight text-xs font-semibold">查看解答提示</summary>
+                                <div class="pt-3 text-slate-300 text-xs space-y-2">
+                                    <pre class="custom-code-block text-xs whitespace-pre-wrap"><code class="language-bash"># 终止 sleep 进程
+sleep 10000
+# Ctrl-Z
+bg
+pgrep -af "sleep 10000" # 找到 PID
+pkill -af "sleep 10000" # 终止
+
+# 等待后台进程
+sleep 60 &
+wait $! # $! 是最后一个后台作业的 PID
+ls
+
+# pidwait 函数
+pidwait() {
+    local pid_to_wait_for="$1"
+    if [ -z "$pid_to_wait_for" ]; then echo "Usage: pidwait <pid>"; return 1; fi
+    echo "Waiting for PID $pid_to_wait_for to complete..."
+    while kill -0 "$pid_to_wait_for" 2>/dev/null; do
+        sleep 1
+    done
+    echo "PID $pid_to_wait_for has completed."
+}
+# 测试: sleep 5 &; pidwait $!; echo "Done"</code></pre>
+                                </div>
+                            </details>
+                        </li>
+
+                        <li class="pt-6 border-t border-slate-700">
+                            <p class="font-semibold text-base mb-2">2. 终端多路复用器:</p>
+                            <p>学习 <a href="https://www.hamvocke.com/blog/a-quick-and-easy-guide-to-tmux/" target="_blank" class="text-indigo-highlight hover:underline">这个 tmux 教程</a> 或其他你喜欢的教程，并尝试按照 <a href="https://thoughtbot.com/blog/a-tmux-crash-course" target="_blank" class="text-indigo-highlight hover:underline">这些步骤</a> 进行一些基本的自定义。</p>
+                             <!-- No specific answer hint needed, it's about following external tutorials -->
+                        </li>
+
+                        <li class="pt-6 border-t border-slate-700">
+                            <p class="font-semibold text-base mb-2">3. 别名:</p>
+                             <ul class="list-disc list-inside space-y-3 pl-4">
+                                <li>创建一个别名 <code class="custom-inline-code">dc</code>，使其在你错误输入时等同于 <code class="custom-inline-code">cd</code>。</li>
+                                <li>找出你最常用的 10 个命令，并为它们设置更短的别名。
+                                    <br>(提示: Bash 用 <code class="custom-inline-code">history | sed 's/^[ ]*[0-9]*[ ]*//' | sort | uniq -c | sort -nr | tail -10</code>；
+                                    Zsh 用 <code class="custom-inline-code">history -E 1 0 | sed 's/^[ ]*[0-9]*[ ]*//' | sort | uniq -c | sort -nr | tail -10</code> 或类似方法分析历史记录)
+                                </li>
+                             </ul>
+                             <details class="mt-4 bg-slate-700 p-3 rounded-lg">
+                                <summary class="cursor-pointer text-indigo-highlight/80 hover:text-indigo-highlight text-xs font-semibold">查看解答提示</summary>
+                                <div class="pt-3 text-slate-300 text-xs space-y-2">
+                                     <pre class="custom-code-block text-xs whitespace-pre-wrap"><code class="language-bash"># dc 别名
+alias dc='cd'
+
+# 查找常用命令 (Bash 示例)
+history | sed 's/^[ ]*[0-9]*[ ]*//' | sort | uniq -c | sort -nr | tail -n 10
+# 然后根据输出创建别名，例如：
+# alias gco='git checkout'
+# alias ..='cd ..'</code></pre>
+                                </div>
+                            </details>
+                        </li>
+
+                        <li class="pt-6 border-t border-slate-700">
+                            <p class="font-semibold text-base mb-2">4. Dotfiles:</p>
+                            <ul class="list-disc list-inside space-y-3 pl-4">
+                                <li>创建 <code class="custom-inline-code">~/dotfiles</code> 目录并用 Git 初始化。</li>
+                                <li>至少为一个程序（如 Shell, Git, Vim）添加配置文件，并进行一些个性化设置（例如自定义 Shell 提示符 <code class="custom-inline-code">$PS1</code>）。</li>
+                                <li>设置一种在新机器上快速安装/部署 dotfiles 的方法（例如使用简单的符号链接脚本或 Stow, chezmoi 等工具）。</li>
+                                <li>在一个新的虚拟机或容器中测试你的安装脚本。</li>
+                                <li>将你当前使用的所有工具的配置迁移到你的 dotfiles 仓库中。</li>
+                                <li>(可选) 在 GitHub 或类似平台上发布你的 dotfiles。</li>
+                            </ul>
+                            <!-- No specific answer hint needed, it involves personal setup -->
+                        </li>
+
+                        <li class="pt-6 border-t border-slate-700">
+                            <p class="font-semibold text-base mb-2">5. 远程计算机:</p>
+                            <ul class="list-disc list-inside space-y-3 pl-4">
+                                <li>(准备) 安装一个 Linux 虚拟机 (如使用 VirtualBox)。</li>
+                                <li>检查或生成 SSH 密钥对 (<code class="custom-inline-code">ssh-keygen -t ed25519</code>)，建议设置密码短语并使用 <code class="custom-inline-code">ssh-agent</code>。</li>
+                                <li>配置 <code class="custom-inline-code">~/.ssh/config</code>，添加一个指向你虚拟机的条目，包含 Host, User, HostName, IdentityFile，并设置 <code class="custom-inline-code">LocalForward 9999 localhost:8888</code>。</li>
+                                <li>使用 <code class="custom-inline-code">ssh-copy-id vm_alias</code> 将公钥复制到虚拟机。</li>
+                                <li>在虚拟机中启动一个简单的 Web 服务器 (<code class="custom-inline-code">python3 -m http.server 8888</code>)。</li>
+                                <li>在本地机器浏览器中访问 <code class="custom-inline-code">http://localhost:9999</code>，验证端口转发是否成功。</li>
+                                <li>(安全实践) 编辑虚拟机上的 <code class="custom-inline-code">/etc/ssh/sshd_config</code>，设置 <code class="custom-inline-code">PasswordAuthentication no</code> 和 <code class="custom-inline-code">PermitRootLogin no</code>，然后重启 SSH 服务 (<code class="custom-inline-code">sudo systemctl restart sshd</code> 或 <code class="custom-inline-code">sudo service ssh restart</code>)。再次尝试 SSH 连接。</li>
+                                <li>(挑战) 在 VM 和本地都安装 <code class="custom-inline-code">mosh</code>，尝试建立 Mosh 连接。然后断开 VM 的网络，再恢复，观察 Mosh 是否能恢复连接。</li>
+                                <li>(挑战) 查阅 <code class="custom-inline-code">ssh</code> 的 <code class="custom-inline-code">-N</code> 和 <code class="custom-inline-code">-f</code> 标志，找出一个可以在后台运行端口转发的命令。</li>
+                            </ul>
+                             <details class="mt-4 bg-slate-700 p-3 rounded-lg">
+                                <summary class="cursor-pointer text-indigo-highlight/80 hover:text-indigo-highlight text-xs font-semibold">查看挑战解答提示</summary>
+                                <div class="pt-3 text-slate-300 text-xs space-y-2">
+                                    <p>后台端口转发命令:</p>
+                                     <pre class="custom-code-block text-xs whitespace-pre-wrap"><code class="language-bash">ssh -N -f -L local_port:destination_host:destination_port user@ssh_server
+# -N: 不执行远程命令。
+# -f: 请求 ssh 在命令执行前进入后台。</code></pre>
+                                </div>
+                            </details>
+                        </li>
+
+                    </ol>
+                </div>
+            </div>
+        </div>
+
+        <!-- 导航 -->
+        <nav class="mt-16 flex justify-between items-center">
+            <a href="lecture-4.html" class="px-6 py-3 text-indigo-highlight hover:bg-indigo-highlight/10 rounded-md font-sans-cn">
+                &larr; 上一单元 (数据整理)
+            </a>
+            <a href="lecture-6.html" class="px-6 py-3 text-indigo-highlight hover:bg-indigo-highlight/10 rounded-md font-sans-cn">
+                下一单元 (版本控制 Git) &rarr;  <!-- Tentative next lecture -->
+            </a>
+        </nav>
+    </main>
+
+    <footer class="mt-20 py-10 bg-slate-800 border-t border-slate-700 text-center">
+        <p class="font-sans-cn text-slate-400">
+            &copy; 2025 Missing Semester 中文版. 基于 MIT 原始课程.
+        </p>
+        <p class="font-sans-en text-slate-500 text-sm mt-2">
+            <a href="https://missing.csail.mit.edu/" target="_blank" class="hover:text-indigo-highlight">原始课程链接</a> | 
+            <a href="#" class="hover:text-indigo-highlight">GitHub 仓库</a>
+        </p>
+        <p class="font-sans-cn text-slate-400 text-sm mt-2">
+            由 <a href="https://huashanjian.github.io/" target="_blank" class="hover:text-indigo-highlight">Junhua Yao</a> 创建和维护
+        </p>
+    </footer>
+        <!-- Add PrismJS script (needs to be after content) -->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+    <script>
+        // Placeholder for Framer Motion scripts
+    </script>
+</body>
+</html> 

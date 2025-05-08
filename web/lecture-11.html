@@ -1,0 +1,612 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>提问 & 回答 - 计算机的缺失课程</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              'moon-white': '#F5F5F5',
+              'sky-blue-tint': '#F0F9FF',
+              'silver-rat-grey': '#E5E7EB',
+              'ink-black': '#111827',
+              'crow-blue': '#1E40AF',
+              'medium-grey': '#6B7280',
+              'indigo-highlight': '#0EA5E9',
+            },
+            fontFamily: {
+              'sans-cn': ['"Source Han Sans SC"', 'PingFang SC', 'sans-serif'],
+              'sans-en': ['Inter', 'Manrope', 'sans-serif'],
+            }
+          }
+        }
+      }
+    </script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&family=Manrope:wght@400;700&family=Noto+Sans+SC:wght@400;700&display=swap" rel="stylesheet">
+    <script>
+    MathJax = {
+      tex: {
+        inlineMath: [['\\(', '\\)']],
+        displayMath: [['\\[', '\\]']]
+      },
+      svg: {
+        fontCache: 'global'
+      }
+    };
+    </script>
+    <script type="text/javascript" id="MathJax-script" async
+        src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js">
+    </script>
+    <style>
+      body { font-family: theme('fontFamily.sans-cn'); }
+      .font-sans-en { font-family: theme('fontFamily.sans-en'); }
+      .font-sans-cn { font-family: theme('fontFamily.sans-cn'); }
+      pre[class*="language-"], .custom-code-block { background-color: #1E293B; color: #E2E8F0; padding: theme('spacing.6'); border-radius: theme('borderRadius.xl'); overflow-x: auto; margin-top: theme('spacing.4'); margin-bottom: theme('spacing.6'); }
+      code:not(pre code), .custom-inline-code { background-color: theme('colors.slate.700'); color: theme('colors.slate.200'); padding: theme('spacing.1') theme('spacing.2'); border-radius: theme('borderRadius.md'); font-size: 0.9em; }
+      kbd { background-color: theme('colors.slate.600'); color: theme('colors.slate.100'); padding: theme('spacing.px') theme('spacing.1'); border-radius: theme('borderRadius.md'); font-family: theme('fontFamily.mono'); font-size: 0.85em; border: 1px solid theme('colors.slate.500'); box-shadow: 1px 1px 1px theme('colors.slate.900'); }
+    </style>
+</head>
+<body class="bg-slate-900 text-slate-200"> 
+
+    <header class="py-4 shadow-lg sticky top-0 bg-slate-800/90 backdrop-blur-md z-50 border-b border-slate-700">
+        <nav class="container mx-auto px-6 md:px-8 flex justify-between items-center">
+            <a href="index.html" class="text-2xl font-bold font-sans-cn">
+                <span class="text-moon-white">缺失</span><span class="text-indigo-highlight">环节</span>
+            </a>
+            <div>
+                <a href="index.html#bento-grid" class="font-sans-cn text-slate-300 hover:text-indigo-highlight ml-6">课程列表</a>
+            </div>
+        </nav>
+    </header>
+
+    <main class="container mx-auto p-4 md:p-8">
+        <section class="mb-12 pt-8 text-center">
+            <h1 class="font-sans-cn font-bold text-5xl md:text-7xl text-moon-white mb-2">
+                提问 & 回答
+            </h1>
+            <p class="font-sans-en text-lg md:text-xl text-medium-grey">
+                 Q&A
+            </p>
+        </section>
+
+        <div class="space-y-8 md:space-y-12">
+            <!-- Q1: Learning OS Topics -->
+            <div class="bg-slate-800 shadow-2xl rounded-xl overflow-hidden">
+                <div class="p-6 md:p-8">
+                    <h2 class="font-sans-cn text-2xl font-bold text-indigo-highlight mb-4">
+                        <i class="far fa-question-circle mr-2"></i>问：关于学习操作系统相关主题（如进程、虚拟内存、中断、内存管理等）有什么建议？
+                    </h2>
+                    <div class="space-y-4 text-slate-300 text-base leading-relaxed border-t border-slate-700 pt-4">
+                        <p><strong class="font-semibold text-moon-white">答：</strong></p>
+                        <p>首先，明确你是否真的需要深入理解所有这些底层细节。对于大多数日常开发，可能只需要掌握进程、信号等基本概念就足够了。除非你的工作涉及内核开发或非常底层的系统编程。</p>
+                        
+                        <h4 class="font-sans-cn text-lg font-semibold text-indigo-highlight/80 mt-6 mb-3">推荐的学习资源：</h4>
+                         <div class="mt-4 bg-slate-700 p-4 rounded-xl shadow-lg">
+                            <ul class="list-disc list-inside space-y-2 text-slate-300 text-sm pl-4">
+                                <li><strong class="font-bold">MIT 6.828 (操作系统工程):</strong> 研究生课程，材料公开，难度高但深入。</li>
+                                <li><strong class="font-bold">《现代操作系统》(Modern Operating Systems) - Tanenbaum:</strong> 经典教材，概念概述清晰。</li>
+                                <li><strong class="font-bold">《操作系统概念》(Operating System Concepts) - Silberschatz et al. (恐龙书):</strong> 另一本经典教材。</li>
+                                <li><strong class="font-bold">《深入理解计算机系统》(CSAPP) - Bryant & O'Hallaron:</strong> 从程序员视角讲解底层知识，强烈推荐。</li>
+                                <li><strong class="font-bold">《FreeBSD操作系统设计与实现》:</strong> 了解 BSD 系统的好资源。</li>
+                                <li><strong class="font-bold">教学操作系统项目:</strong> 如《用 Rust 编写操作系统》教程，或研究 xv6 (MIT 教学 OS) 的代码和实验。</li>
+                            </ul>
+                        </div>
+
+                        <h4 class="font-sans-cn text-lg font-semibold text-moon-white mt-6 mb-3"><i class="fas fa-lightbulb mr-1 text-indigo-highlight"></i>拓展与点评</h4>
+                        <p>理论学习结合实践非常重要。尝试阅读和修改小型教学 OS (如 xv6) 的代码，或在 Linux 上进行系统编程练习 (使用 <code class="custom-inline-code">fork</code>, <code class="custom-inline-code">exec</code>, <code class="custom-inline-code">pipe</code>, <code class="custom-inline-code">mmap</code> 等)。理解底层概念有助于编写更高效、健壮的程序，并提升调试和性能分析能力。</p>
+                    </div>
+                </div>
+            </div>
+            <!-- Q2: Priority Tools -->
+            <div class="bg-slate-800 shadow-2xl rounded-xl overflow-hidden">
+                <div class="p-6 md:p-8">
+                    <h2 class="font-sans-cn text-2xl font-bold text-indigo-highlight mb-4">
+                        <i class="far fa-question-circle mr-2"></i>问：有哪些工具是你认为应该优先学习的？
+                    </h2>
+                    <div class="space-y-4 text-slate-300 text-base leading-relaxed border-t border-slate-700 pt-4">
+                        <p><strong class="font-semibold text-moon-white">答：</strong></p>
+                        <p>以下是一些我们认为回报率很高的主题和工具：</p>
+                        <ol class="list-decimal list-inside space-y-2 text-slate-300 text-sm pl-4 mt-2">
+                            <li><strong class="font-bold">更高效地使用键盘：</strong> 学习快捷键、自定义环境、使用命令行工具，减少对鼠标的依赖。</li>
+                            <li><strong class="font-bold">熟练掌握你的代码编辑器：</strong> 深入学习 Vim, Emacs, VS Code 或你选择的编辑器的功能、快捷键和插件。</li>
+                            <li><strong class="font-bold">自动化重复性任务：</strong> 学习编写脚本、使用别名和任务运行器来简化工作流程。</li>
+                            <li><strong class="font-bold">掌握版本控制 (Git) 与协作平台 (GitHub 等)。</strong></li>
+                        </ol>
+
+                        <h4 class="font-sans-cn text-lg font-semibold text-moon-white mt-6 mb-3"><i class="fas fa-lightbulb mr-1 text-indigo-highlight"></i>拓展与点评</h4>
+                        <ul class="list-disc list-inside space-y-1 text-slate-300 text-sm pl-4">
+                            <li><strong class="font-bold">学会有效提问和搜索：</strong> 清晰描述问题，善用搜索引擎、Stack Overflow、文档。</li>
+                            <li><strong class="font-bold">掌握基本命令行操作 (Shell)。</strong></li>
+                            <li><strong class="font-bold">学会阅读和理解文档。</strong></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <!-- Q3: Python vs Bash vs Others -->
+            <div class="bg-slate-800 shadow-2xl rounded-xl overflow-hidden">
+                <div class="p-6 md:p-8">
+                    <h2 class="font-sans-cn text-2xl font-bold text-indigo-highlight mb-4">
+                        <i class="far fa-question-circle mr-2"></i>问：什么时候我应该用 Python，什么时候用 Bash 脚本，什么时候用其他语言？
+                    </h2>
+                    <div class="space-y-4 text-slate-300 text-base leading-relaxed border-t border-slate-700 pt-4">
+                        <p><strong class="font-semibold text-moon-white">答：</strong></p>
+                        <p>总的来说，Bash 脚本适合简短、一次性的任务，主要是串联执行一系列命令。但对于更复杂的逻辑，Bash 的一些特性（如处理带空格的文件名、缺乏良好的库管理和代码复用机制、依赖魔法变量等）会使其变得困难和易错。</p>
+                        <p>对于需要更复杂逻辑、数据结构、错误处理或利用现有库的脚本，使用更成熟的脚本语言如 Python 或 Ruby 通常是更好的选择。</p>
+
+                        <h4 class="font-sans-cn text-lg font-semibold text-moon-white mt-6 mb-3"><i class="fas fa-lightbulb mr-1 text-indigo-highlight"></i>拓展与点评：选择合适的工具</h4>
+                        <div class="mt-4 bg-slate-700 p-4 rounded-xl shadow-lg">
+                             <ul class="list-disc list-inside space-y-2 text-slate-300 text-sm pl-4">
+                                <li><strong class="font-bold">Bash:</strong> 优点在于执行外部命令极其方便，是系统管理、文件操作、简单自动化任务的"胶水语言"。使用 <code class="custom-inline-code">shellcheck</code> 可以提高脚本健壮性。</li>
+                                <li><strong class="font-bold">Python:</strong> 语法清晰，生态系统庞大 (标准库 + PyPI)，适合数据处理、网络、Web、科学计算及复杂脚本。跨平台性好。</li>
+                                <li><strong class="font-bold">Perl:</strong> 曾经的文本处理王者，正则表达式强大。</li>
+                                <li><strong class="font-bold">Go/Rust:</strong> 适合需要编译成单个二进制文件、追求高性能或进行系统级编程的场景。</li>
+                                <li><strong class="font-bold">原则:</strong> 根据任务复杂度、性能要求、可维护性、团队熟悉度和生态系统支持来选择。</li>
+                             </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Q4: source vs ./ -->
+            <div class="bg-slate-800 shadow-2xl rounded-xl overflow-hidden">
+                <div class="p-6 md:p-8">
+                    <h2 class="font-sans-cn text-2xl font-bold text-indigo-highlight mb-4">
+                        <i class="far fa-question-circle mr-2"></i>问：<code class="custom-inline-code">source script.sh</code> 和 <code class="custom-inline-code">./script.sh</code> 有什么区别？
+                    </h2>
+                    <div class="space-y-4 text-slate-300 text-base leading-relaxed border-t border-slate-700 pt-4">
+                        <p><strong class="font-semibold text-moon-white">答：</strong></p>
+                        <p>主要区别在于执行脚本命令的 <strong class="font-bold">Shell 会话环境</strong>不同：</p>
+                         <ul class="list-disc list-inside space-y-2 text-slate-300 text-sm pl-4 mt-2">
+                            <li><code class="custom-inline-code">source script.sh</code> (或简写 <code class="custom-inline-code">. script.sh</code>): 命令在<strong class="font-bold">当前</strong> Shell 会话中执行。脚本对环境所做的任何更改（如设置变量、定义函数、更改目录）在脚本执行完毕后<strong class="font-bold">会保留</strong>在当前会话中。</li>
+                            <li><code class="custom-inline-code">./script.sh</code> (需要脚本有执行权限 <code class="custom-inline-code">chmod +x script.sh</code>): 当前 Shell 会启动一个<strong class="font-bold">新的子 Shell 实例</strong>来执行脚本中的命令。子 Shell 对环境所做的更改（如 <code class="custom-inline-code">cd</code> 或导出变量）在子 Shell 退出后<strong class="font-bold">不会影响</strong>父 Shell。</li>
+                        </ul>
+                        <h4 class="font-sans-cn text-lg font-semibold text-moon-white mt-6 mb-3"><i class="fas fa-lightbulb mr-1 text-indigo-highlight"></i>拓展与点评</h4>
+                        <p><code class="custom-inline-code">source</code> 常用于加载配置文件 (<code class="custom-inline-code">.bashrc</code>)、设置环境变量、或定义希望在当前 Shell 中直接使用的函数和别名。而 <code class="custom-inline-code">./script.sh</code> 则更像是运行一个独立的程序。</p>
+                    </div>
+                </div>
+            </div>
+            <!-- Q5: Where are things stored -->
+            <div class="bg-slate-800 shadow-2xl rounded-xl overflow-hidden">
+                <div class="p-6 md:p-8">
+                    <h2 class="font-sans-cn text-2xl font-bold text-indigo-highlight mb-4">
+                        <i class="far fa-question-circle mr-2"></i>问：各种包和工具都存储在哪些地方？它们是如何被引用的？<code class="custom-inline-code">/bin</code> 或 <code class="custom-inline-code">/lib</code> 到底是什么？
+                    </h2>
+                    <div class="space-y-4 text-slate-300 text-base leading-relaxed border-t border-slate-700 pt-4">
+                        <p><strong class="font-semibold text-moon-white">答：</strong></p>
+                        <p>当你在终端执行一个命令（如 <code class="custom-inline-code">ls</code>）时，Shell 会在 <code class="custom-inline-code">PATH</code> 环境变量所列出的目录中查找对应的可执行文件。你可以使用 <code class="custom-inline-code">which program_name</code> 或 <code class="custom-inline-code">type program_name</code> 来查看 Shell 在哪里找到了某个程序。</p>
+                        <p>Linux 和类 Unix 系统遵循<strong class="font-bold">文件系统层次结构标准 (Filesystem Hierarchy Standard - FHS)</strong>，它定义了文件和目录的组织约定。了解常见的目录有助于理解系统结构：</p>
+                        
+                         <div class="mt-4 bg-slate-700 p-4 rounded-xl shadow-lg">
+                             <h4 class="font-sans-cn text-lg font-semibold text-moon-white mb-3 flex items-center"><i class="fas fa-folder-open mr-2 text-indigo-highlight"></i>常见目录及其用途:</h4>
+                             <ul class="list-disc list-inside space-y-1 text-slate-300 text-xs pl-4 columns-2 gap-x-8">
+                                <li><code class="custom-inline-code">/bin</code>: 基本命令二进制文件 (所有用户)</li>
+                                <li><code class="custom-inline-code">/sbin</code>: 基本系统二进制文件 (管理员)</li>
+                                <li><code class="custom-inline-code">/dev</code>: 设备文件</li>
+                                <li><code class="custom-inline-code">/etc</code>: 系统配置文件</li>
+                                <li><code class="custom-inline-code">/home</code>: 用户家目录</li>
+                                <li><code class="custom-inline-code">/lib</code>: 基本共享库</li>
+                                <li><code class="custom-inline-code">/opt</code>: 可选应用软件包</li>
+                                <li><code class="custom-inline-code">/sys</code>: 系统信息 (内核虚拟文件系统)</li>
+                                <li><code class="custom-inline-code">/tmp</code>: 临时文件</li>
+                                <li><code class="custom-inline-code">/usr</code>: 用户安装的程序和数据 (只读)
+                                    <ul class="list-disc list-inside pl-5">
+                                        <li><code class="custom-inline-code">/usr/bin</code>: 非必要用户命令</li>
+                                        <li><code class="custom-inline-code">/usr/sbin</code>: 非必要系统命令</li>
+                                        <li><code class="custom-inline-code">/usr/local/</code>: 本地管理员安装</li>
+                                        <li><code class="custom-inline-code">/usr/lib</code>: 用户程序库</li>
+                                        <li><code class="custom-inline-code">/usr/include</code>: 头文件</li>
+                                        <li><code class="custom-inline-code">/usr/share</code>: 共享数据</li>
+                                    </ul>
+                                </li>
+                                <li><code class="custom-inline-code">/var</code>: 可变文件 (日志, 缓存等)</li>
+                            </ul>
+                        </div>
+                        <h4 class="font-sans-cn text-lg font-semibold text-moon-white mt-6 mb-3"><i class="fas fa-lightbulb mr-1 text-indigo-highlight"></i>拓展与点评</h4>
+                         <ul class="list-disc list-inside space-y-1 text-slate-300 text-sm pl-4">
+                            <li>FHS 是约定，具体实现可能略有不同。</li>
+                            <li>使用 <code class="custom-inline-code">ldd /path/to/executable</code> 查看程序依赖的动态库。</li>
+                            <li>用户个人安装的软件有时放在 <code class="custom-inline-code">~/.local</code> 目录。</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <!-- Q6: System vs Language Package Manager -->
+            <div class="bg-slate-800 shadow-2xl rounded-xl overflow-hidden">
+                <div class="p-6 md:p-8">
+                    <h2 class="font-sans-cn text-2xl font-bold text-indigo-highlight mb-4">
+                        <i class="far fa-question-circle mr-2"></i>问：我应该用 <code class="custom-inline-code">apt install python-whatever</code> 还是 <code class="custom-inline-code">pip install whatever</code>？
+                    </h2>
+                    <div class="space-y-4 text-slate-300 text-base leading-relaxed border-t border-slate-700 pt-4">
+                        <p><strong class="font-semibold text-moon-white">答：</strong></p>
+                        <p>这是一个常见的问题，涉及到使用系统包管理器（如 <code class="custom-inline-code">apt</code>, <code class="custom-inline-code">yum</code>, <code class="custom-inline-code">brew</code>）还是特定语言的包管理器（如 <code class="custom-inline-code">pip</code>, <code class="custom-inline-code">npm</code>, <code class="custom-inline-code">gem</code>）来安装软件依赖。</p>
+                        <p>选择时需要考虑几个因素：</p>
+                         <div class="mt-4 bg-slate-700 p-4 rounded-xl shadow-lg">
+                             <ul class="list-disc list-inside space-y-2 text-slate-300 text-sm pl-4">
+                                <li><strong class="font-bold">可用性与新旧程度:</strong> 系统包管理器可能没有最新的包，或者版本较旧。语言包管理器通常提供最新版本。</li>
+                                <li><strong class="font-bold">安装范围与隔离:</strong> 系统包管理器通常进行系统级安装，可能导致不同项目间的版本冲突。语言包管理器通常结合<strong class="font-bold">虚拟环境</strong> (如 Python 的 <code class="custom-inline-code">venv</code>) 使用，为每个项目提供隔离的依赖环境。</li>
+                                <li><strong class="font-bold">编译需求:</strong> 系统包管理器可能提供预编译的二进制包，而语言包管理器有时需要从源码编译。</li>
+                                <li><strong class="font-bold">避免混用:</strong> 尽量为同一个项目选择一种管理方式，避免混用导致冲突。</li>
+                             </ul>
+                         </div>
+
+                        <h4 class="font-sans-cn text-lg font-semibold text-moon-white mt-6 mb-3"><i class="fas fa-lightbulb mr-1 text-indigo-highlight"></i>我们的建议</h4>
+                         <ul class="list-disc list-inside space-y-1 text-slate-300 text-sm pl-4">
+                             <li><strong class="font-bold">尽可能使用特定语言的包管理器</strong>（如 pip, npm, gem, cargo）。</li>
+                             <li><strong class="font-bold">始终在隔离的环境中操作</strong>（如 Python venv/conda, Node nvm, Ruby rbenv/RVM）。</li>
+                            <li>对于<strong class="font-bold">基础工具和系统级依赖</strong>（编译器、数据库服务、底层 C 库等），使用<strong class="font-bold">系统包管理器</strong>通常更合适。</li>
+                         </ul>
+                        <p class="text-xs text-slate-400 mt-2">Python 现代包管理工具如 <code class="custom-inline-code">Poetry</code>, <code class="custom-inline-code">PDM</code>, <code class="custom-inline-code">Hatch</code> 能更好地管理依赖和虚拟环境。</p>
+                    </div>
+                </div>
+            </div>
+            <!-- Q7: Simple Profiling Tools -->
+            <div class="bg-slate-800 shadow-2xl rounded-xl overflow-hidden">
+                <div class="p-6 md:p-8">
+                    <h2 class="font-sans-cn text-2xl font-bold text-indigo-highlight mb-4">
+                        <i class="far fa-question-circle mr-2"></i>问：有哪些最简单且最好用的分析工具来提高我的代码性能？
+                    </h2>
+                    <div class="space-y-4 text-slate-300 text-base leading-relaxed border-t border-slate-700 pt-4">
+                        <p><strong class="font-semibold text-moon-white">答：</strong></p>
+                        <ol class="list-decimal list-inside space-y-3 text-slate-300 text-sm pl-4 mt-2">
+                            <li>
+                                <strong class="font-bold">打印时间戳 (Print Timing):</strong> 最简单的方法。在代码不同部分记录时间戳并计算差值，通过二分法逐步缩小范围，定位耗时代码段。
+                            </li>
+                            <li>
+                                <strong class="font-bold">使用专门的性能分析器 (Profilers):</strong>
+                                <ul class="list-disc list-inside space-y-2 text-slate-300 text-xs pl-5 mt-1">
+                                     <li><strong class="font-bold">Valgrind (Callgrind):</strong> (C/C++) 测量各部分耗时和调用栈，生成带注释的代码。但会显著降低程序速度且不支持线程。
+                                     <li><strong class="font-bold"><code class="custom-inline-code">perf</code> (Linux):</strong> 强大的系统级采样分析器。</li>
+                                     <li><strong class="font-bold">语言特定分析器 + 火焰图:</strong> 大多数语言提供采样分析器，其输出适合用火焰图 (Flamegraphs) 可视化，直观展示耗时最多的调用路径。</li>
+                                     <li><strong class="font-bold">Web 开发:</strong> 浏览器开发者工具内置强大的性能分析器。</li>
+                                     <li><strong class="font-bold">Python:</strong> <code class="custom-inline-code">cProfile</code> (确定性), <code class="custom-inline-code">line_profiler</code> (行级), <code class="custom-inline-code">pyinstrument</code> (采样+火焰图), <code class="custom-inline-code">memory_profiler</code> (内存), <code class="custom-inline-code">scalene</code> (CPU/内存/GPU)。</li>
+                                      <li><strong class="font-bold">Java:</strong> VisualVM, JProfiler, YourKit。</li>
+                                      <li><strong class="font-bold">Go:</strong> <code class="custom-inline-code">pprof</code>。</li>
+                                      <li><strong class="font-bold">Node.js:</strong> <code class="custom-inline-code">node --prof</code>, DevTools。</li>
+                                </ul>
+                            </li>
+                             <li>
+                                <strong class="font-bold">检查 I/O 瓶颈:</strong> 分析代码是否因等待磁盘或网络而变慢。</li>
+                             <li>
+                                <strong class="font-bold">系统调用分析:</strong> 使用 <code class="custom-inline-code">strace</code> 或更高级的 eBPF 工具 (如 <code class="custom-inline-code">bpftrace</code>) 分析程序在系统调用上花费的时间。</li>
+                        </ol>
+                        <h4 class="font-sans-cn text-lg font-semibold text-moon-white mt-6 mb-3"><i class="fas fa-lightbulb mr-1 text-indigo-highlight"></i>拓展与点评</h4>
+                         <ul class="list-disc list-inside space-y-1 text-slate-300 text-sm pl-4">
+                            <li>牢记"不要过早优化"。</li>
+                            <li>明确分析目标：CPU、内存还是 I/O？</li>
+                            <li>对于线上服务，使用 APM 工具进行持续监控。</li>
+                         </ul>
+                    </div>
+                </div>
+            </div>
+            <!-- Q8: Browser Extensions -->
+            <div class="bg-slate-800 shadow-2xl rounded-xl overflow-hidden">
+                <div class="p-6 md:p-8">
+                    <h2 class="font-sans-cn text-2xl font-bold text-indigo-highlight mb-4">
+                        <i class="far fa-question-circle mr-2"></i>问：你们使用哪些浏览器插件？
+                    </h2>
+                    <div class="space-y-4 text-slate-300 text-base leading-relaxed border-t border-slate-700 pt-4">
+                        <p><strong class="font-semibold text-moon-white">答：</strong></p>
+                        <p>以下是一些我们（讲师们）常用且推荐的浏览器扩展，主要关注安全、隐私和效率（请注意部分推荐基于讲座原文时间，现状可能变化）：</p>
+                         <div class="mt-4 bg-slate-700 p-4 rounded-xl shadow-lg">
+                             <ul class="list-disc list-inside space-y-3 text-slate-300 text-sm pl-4">
+                                <li><strong class="font-bold">uBlock Origin:</strong> 强大的广告和追踪拦截器。建议至少使用默认模式，高级用户可尝试更严格的模式。</li>
+                                <li><strong class="font-bold">Stylus:</strong> (避免使用 Stylish) 允许加载自定义 CSS 来修改网站外观，提升可读性或实现暗黑模式等。</li>
+                                <li><strong class="font-bold">全页截图工具:</strong> (Firefox 内置, Chrome 扩展如 GoFullPage) 截取整个网页。</li>
+                                <li><strong class="font-bold">Multi Account Containers (Firefox):</strong> 隔离不同网站的 Cookie 和登录状态。</li>
+                                <li><strong class="font-bold">密码管理器集成:</strong> (如 Bitwarden, 1Password) 自动填充密码并防范钓鱼攻击。</li>
+                                <li><strong class="font-bold">Vimium / cVim / Surfingkeys:</strong> 类 Vim 键盘导航。</li>
+                                <li><strong class="font-bold">SingleFile:</strong> 将网页保存为单个 HTML 文件。</li>
+                             </ul>
+                         </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Q9: More Data Wrangling Tools -->
+            <div class="bg-slate-800 shadow-2xl rounded-xl overflow-hidden">
+                <div class="p-6 md:p-8">
+                    <h2 class="font-sans-cn text-2xl font-bold text-indigo-highlight mb-4">
+                        <i class="far fa-question-circle mr-2"></i>问：还有其他有用的数据处理工具吗？
+                    </h2>
+                    <div class="space-y-4 text-slate-300 text-base leading-relaxed border-t border-slate-700 pt-4">
+                        <p><strong class="font-semibold text-moon-white">答：</strong></p>
+                        <p>除了在<a href="lecture-4.html" class="text-indigo-highlight hover:underline">数据整理讲座</a>中介绍的工具外，还有一些值得了解的：</p>
+                         <div class="mt-4 bg-slate-700 p-4 rounded-xl shadow-lg">
+                             <ul class="list-disc list-inside space-y-2 text-slate-300 text-sm pl-4">
+                                <li><code class="custom-inline-code">jq</code>: 强大的命令行 JSON 处理工具，用于过滤、转换、查询 JSON 数据。</li>
+                                <li><code class="custom-inline-code">pup</code>: 类似 <code class="custom-inline-code">jq</code>，但用于 HTML 数据，支持 CSS 选择器。</li>
+                                <li><strong class="font-bold">Perl:</strong> 曾经的文本处理利器，正则表达式功能强大。</li>
+                                <li><code class="custom-inline-code">column -t</code>: 将空格分隔的文本转换为对齐的列。</li>
+                                <li><strong class="font-bold">Vim 宏:</strong> 对于复杂的多行文本转换，录制和回放 Vim 宏非常有效。</li>
+                                <li><strong class="font-bold">Python (Pandas):</strong> 用于处理表格数据 (如 CSV) 的优秀库，易于进行分组、连接、过滤、绘图等操作。</li>
+                                <li><strong class="font-bold">R 语言 (<code class="custom-inline-code">ggplot2</code>):</strong> 强大的统计计算和绘图功能。</li>
+                                <li><strong class="font-bold">Miller (<code class="custom-inline-code">mlr</code>):</strong> 类似 awk/sed/cut/sort，但专为结构化数据 (CSV, JSON等) 设计。</li>
+                             </ul>
+                         </div>
+                          <h4 class="font-sans-cn text-lg font-semibold text-moon-white mt-6 mb-3"><i class="fas fa-lightbulb mr-1 text-indigo-highlight"></i>拓展与点评</h4>
+                          <p>对于更大规模的数据处理，可以考虑使用分布式计算框架如 Apache Spark, Apache Flink, Dask。对于数据库中的数据，SQL 本身就是强大的数据处理语言。</p>
+                    </div>
+                </div>
+            </div>
+            <!-- Q10: Docker vs VM -->
+            <div class="bg-slate-800 shadow-2xl rounded-xl overflow-hidden">
+                <div class="p-6 md:p-8">
+                    <h2 class="font-sans-cn text-2xl font-bold text-indigo-highlight mb-4">
+                        <i class="far fa-question-circle mr-2"></i>问：Docker 和虚拟机 (VM) 有什么区别？
+                    </h2>
+                    <div class="space-y-4 text-slate-300 text-base leading-relaxed border-t border-slate-700 pt-4">
+                        <p><strong class="font-semibold text-moon-white">答：</strong></p>
+                        <p>Docker 基于<strong class="font-bold">容器 (containers)</strong> 技术。容器和虚拟机的主要区别在于虚拟化的层级和资源开销：</p>
+                         <div class="mt-4 grid grid-cols-1 md:grid-cols-2 gap-6">
+                             <div class="bg-slate-700 p-4 rounded-xl shadow-lg">
+                                 <h4 class="font-semibold text-moon-white mb-2"><i class="fas fa-desktop mr-1 text-indigo-highlight"></i>虚拟机 (VM)</h4>
+                                 <ul class="list-disc list-inside space-y-1 text-slate-300 text-xs pl-4">
+                                     <li>在硬件层之上模拟完整计算机。</li>
+                                     <li>每个 VM 运行<strong class="font-bold">独立的操作系统内核</strong>。</li>
+                                     <li>隔离性强。</li>
+                                     <li>资源开销大，启动慢。</li>
+                                     <li>可以运行与宿主机不同的操作系统。</li>
+                                 </ul>
+                             </div>
+                             <div class="bg-slate-700 p-4 rounded-xl shadow-lg">
+                                 <h4 class="font-semibold text-moon-white mb-2"><i class="fab fa-docker mr-1 text-indigo-highlight"></i>容器 (Container)</h4>
+                                  <ul class="list-disc list-inside space-y-1 text-slate-300 text-xs pl-4">
+                                     <li>在操作系统层面虚拟化。</li>
+                                     <li>所有容器<strong class="font-bold">共享宿主机内核</strong>。</li>
+                                     <li>隔离性相对较弱（共享内核）。</li>
+                                     <li>资源开销小，启动快，密度高。</li>
+                                     <li>通常运行与宿主机内核兼容的 OS。</li>
+                                 </ul>
+                             </div>
+                         </div>
+                         <p class="mt-4">Docker 特别适合用于<strong class="font-bold">软件打包、分发和部署</strong>，实现环境一致性。</p>
+                         <p class="text-xs text-slate-400 mt-2">注意：Docker 容器默认不持久化存储，需要使用卷 (volumes) 或绑定挂载 (bind mounts)。</p>
+                    </div>
+                </div>
+            </div>
+            <!-- Q11: OS Pros & Cons -->
+            <div class="bg-slate-800 shadow-2xl rounded-xl overflow-hidden">
+                <div class="p-6 md:p-8">
+                    <h2 class="font-sans-cn text-2xl font-bold text-indigo-highlight mb-4">
+                        <i class="far fa-question-circle mr-2"></i>问：各个操作系统的优缺点是什么？我们如何选择它们（例如选择 Linux 发行版）？
+                    </h2>
+                    <div class="space-y-4 text-slate-300 text-base leading-relaxed border-t border-slate-700 pt-4">
+                        <p><strong class="font-semibold text-moon-white">答：</strong></p>
+                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                            <!-- Linux -->
+                            <div class="bg-slate-700 p-4 rounded-xl shadow-lg">
+                                <h4 class="font-semibold text-emerald-300 mb-2"><i class="fab fa-linux mr-1"></i>Linux 发行版</h4>
+                                <ul class="list-disc list-inside space-y-1 text-slate-300 text-xs pl-4">
+                                    <li>优点：开源免费、高度可定制、社区支持强大、适合开发和服务器。</li>
+                                    <li>区别：主要在于包管理、发布模式、桌面环境和预装软件。
+                                        <ul class="list-disc list-inside pl-5">
+                                            <li>滚动更新 (Arch, Tumbleweed): 软件新，可能不稳定。</li>
+                                            <li>稳定版/LTS (Debian, Ubuntu LTS): 稳定，软件可能稍旧。</li>
+                                        </ul>
+                                    </li>
+                                    <li>推荐：Ubuntu/Mint (新手/桌面), Debian/Ubuntu LTS (稳定/服务器), Arch (滚动/定制)。</li>
+                                </ul>
+                            </div>
+                            <!-- macOS -->
+                             <div class="bg-slate-700 p-4 rounded-xl shadow-lg">
+                                <h4 class="font-semibold text-sky-300 mb-2"><i class="fab fa-apple mr-1"></i>macOS</h4>
+                                <ul class="list-disc list-inside space-y-1 text-slate-300 text-xs pl-4">
+                                    <li>优点：精美的 UI、优秀的生态系统集成、基于 UNIX (BSD) 的稳定底层。</li>
+                                    <li>缺点：硬件选择受限且昂贵，部分系统命令/行为与 Linux 不同。</li>
+                                </ul>
+                            </div>
+                            <!-- Windows -->
+                             <div class="bg-slate-700 p-4 rounded-xl shadow-lg">
+                                <h4 class="font-semibold text-blue-300 mb-2"><i class="fab fa-windows mr-1"></i>Windows</h4>
+                                <ul class="list-disc list-inside space-y-1 text-slate-300 text-xs pl-4">
+                                     <li>优点：广泛的软件和硬件兼容性，游戏支持好。</li>
+                                     <li>缺点：传统上对开发者命令行环境支持较弱（但 WSL2 极大改善了这一点）。</li>
+                                     <li>WSL2: 允许在 Windows 上近乎原生运行 Linux 环境和工具，是开发者的福音。</li>
+                                </ul>
+                            </div>
+                        </div>
+                         <h4 class="font-sans-cn text-lg font-semibold text-moon-white mt-6 mb-3"><i class="fas fa-lightbulb mr-1 text-indigo-highlight"></i>双系统启动</h4>
+                         <p class="text-sm">可以在一台机器上安装多个操作系统。配置可能有些复杂，特别是涉及磁盘加密时。需要仔细规划分区和引导加载程序。</p>
+                    </div>
+                </div>
+            </div>
+            <!-- Q12: Vim vs Emacs -->
+            <div class="bg-slate-800 shadow-2xl rounded-xl overflow-hidden">
+                <div class="p-6 md:p-8">
+                    <h2 class="font-sans-cn text-2xl font-bold text-indigo-highlight mb-4">
+                        <i class="far fa-question-circle mr-2"></i>问：Vim vs Emacs？
+                    </h2>
+                    <div class="space-y-4 text-slate-300 text-base leading-relaxed border-t border-slate-700 pt-4">
+                        <p><strong class="font-semibold text-moon-white">答：</strong></p>
+                        <p>这是一个历史悠久的"圣战"话题！两者都是极其强大且高度可定制的文本编辑器，拥有陡峭的学习曲线，但熟练后都能带来极高的生产力。</p>
+                         <div class="mt-4 grid grid-cols-1 md:grid-cols-2 gap-6">
+                             <div class="bg-slate-700 p-4 rounded-xl shadow-lg">
+                                 <h4 class="font-semibold text-moon-white mb-2"><i class="fas fa-keyboard mr-1 text-indigo-highlight"></i>Vim (及 Neovim)</h4>
+                                 <ul class="list-disc list-inside space-y-1 text-slate-300 text-xs pl-4">
+                                     <li>核心是<strong class="font-bold">模态编辑</strong> (Normal, Insert, Visual 等模式)。</li>
+                                     <li>通常被认为启动更快、更轻量。</li>
+                                     <li>Neovim 是 Vim 的现代化分支，改进了架构，原生支持 Lua 配置和 LSP。</li>
+                                     <li>插件生态丰富 (vim-plug, packer.nvim 等)。</li>
+                                 </ul>
+                             </div>
+                             <div class="bg-slate-700 p-4 rounded-xl shadow-lg">
+                                 <h4 class="font-semibold text-moon-white mb-2"><i class="fas fa-atom mr-1 text-indigo-highlight"></i>Emacs</h4>
+                                  <ul class="list-disc list-inside space-y-1 text-slate-300 text-xs pl-4">
+                                     <li>更像一个<strong class="font-bold">Lisp 环境</strong>，编辑器是其核心应用之一。</li>
+                                     <li>极其强大和可扩展，几乎所有功能都可以用 Emacs Lisp 定制。</li>
+                                     <li>默认非模态，但可通过 Evil mode (或 Spacemacs/Doom Emacs 等发行版) 获得 Vim 风格的模态编辑。</li>
+                                     <li>不仅仅是编辑器，还可以用来管理邮件、日历、浏览网页等。</li>
+                                 </ul>
+                             </div>
+                         </div>
+                          <h4 class="font-sans-cn text-lg font-semibold text-moon-white mt-6 mb-3"><i class="fas fa-lightbulb mr-1 text-indigo-highlight"></i>选择建议</h4>
+                          <p class="text-sm">最好的方式是都尝试一下，看看哪个更符合你的思维方式和需求。也可以考虑 VS Code + Vim 插件的组合。最终选择哪个并不重要，重要的是<strong class="font-bold">深入学习并掌握你选择的工具</strong>。</p>
+                    </div>
+                </div>
+            </div>
+            <!-- Q13: ML Tips -->
+            <div class="bg-slate-800 shadow-2xl rounded-xl overflow-hidden">
+                <div class="p-6 md:p-8">
+                    <h2 class="font-sans-cn text-2xl font-bold text-indigo-highlight mb-4">
+                        <i class="far fa-question-circle mr-2"></i>问：关于机器学习应用有什么技巧或窍门吗？
+                    </h2>
+                    <div class="space-y-4 text-slate-300 text-base leading-relaxed border-t border-slate-700 pt-4">
+                        <p><strong class="font-semibold text-moon-white">答：</strong></p>
+                        <p>本课程教授的许多工具和概念对机器学习工作流程同样适用：</p>
+                        <div class="mt-4 bg-slate-700 p-4 rounded-xl shadow-lg">
+                            <ul class="list-disc list-inside space-y-2 text-slate-300 text-sm pl-4">
+                                <li><strong class="font-bold">利用 Shell 工具:</strong> 快速搜索、筛选和汇总大量实验结果文件。</li>
+                                <li><strong class="font-bold">结构化日志:</strong> 使用 JSON 等格式记录实验参数（超参数、数据集信息）和结果指标，便于后续使用 <code class="custom-inline-code">jq</code> 等工具进行分析。</li>
+                                <li><strong class="font-bold">自动化:</strong> 编写脚本自动化训练过程、超参数搜索等重复性任务。</li>
+                                <li><strong class="font-bold">版本控制 (Git):</strong> 管理代码和配置文件。</li>
+                                <li><strong class="font-bold">环境管理:</strong> 使用 Conda, Docker 或虚拟环境确保实验环境的可复现性。</li>
+                            </ul>
+                        </div>
+                        <h4 class="font-sans-cn text-lg font-semibold text-moon-white mt-6 mb-3"><i class="fas fa-lightbulb mr-1 text-indigo-highlight"></i>ML 特有工具与实践</h4>
+                         <div class="mt-4 bg-slate-700 p-4 rounded-xl shadow-lg">
+                             <ul class="list-disc list-inside space-y-1 text-slate-300 text-sm pl-4">
+                                <li><strong class="font-bold">实验追踪:</strong> 使用 MLflow, Weights & Biases (W&B), TensorBoard 等工具记录、比较和可视化实验。</li>
+                                <li><strong class="font-bold">数据与模型版本控制:</strong> 使用 DVC, Git LFS 管理大型数据集和模型文件。</li>
+                                <li><strong class="font-bold">配置管理:</strong> 使用 Hydra, Gin-config 等管理复杂的实验配置。</li>
+                                <li><strong class="font-bold">Notebooks:</strong> Jupyter Notebook/Lab 常用于探索性分析和原型设计，但生产训练建议使用脚本。</li>
+                             </ul>
+                         </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Q14: More Vim Tips -->
+            <div class="bg-slate-800 shadow-2xl rounded-xl overflow-hidden">
+                <div class="p-6 md:p-8">
+                    <h2 class="font-sans-cn text-2xl font-bold text-indigo-highlight mb-4">
+                        <i class="far fa-question-circle mr-2"></i>问：还有更多 Vim 技巧吗？
+                    </h2>
+                    <div class="space-y-4 text-slate-300 text-base leading-relaxed border-t border-slate-700 pt-4">
+                        <p><strong class="font-semibold text-moon-white">答：</strong></p>
+                        <p>当然！Vim 的学习永无止境。以下是一些额外的技巧：</p>
+                         <div class="mt-4 bg-slate-700 p-4 rounded-xl shadow-lg">
+                             <ul class="list-disc list-inside space-y-2 text-slate-300 text-sm pl-4">
+                                <li><strong class="font-bold">插件 (Plugins):</strong> 探索 Vim/Neovim 插件生态 (VimAwesome, dotfiles)，它们能极大扩展功能。</li>
+                                <li><strong class="font-bold">标记 (Marks):</strong> 使用 <code class="custom-inline-code">m&lt;a-z&gt;</code> 设置标记，用 <code class="custom-inline-code">'&lt;a-z&gt;</code> (跳转到行) 或 <code class="custom-inline-code">`&lt;a-z&gt;</code> (跳转到精确位置) 跳转回来。</li>
+                                <li><strong class="font-bold">跳转列表 (Jump List):</strong> 使用 <kbd>Ctrl</kbd>+<kbd>O</kbd> (向后) 和 <kbd>Ctrl</kbd>+<kbd>I</kbd> (向前) 在你最近访问过的位置间跳转。</li>
+                                <li><strong class="font-bold">撤销树 (Undo Tree):</strong> Vim 保存了完整的修改历史树。即使撤销后做了新修改，仍可回到之前的状态。使用插件 (如 <code class="custom-inline-code">gundo.vim</code>, <code class="custom-inline-code">undotree</code>) 可视化。</li>
+                                <li><strong class="font-bold">按时间撤销:</strong> 使用 <code class="custom-inline-code">:earlier &lt;time&gt;</code> 和 <code class="custom-inline-code">:later &lt;time&gt;</code> (如 <code class="custom-inline-code">:earlier 10m</code>) 按时间导航历史。</li>
+                                <li><strong class="font-bold">持久撤销 (Persistent Undo):</strong> 在 vimrc 中配置 <code class="custom-inline-code">undofile</code> 和 <code class="custom-inline-code">undodir</code>，让撤销历史在关闭 Vim 后依然保留。</li>
+                                <li><strong class="font-bold">引导键 (Leader Key):</strong> 通常映射为 <kbd>Space</kbd> 或 <kbd>,</kbd>，用于用户自定义快捷键和插件命令。</li>
+                                <li><strong class="font-bold">高级文本对象:</strong> 将操作与搜索结合，如 <code class="custom-inline-code">d/pattern</code> 删除到下一个匹配，<code class="custom-inline-code">cgn</code> 更改下一个搜索匹配。</li>
+                                <li><strong class="font-bold">模糊查找 (Fuzzy Finding):</strong> 使用插件如 <code class="custom-inline-code">CtrlP</code> 或 <code class="custom-inline-code">fzf.vim</code> 快速查找文件、缓冲区等。</li>
+                                 <li><strong class="font-bold">文件树:</strong> 使用插件如 <code class="custom-inline-code">NERDTree</code>, <code class="custom-inline-code">nvim-tree.lua</code> 等浏览项目文件。</li>
+                                 <li><strong class="font-bold">LSP (Language Server Protocol):</strong> 通过插件 (<code class="custom-inline-code">coc.nvim</code>) 或 Neovim 内置 LSP 获取代码补全、跳转、诊断等 IDE 功能。</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Q15: 2FA -->
+            <div class="bg-slate-800 shadow-2xl rounded-xl overflow-hidden">
+                <div class="p-6 md:p-8">
+                    <h2 class="font-sans-cn text-2xl font-bold text-indigo-highlight mb-4">
+                        <i class="far fa-question-circle mr-2"></i>问：什么是 2FA，我为什么要使用它？
+                    </h2>
+                    <div class="space-y-4 text-slate-300 text-base leading-relaxed border-t border-slate-700 pt-4">
+                        <p><strong class="font-semibold text-moon-white">答：</strong></p>
+                        <p><strong class="font-bold">双因素认证 (2FA - Two-Factor Authentication)</strong> 是一种安全机制，它要求用户在访问账户或服务时提供两种不同类型的身份验证凭据，而不仅仅是密码。</p>
+                        <p>这通常结合了：</p>
+                        <ul class="list-disc list-inside space-y-1 text-slate-300 text-sm pl-4">
+                            <li><strong class="font-bold">你知道的东西 (Something you know):</strong> 例如密码、PIN 码。</li>
+                            <li><strong class="font-bold">你拥有的东西 (Something you have):</strong> 例如手机（接收短信或 App 通知）、硬件安全密钥 (如 YubiKey)。</li>
+                            <li><strong class="font-bold">你是谁 (Something you are):</strong> 例如指纹、面部识别等生物特征。</li>
+                        </ul>
+                        
+                        <h3 class="font-sans-cn text-xl font-semibold text-indigo-highlight/80 mt-6 mb-3">为什么使用 2FA？</h3>
+                         <div class="mt-4 bg-slate-700 p-4 rounded-xl shadow-lg">
+                             <ul class="list-disc list-inside space-y-1 text-slate-300 text-sm pl-4">
+                                <li><strong class="font-bold">防范密码泄露:</strong> 即使你的密码被盗或泄露，攻击者没有第二个因素也无法登录你的账户。</li>
+                                <li><strong class="font-bold">增强账户安全:</strong> 为你的重要在线账户（邮箱、银行、代码托管平台等）增加了一道关键的保护层。</li>
+                             </ul>
+                             <p class="text-sm mt-2">强烈建议为所有支持 2FA 的重要服务启用它。</p>
+                         </div>
+
+                        <h3 class="font-sans-cn text-xl font-semibold text-indigo-highlight/80 mt-8 mb-3">常见的 2FA 类型</h3>
+                         <div class="mt-4 bg-slate-700 p-4 rounded-xl shadow-lg">
+                             <ul class="list-disc list-inside space-y-2 text-slate-300 text-sm pl-4">
+                                <li><strong class="font-bold">短信验证码 (SMS 2FA):</strong> <span class="text-orange-400">安全性较低</span>，易受 SIM 卡交换攻击。</li>
+                                <li><strong class="font-bold">TOTP (基于时间的一次性密码):</strong> 使用 Google Authenticator, Authy, Aegis 等应用生成动态代码。比短信安全。</li>
+                                <li><strong class="font-bold">硬件安全密钥 (U2F/FIDO2/WebAuthn):</strong> 使用 YubiKey 等物理设备。<span class="text-emerald-400">非常安全</span>，能有效抵抗网络钓鱼。Passkeys 是基于此的下一代技术。</li>
+                                <li><strong class="font-bold">推送通知:</strong> 在手机 App 上确认登录请求。</li>
+                                 <li><strong class="font-bold">生物识别:</strong> 指纹、面容识别等。</li>
+                             </ul>
+                             <p class="text-xs text-slate-400 mt-2">推荐优先级：硬件密钥 > TOTP 应用 > 推送通知 > 短信验证码。</p>
+                         </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Q16: Browser Differences -->
+            <div class="bg-slate-800 shadow-2xl rounded-xl overflow-hidden">
+                <div class="p-6 md:p-8">
+                    <h2 class="font-sans-cn text-2xl font-bold text-indigo-highlight mb-4">
+                        <i class="far fa-question-circle mr-2"></i>问：关于 Web 浏览器的差异有什么评论吗？
+                    </h2>
+                    <div class="space-y-4 text-slate-300 text-base leading-relaxed border-t border-slate-700 pt-4">
+                        <p><strong class="font-semibold text-moon-white">答：</strong></p>
+                        <p>浏览器市场目前主要由几个渲染引擎主导：</p>
+                         <ul class="list-disc list-inside space-y-1 text-slate-300 text-sm pl-4">
+                            <li><strong class="font-bold">Blink (Google):</strong> 用于 Chrome, Edge (新版), Opera, Brave, Vivaldi 等。市场份额最大。</li>
+                            <li><strong class="font-bold">WebKit (Apple):</strong> 用于 Safari。iOS 上的所有浏览器都必须使用 WebKit。</li>
+                            <li><strong class="font-bold">Gecko (Mozilla):</strong> 用于 Firefox。是唯一主流的独立渲染引擎。</li>
+                         </ul>
+                        <p>虽然基于同一引擎的浏览器在核心渲染能力上相似，但它们在功能、界面、性能调优、隐私策略和扩展生态等方面存在差异。</p>
+
+                        <h4 class="font-sans-cn text-lg font-semibold text-moon-white mt-6 mb-3"><i class="fas fa-lightbulb mr-1 text-indigo-highlight"></i>主流浏览器点评 (截至 2025 年初):</h4>
+                        <div class="mt-4 bg-slate-700 p-4 rounded-xl shadow-lg">
+                             <ul class="list-disc list-inside space-y-2 text-slate-300 text-sm pl-4">
+                                <li><strong class="font-bold">Chrome:</strong> 功能全，性能好，扩展多。隐私方面受质疑。</li>
+                                <li><strong class="font-bold">Edge:</strong> 基于 Chromium，性能兼容性好，与 Windows 集成佳。</li>
+                                <li><strong class="font-bold">Firefox:</strong> 注重隐私和开放标准，高度可定制，独立引擎。</li>
+                                <li><strong class="font-bold">Safari:</strong> 在 Apple 设备上性能和能效优异，与生态集成紧密。</li>
+                                <li><strong class="font-bold">Brave:</strong> 内置广告/追踪拦截，注重隐私。</li>
+                                <li><strong class="font-bold">Vivaldi:</strong> 高度可定制化，面向高级用户。</li>
+                                <li><strong class="font-bold">Arc:</strong> 界面和工作流新颖 (macOS/Win)。</li>
+                             </ul>
+                         </div>
+                         <p class="mt-4 text-sm">选择哪个浏览器更多取决于个人偏好、隐私关注度、特定功能需求和所使用的操作系统生态。</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 导航 -->
+        <nav class="mt-16 flex justify-between items-center">
+            <a href="lecture-10.html" class="px-6 py-3 text-indigo-highlight hover:bg-indigo-highlight/10 rounded-md font-sans-cn">
+                &larr; 上一单元 (杂项)
+            </a>
+            <!-- No next lecture, maybe link back to index? -->
+            <a href="index.html" class="px-6 py-3 text-indigo-highlight hover:bg-indigo-highlight/10 rounded-md font-sans-cn">
+                返回课程列表 &rarr;
+            </a>
+        </nav>
+    </main>
+
+    <footer class="mt-20 py-10 bg-slate-800 border-t border-slate-700 text-center">
+        <p class="font-sans-cn text-slate-400">
+            &copy; 2025 Missing Semester 中文版. 基于 MIT 原始课程.
+        </p>
+        <p class="font-sans-en text-slate-500 text-sm mt-2">
+            <a href="https://missing.csail.mit.edu/" target="_blank" class="hover:text-indigo-highlight">原始课程链接</a> | 
+            <a href="#" class="hover:text-indigo-highlight">GitHub 仓库</a>
+        </p>
+        <p class="font-sans-cn text-slate-400 text-sm mt-2">
+            由 <a href="https://huashanjian.github.io/" target="_blank" class="hover:text-indigo-highlight">Junhua Yao</a> 创建和维护
+        </p>
+    </footer>
+    
+    <script src="https://cdn.jsdelivr.net/npm/framer-motion@latest/dist/framer-motion.js"></script>
+    <script>
+        // Placeholder for Framer Motion scripts
+    </script>
+</body>
+</html> 

@@ -1,0 +1,669 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>课程概览与 Shell 入门 - 计算机的缺失课程</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              'moon-white': '#F5F5F5',
+              'sky-blue-tint': '#F0F9FF',
+              'silver-rat-grey': '#E5E7EB',
+              'ink-black': '#111827',
+              'crow-blue': '#1E40AF',
+              'medium-grey': '#6B7280',
+              'indigo-highlight': '#0EA5E9',
+            },
+            fontFamily: {
+              'sans-cn': ['"Source Han Sans SC"', 'PingFang SC', 'sans-serif'],
+              'sans-en': ['Inter', 'Manrope', 'sans-serif'],
+            }
+          }
+        }
+      }
+    </script>
+    <!-- Font Awesome CDN -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&family=Manrope:wght@400;700&family=Noto+Sans+SC:wght@400;700&display=swap" rel="stylesheet">
+    <!-- Add PrismJS for syntax highlighting -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-okaidia.min.css" rel="stylesheet" />
+    <style>
+      body {
+        font-family: theme('fontFamily.sans-cn');
+      }
+      .font-sans-en {
+        font-family: theme('fontFamily.sans-en');
+      }
+      .font-sans-cn {
+        font-family: theme('fontFamily.sans-cn');
+      }
+      /* Removed most .prose styles as content will be card-based */
+      /* Styling for code blocks - can be kept if pre/code tags are used directly */
+      pre[class*="language-"], .custom-code-block {
+        background-color: #1E293B; /* Tailwind slate-800 */
+        color: #E2E8F0;      /* Tailwind slate-200 */
+        padding: theme('spacing.6');
+        border-radius: theme('borderRadius.xl');
+        overflow-x: auto;
+        margin-top: theme('spacing.4');
+        margin-bottom: theme('spacing.6');
+      }
+      code:not(pre code), .custom-inline-code {
+        background-color: theme('colors.slate.700');
+        color: theme('colors.slate.200');
+        padding: theme('spacing.1') theme('spacing.2');
+        border-radius: theme('borderRadius.md');
+        font-size: 0.9em;
+      }
+    </style>
+</head>
+<body class="bg-slate-900 text-slate-200">
+    <header class="py-4 shadow-lg sticky top-0 bg-slate-800/90 backdrop-blur-md z-50 border-b border-slate-700">
+        <nav class="container mx-auto px-6 md:px-8 flex justify-between items-center">
+            <a href="index.html" class="text-2xl font-bold font-sans-cn">
+                <span class="text-moon-white">缺失</span><span class="text-indigo-highlight">环节</span>
+            </a>
+            <div>
+                <a href="index.html#bento-grid" class="font-sans-cn text-slate-300 hover:text-indigo-highlight ml-6">课程列表</a>
+            </div>
+        </nav>
+    </header>
+
+    <main class="container mx-auto p-4 md:p-8">
+        <section class="mb-12 pt-8 text-center">
+            <h1 class="font-sans-cn font-bold text-5xl md:text-7xl text-moon-white mb-2">
+                课程概览与 Shell 入门
+            </h1>
+            <p class="font-sans-en text-lg md:text-xl text-medium-grey">
+                Course Overview & The Shell
+            </p>
+        </section>
+
+        <!-- Card layout container -->
+        <div class="space-y-8 md:space-y-12">
+            <!-- Card 1: 动机 (Motivation) -->
+            <div class="bg-slate-800 shadow-2xl rounded-xl overflow-hidden">
+                <div class="p-6 md:p-8">
+                    <h2 class="font-sans-cn text-3xl font-bold text-indigo-highlight mb-6 text-center">动机 (Motivation)</h2>
+                    <div class="space-y-4 text-slate-300 text-base leading-relaxed">
+                        <p>正如原文所说，计算机在辅助重复性任务方面表现出色。然而，我们常常忽略了这一点同样适用于我们使用计算机的方式，而不仅仅是我们希望程序执行的计算。我们手头有大量的工具可以提高工作效率，解决更复杂的问题。但许多人只使用了这些工具的一小部分，仅仅通过死记硬背一些"魔法咒语"来应付工作，遇到问题时则盲目地从互联网上复制粘贴命令。</p>
+                        <p>这门课正是为了解决这个问题。</p>
+                        <p>我们希望教你如何最大限度地利用你已知的工具，向你展示可以添加到工具箱中的新工具，并希望能够激发你探索（甚至构建）更多工具的热情。我们相信这是大多数计算机科学课程中"缺失的一学期"。</p>
+                    </div>
+                </div>
+                <div class="bg-slate-700/50 p-6 md:p-8 border-t border-slate-700">
+                    <h3 class="font-sans-cn text-xl font-semibold text-indigo-highlight mb-4 flex items-center">
+                        <i class="fas fa-lightbulb mr-3 text-lg"></i>拓展思考：
+                    </h3>
+                    <ul class="list-disc list-inside space-y-3 text-slate-300 text-base">
+                        <li><strong>自动化思维：</strong> 学习 Shell 的核心之一是培养"自动化思维"。当你发现自己重复执行某个命令序列超过两三次时，就应该考虑如何将其自动化（例如，编写一个简单的脚本）。</li>
+                        <li><strong>DevOps 与 SRE 文化：</strong> 在现代软件开发和运维（DevOps, Site Reliability Engineering）中，Shell 脚本和命令行工具是实现自动化部署、监控、管理和故障排除的基础。</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Card 2: 课程结构 (Class structure) -->
+            <div class="bg-slate-800 shadow-2xl rounded-xl overflow-hidden">
+                <div class="p-6 md:p-8">
+                    <h2 class="font-sans-cn text-3xl font-bold text-indigo-highlight mb-6 text-center">课程结构 (Class structure)</h2>
+                    <div class="space-y-4 text-slate-300 text-base leading-relaxed">
+                        <p>该课程包含11个1小时的讲座，每个讲座围绕一个特定主题。讲座内容相对独立，但随着课程的进行，我们会假设你熟悉前面讲座的内容。我们在线提供讲座笔记，但课堂上会涵盖许多笔记中可能没有的内容（例如，通过演示）。我们会录制讲座并在线发布录音。</p>
+                        <p>我们试图在短短11个小时的讲座中涵盖很多内容，所以讲座内容相当密集。为了让你有时间按照自己的节奏熟悉内容，每个讲座都包含一组练习，引导你了解讲座的要点。每次讲座后，我们会举办答疑时间，届时我们会在场帮助解答你可能遇到的任何问题。如果你在线上课，可以通过 missing-semester@mit.edu 向我们发送问题。</p>
+                        <p>由于时间有限，我们无法像完整课程那样详细地介绍所有工具。在可能的情况下，我们会为你指出深入研究某个工具或主题的资源，但如果有什么特别吸引你的东西，请不要犹豫，向我们寻求指点！</p>
+                    </div>
+                </div>
+            </div>
+
+             <!-- Card 3: 主题1：Shell (部分) -->
+             <div class="bg-slate-800 shadow-2xl rounded-xl overflow-hidden">
+                <div class="p-6 md:p-8">
+                    <h2 class="font-sans-cn text-3xl font-bold text-indigo-highlight mb-6 text-center">主题1：Shell (Topic 1: The Shell)</h2>
+                    
+                    <h3 class="font-sans-cn text-2xl font-semibold text-moon-white mb-4 mt-8 text-center">Shell 是什么？(What is the shell?)</h3>
+                    <div class="space-y-4 text-slate-300 text-base leading-relaxed">
+                        <p>如今的计算机有多种命令界面：精美的图形用户界面（GUI）、语音界面，甚至AR/VR无处不在。这些界面对于80%的用例来说非常棒，但它们在功能上往往有根本性的限制——你无法按下不存在的按钮，或发出未被编程的语音命令。为了充分利用计算机提供的工具，我们必须回归传统，使用文本界面：<strong class="font-bold">Shell</strong>。</p>
+                        <p>几乎所有你能接触到的平台都以某种形式提供了 Shell，许多平台甚至有多种 Shell 供你选择。虽然它们在细节上可能有所不同，但其核心大致相同：它们允许你运行程序，向程序提供输入，并以半结构化的方式检查其输出。</p>
+                        <p>在本讲座中，我们将重点介绍 <strong class="font-bold">Bourne Again SHell</strong>，简称 "<strong class="font-bold">bash</strong>"。这是使用最广泛的 Shell 之一，其语法与你在许多其他 Shell 中看到的相似。要打开一个 Shell 提示符（你可以在其中输入命令），你首先需要一个<strong class="font-bold">终端 (Terminal)</strong>。你的设备可能已经安装了一个终端，或者你可以很容易地安装一个。</p>
+                    </div>
+                </div>
+                <!-- "拓展技巧与现代方法" section - restructured into a grid of small cards -->
+                <div class="p-6 md:p-8 border-t border-slate-700">
+                    <h4 class="font-sans-cn text-2xl font-semibold text-indigo-highlight mb-6 flex items-center">
+                        <i class="fas fa-cogs mr-3 text-xl"></i>拓展技巧与现代方法：
+                    </h4>
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-4">
+                        <!-- Card 1: 为什么选择 Shell -->
+                        <div class="bg-slate-700 p-6 rounded-xl shadow-lg">
+                            <h5 class="font-sans-cn text-lg font-semibold text-moon-white mb-3 flex items-center">
+                                <i class="fas fa-question-circle mr-2 text-indigo-highlight"></i>为什么选择 Shell？
+                            </h5>
+                            <ul class="list-disc list-inside space-y-2 text-slate-300 text-sm">
+                                <li><strong>自动化与脚本：</strong> 实现复杂任务的自动化。</li>
+                                <li><strong>远程访问：</strong> SSH 交互的主要方式。</li>
+                                <li><strong>资源效率：</strong> 通常消耗更少系统资源。</li>
+                                <li><strong>精确控制：</strong> 提供更细致的系统控制。</li>
+                                <li><strong>可组合性：</strong> 通过管道连接小程序。</li>
+                            </ul>
+                        </div>
+                        <!-- Card 2: 常用的 Shell -->
+                        <div class="bg-slate-700 p-6 rounded-xl shadow-lg">
+                            <h5 class="font-sans-cn text-lg font-semibold text-moon-white mb-3 flex items-center">
+                                <i class="fas fa-terminal mr-2 text-indigo-highlight"></i>常用的 Shell：
+                            </h5>
+                            <ul class="list-disc list-inside space-y-2 text-slate-300 text-sm">
+                                <li><strong>Bash:</strong> Linux/macOS 默认，兼容性好。</li>
+                                <li><strong>Zsh:</strong> 功能更强，自动补全、主题 (<a href="https://ohmyz.sh/" target="_blank" class="text-indigo-highlight hover:underline">Oh My Zsh</a>)。</li>
+                                <li><strong>Fish:</strong> 用户友好，智能建议，语法高亮。</li>
+                                <li><strong>PowerShell:</strong> Windows 现代化 Shell。</li>
+                            </ul>
+                        </div>
+                        <!-- Card 3: Windows 用户的选择 -->
+                        <div class="bg-slate-700 p-6 rounded-xl shadow-lg">
+                            <h5 class="font-sans-cn text-lg font-semibold text-moon-white mb-3 flex items-center">
+                                <i class="fab fa-windows mr-2 text-indigo-highlight"></i>Windows 用户的选择：
+                            </h5>
+                            <ul class="list-disc list-inside space-y-2 text-slate-300 text-sm">
+                                <li><strong>WSL (WSL2):</strong> 强烈推荐，运行完整 Linux。</li>
+                                <li><strong>Git Bash:</strong> Git for Windows 附带。</li>
+                                <li><strong>Cygwin/MinGW:</strong> 更全面的 Unix 工具集。</li>
+                                <li><strong>Windows Terminal:</strong> 现代化终端应用。</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card for "使用 Shell (Using the shell)" -->
+            <div class="bg-slate-800 shadow-2xl rounded-xl overflow-hidden mt-8 md:mt-12">
+                <div class="p-6 md:p-8">
+                    <h3 class="font-sans-cn text-2xl font-semibold text-moon-white mb-6 text-center">使用 Shell (Using the shell)</h3>
+                    <div class="space-y-4 text-slate-300 text-base leading-relaxed">
+                        <p>当你启动终端时，你会看到一个通常如下所示的提示符：</p>
+                        <pre class="custom-code-block"><code class="language-bash">missing:~$
+</code></pre>
+                        <p>这是 Shell 的主要文本界面。它告诉你当前在名为 `missing` 的机器上，并且你的"当前工作目录"（你当前所在的位置）是 `~`（"home"目录的简写）。`$` 符号告诉你你不是 root 用户（稍后会详细介绍）。在这个提示符下，你可以输入命令，然后 Shell 会解释并执行它。最基本的命令是执行一个程序：</p>
+                        <pre class="custom-code-block"><code class="language-bash">missing:~$ date
+Fri 10 Jan 2020 11:49:31 AM EST
+missing:~$
+</code></pre>
+                        <p>这里，我们执行了 `date` 程序，它（也许不足为奇地）打印出当前的日期和时间。然后 Shell 会提示我们输入下一个要执行的命令。我们也可以带参数执行命令：</p>
+                        <pre class="custom-code-block"><code class="language-bash">missing:~$ echo hello
+hello
+</code></pre>
+                        <p>在这个例子中，我们告诉 Shell 用参数 `hello` 执行 `echo` 程序。`echo` 程序只是简单地打印出它的参数。Shell 通过按空格分割命令来解析它，然后运行第一个单词指示的程序，并将后续的每个单词作为程序可以访问的参数提供。如果你想提供包含空格或其他特殊字符的参数（例如，名为 "My Photos" 的目录），你可以用 `'` 或 `"` 来引用参数 (`"My Photos"`)，或者只用 `\` 来转义相关字符 (`My\ Photos`)。</p>
+                    </div>
+                </div>
+                <!-- Nested Card Grid for "拓展技巧与现代方法" related to "Using the shell" -->
+                <div class="p-6 md:p-8 border-t border-slate-700">
+                    <h4 class="font-sans-cn text-xl font-semibold text-indigo-highlight mb-6 flex items-center">
+                        <i class="fas fa-cogs mr-3 text-lg"></i>拓展技巧与现代方法 (提示符、引号、PATH、type):
+                    </h4>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 mt-4">
+                        <!-- Sub-Card 1: 理解提示符 -->
+                        <div class="bg-slate-700 p-6 rounded-xl shadow-lg flex flex-col">
+                            <h5 class="font-sans-cn text-lg font-semibold text-moon-white mb-3 flex items-center">
+                                <i class="fas fa-terminal mr-2 text-indigo-highlight"></i>理解提示符 (Prompt)
+                            </h5>
+                            <ul class="list-disc list-inside space-y-2 text-slate-300 text-sm">
+                                <li>通常格式为 `username@hostname:current_directory$`</li>
+                                <li>`~` 代表用户主目录</li>
+                                <li>`$` 普通用户, `#` 超级用户</li>
+                                <li>高度可定制 (PS1, Starship, Powerlevel10k)</li>
+                            </ul>
+                        </div>
+                        <!-- Sub-Card 2: 引号的使用 -->
+                        <div class="bg-slate-700 p-6 rounded-xl shadow-lg flex flex-col">
+                            <h5 class="font-sans-cn text-lg font-semibold text-moon-white mb-3 flex items-center">
+                                <i class="fas fa-quote-right mr-2 text-indigo-highlight"></i>引号的使用
+                            </h5>
+                            <ul class="list-disc list-inside space-y-2 text-slate-300 text-sm">
+                                <li><strong>单引号 (`'`)</strong>: 强引用，字面处理</li>
+                                <li><strong>双引号 (`"`)</strong>: 弱引用，变量/命令替换会被解释</li>
+                                <li><strong>反斜杠 (`\`)</strong>: 转义字符</li>
+                            </ul>
+                        </div>
+                        <!-- Sub-Card 3: $PATH 环境变量 -->
+                        <div class="bg-slate-700 p-6 rounded-xl shadow-lg flex flex-col">
+                            <h5 class="font-sans-cn text-lg font-semibold text-moon-white mb-3 flex items-center">
+                                <i class="fas fa-directions mr-2 text-indigo-highlight"></i>$PATH 环境变量
+                            </h5>
+                             <p class="text-slate-300 text-sm mb-2">Shell 查询 `$PATH` 环境变量来寻找程序。</p>
+                            <pre class="custom-code-block text-sm"><code class="language-bash">echo $PATH
+which echo
+</code></pre>
+                            <ul class="list-disc list-inside space-y-2 text-slate-300 text-sm mt-2">
+                               <li>临时添加: `export PATH="/new/path:$PATH"`</li>
+                               <li>永久修改: 编辑 `~/.bashrc` 或 `~/.zshrc`</li>
+                            </ul>
+                        </div>
+                        <!-- Sub-Card 4: type 命令 -->
+                        <div class="bg-slate-700 p-6 rounded-xl shadow-lg flex flex-col">
+                            <h5 class="font-sans-cn text-lg font-semibold text-moon-white mb-3 flex items-center">
+                                <i class="fas fa-info-circle mr-2 text-indigo-highlight"></i>`type` 命令
+                            </h5>
+                            <p class="text-slate-300 text-sm mb-2">比 `which` 更全面，显示命令类型 (别名, 内建, 函数, 文件)。</p>
+                            <pre class="custom-code-block text-sm"><code class="language-bash">type cd
+type ls
+</code></pre>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Card for "在 Shell 中导航 (Navigating in the shell)" -->
+            <div class="bg-slate-800 shadow-2xl rounded-xl overflow-hidden mt-8 md:mt-12">
+                <div class="p-6 md:p-8">
+                    <h3 class="font-sans-cn text-2xl font-semibold text-moon-white mb-6 text-center">在 Shell 中导航 (Navigating in the shell)</h3>
+                    <div class="space-y-4 text-slate-300 text-base leading-relaxed">
+                        <p>Shell 中的路径是一个分隔的目录列表（Linux/macOS用`/`，Windows用`\`）。以`/`（或Windows盘符如`C:\`）开头的为绝对路径，否则为相对路径。`.`代表当前目录，`..`代表父目录。</p>
+                        <pre class="custom-code-block"><code class="language-bash">pwd              # 显示当前工作目录
+cd /path/to/go # 切换目录
+cd ..            # 切换到上级目录
+cd               # 切换到主目录 (~)
+</code></pre>
+                        <p>要查看目录内容，使用 `ls` 命令。其行为可以通过标志（以`-`开头）修改。</p>
+                        <pre class="custom-code-block"><code class="language-bash">ls               # 列出当前目录内容
+ls /home         # 列出 /home 目录内容
+ls -l            # 使用长列表格式显示
+ls --help        # 查看 ls 命令的帮助
+</code></pre>
+                        <pre class="custom-code-block"><code class="language-text"># ls -l 输出示例
+drwxr-xr-x 1 missing  users  4096 Jun 15  2019 missing
+# [权限] [链接数] [所有者] [所属组] [大小] [最后修改日期] [名称]
+</code></pre>
+                        <p>权限部分（例如 `drwxr-xr-x`）表示文件类型（`d`为目录，`-`为文件）以及所有者、所属组和其他人的读(`r`)、写(`w`)、执行(`x`)权限。</p>
+                        <p>其他常用命令包括 `mv` (移动/重命名), `cp` (复制), `mkdir` (创建目录)。使用 `man <命令>` 查看手册页获取详细信息。</p>
+                    </div>
+                </div>
+                 <!-- Nested Card Grid for "拓展技巧与现代方法" related to "Navigating" -->
+                <div class="p-6 md:p-8 border-t border-slate-700">
+                    <h4 class="font-sans-cn text-xl font-semibold text-indigo-highlight mb-6 flex items-center">
+                        <i class="fas fa-map-signs mr-3 text-lg"></i>拓展技巧与现代方法 (导航、ls选项、man/tldr):
+                    </h4>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mt-4">
+                        <!-- Sub-Card 1: 常用导航命令 -->
+                        <div class="bg-slate-700 p-6 rounded-xl shadow-lg flex flex-col">
+                            <h5 class="font-sans-cn text-lg font-semibold text-moon-white mb-3 flex items-center">
+                                <i class="fas fa-compass mr-2 text-indigo-highlight"></i>常用导航命令
+                            </h5>
+                            <ul class="list-disc list-inside space-y-2 text-slate-300 text-sm">
+                                <li>`cd -`: 切换到上一个目录</li>
+                                <li>`cd`: 返回主目录</li>
+                                <li>`pushd/popd/dirs`: 目录栈操作</li>
+                            </ul>
+                        </div>
+                        <!-- Sub-Card 2: ls 命令常用选项 -->
+                        <div class="bg-slate-700 p-6 rounded-xl shadow-lg flex flex-col">
+                            <h5 class="font-sans-cn text-lg font-semibold text-moon-white mb-3 flex items-center">
+                                <i class="fas fa-list mr-2 text-indigo-highlight"></i>`ls` 常用选项
+                            </h5>
+                            <ul class="list-disc list-inside space-y-2 text-slate-300 text-sm">
+                                <li>`-a`: 显示所有 (包括隐藏)</li>
+                                <li>`-l`: 长列表格式</li>
+                                <li>`-h`: 人类可读大小 (需配合 -l)</li>
+                                <li>`-t`: 按时间排序</li>
+                                <li>`-r`: 反向排序</li>
+                                <li>`-R`: 递归列出</li>
+                                <li>常用组合: `ls -lathr`</li>
+                            </ul>
+                        </div>
+                        <!-- Sub-Card 3: 获取帮助 -->
+                        <div class="bg-slate-700 p-6 rounded-xl shadow-lg flex flex-col">
+                            <h5 class="font-sans-cn text-lg font-semibold text-moon-white mb-3 flex items-center">
+                                <i class="fas fa-book-open mr-2 text-indigo-highlight"></i>获取帮助
+                            </h5>
+                            <ul class="list-disc list-inside space-y-2 text-slate-300 text-sm">
+                                <li>`man <命令>`: 查看完整手册页</li>
+                                <li>`tldr <命令>`: 查看简洁常用示例 (需安装)</li>
+                                <li>`<命令> --help` 或 `-h`: 命令内置帮助</li>
+                                <li>`apropos <关键词>`: 搜索相关手册页</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card for 文件和目录操作 -->
+             <div class="bg-slate-800 shadow-2xl rounded-xl overflow-hidden mt-8 md:mt-12">
+                 <div class="p-6 md:p-8">
+                     <h3 class="font-sans-cn text-2xl font-semibold text-moon-white mb-6 text-center">文件和目录操作</h3>
+                     <div class="space-y-4 text-slate-300 text-base leading-relaxed">
+                        <p>除了导航，我们还需要管理文件和目录。常用的命令包括：</p>
+                        <ul class="list-disc list-inside space-y-2 text-slate-300 text-base pl-4">
+                            <li>`mv <源> <目标>`: 移动或重命名文件/目录。</li>
+                            <li>`cp <源> <目标>`: 复制文件/目录。</li>
+                            <li>`mkdir <目录名>`: 创建新目录。</li>
+                        </ul>
+                         <pre class="custom-code-block"><code class="language-bash"># 示例
+mv old_name.txt new_name.txt  # 重命名
+mv source_file.txt destination_folder/ # 移动
+cp source_file.txt copy_file.txt # 复制文件
+cp -r source_folder/ destination_folder/ # 复制目录 (需要-r选项)
+mkdir new_directory # 创建目录
+</code></pre>
+                    </div>
+                </div>
+                <!-- Nested Card Grid for 拓展技巧 -->
+                <div class="p-6 md:p-8 border-t border-slate-700">
+                     <h4 class="font-sans-cn text-xl font-semibold text-indigo-highlight mb-6 flex items-center">
+                        <i class="fas fa-tools mr-3 text-lg"></i>拓展技巧与现代方法 (文件操作):
+                    </h4>
+                     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mt-4">
+                         <!-- Sub-Card 1: rm 命令 -->
+                         <div class="bg-slate-700 p-6 rounded-xl shadow-lg flex flex-col">
+                             <h5 class="font-sans-cn text-lg font-semibold text-moon-white mb-3 flex items-center">
+                                <i class="fas fa-trash-alt mr-2 text-indigo-highlight"></i>`rm` 命令 (删除)
+                            </h5>
+                             <ul class="list-disc list-inside space-y-2 text-slate-300 text-sm">
+                                 <li>`rm <文件>`: 删除文件 (谨慎!)</li>
+                                 <li>`rm -r <目录>`: 递归删除目录 (非常谨慎!)</li>
+                                 <li>`rm -i`: 删除前交互式提示</li>
+                                 <li>`rm -f`: 强制删除，无提示 (极其谨慎!)</li>
+                             </ul>
+                         </div>
+                          <!-- Sub-Card 2: cp 和 mkdir 选项 -->
+                         <div class="bg-slate-700 p-6 rounded-xl shadow-lg flex flex-col">
+                             <h5 class="font-sans-cn text-lg font-semibold text-moon-white mb-3 flex items-center">
+                                <i class="fas fa-folder-plus mr-2 text-indigo-highlight"></i>`cp` 和 `mkdir` 选项
+                            </h5>
+                             <ul class="list-disc list-inside space-y-2 text-slate-300 text-sm">
+                                <li>`cp -r`: 递归复制目录</li>
+                                <li>`mkdir -p`: 递归创建目录 (父目录不存在时一并创建)</li>
+                             </ul>
+                         </div>
+                         <!-- Sub-Card 3: 获取帮助 (重复提及以完整性) -->
+                         <div class="bg-slate-700 p-6 rounded-xl shadow-lg flex flex-col">
+                             <h5 class="font-sans-cn text-lg font-semibold text-moon-white mb-3 flex items-center">
+                                <i class="fas fa-book-open mr-2 text-indigo-highlight"></i>获取帮助
+                            </h5>
+                             <ul class="list-disc list-inside space-y-2 text-slate-300 text-sm">
+                                <li>`man <命令>`: 完整手册</li>
+                                <li>`tldr <命令>`: 简洁示例</li>
+                                <li>`<命令> --help/-h`: 内置帮助</li>
+                             </ul>
+                         </div>
+                     </div>
+                </div>
+            </div>
+
+            <!-- Card for "连接程序 (Connecting programs)" -->
+            <div class="bg-slate-800 shadow-2xl rounded-xl overflow-hidden mt-8 md:mt-12">
+                <div class="p-6 md:p-8">
+                    <h3 class="font-sans-cn text-2xl font-semibold text-moon-white mb-6 text-center">连接程序 (Connecting programs)</h3>
+                    <div class="space-y-4 text-slate-300 text-base leading-relaxed">
+                         <p>在 Shell 中，程序有两个主要的"流"与之关联：它们的<strong class="font-bold">输入流 (input stream)</strong> 和它们的<strong class="font-bold">输出流 (output stream)</strong>。当程序尝试读取输入时，它从输入流中读取；当它打印某些内容时，它打印到其输出流。通常，程序的输入和输出都是你的终端，即你的键盘作为输入，屏幕作为输出。但是，我们也可以重定向这些流！</p>
+                         <p>最简单的重定向形式是 `< file` 和 `> file`。它们分别允许你将程序的输入流和输出流重定向到文件：</p>
+                         <pre class="custom-code-block"><code class="language-bash">missing:~$ echo hello > hello.txt
+missing:~$ cat hello.txt
+hello
+missing:~$ cat < hello.txt
+hello
+missing:~$ cat < hello.txt > hello2.txt
+missing:~$ cat hello2.txt
+hello
+</code></pre>
+                         <p>如上例所示，`cat` 是一个连接文件的程序。当给定文件名作为参数时，它会按顺序将每个文件的内容打印到其输出流。但当 `cat` 没有给定任何参数时，它会将其输入流的内容打印到其输出流。</p>
+                         <p>你也可以使用 `>>` 来<strong class="font-bold">追加</strong>到文件。这种输入/输出重定向真正发挥威力的地方在于<strong class="font-bold">管道 (pipes)</strong> 的使用。`|` 操作符允许你"链接"程序，使得一个程序的输出成为另一个程序的输入：</p>
+                        <pre class="custom-code-block"><code class="language-bash">missing:~$ ls -l / | tail -n1
+drwxr-xr-x 1 root  root  4096 Jun 20  2019 var
+missing:~$ curl --head --silent google.com | grep --ignore-case content-length | cut --delimiter=' ' -f2
+219
+</code></pre>
+                        <p>我们将在关于数据整理的讲座中更详细地讨论如何利用管道。</p>
+                    </div>
+                </div>
+                 <!-- Nested Card Grid for "拓展技巧与现代方法" related to "Connecting programs" -->
+                 <div class="p-6 md:p-8 border-t border-slate-700">
+                    <h4 class="font-sans-cn text-xl font-semibold text-indigo-highlight mb-6 flex items-center">
+                        <i class="fas fa-stream mr-3 text-lg"></i>拓展技巧与现代方法 (流、重定向、管道):
+                    </h4>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mt-4">
+                        <!-- Sub-Card 1: 标准流 -->
+                        <div class="bg-slate-700 p-6 rounded-xl shadow-lg flex flex-col">
+                            <h5 class="font-sans-cn text-lg font-semibold text-moon-white mb-3 flex items-center">
+                                <i class="fas fa-water mr-2 text-indigo-highlight"></i>标准流
+                            </h5>
+                            <ul class="list-disc list-inside space-y-2 text-slate-300 text-sm">
+                                <li>`stdin` (0): 标准输入 (默认键盘)</li>
+                                <li>`stdout` (1): 标准输出 (默认屏幕)</li>
+                                <li>`stderr` (2): 标准错误 (默认屏幕)</li>
+                            </ul>
+                        </div>
+                        <!-- Sub-Card 2: 重定向 -->
+                        <div class="bg-slate-700 p-6 rounded-xl shadow-lg flex flex-col">
+                             <h5 class="font-sans-cn text-lg font-semibold text-moon-white mb-3 flex items-center">
+                                <i class="fas fa-random mr-2 text-indigo-highlight"></i>重定向
+                            </h5>
+                             <ul class="list-disc list-inside space-y-2 text-slate-300 text-sm">
+                                <li>`>`: 输出到文件 (覆盖)</li>
+                                <li>`>>`: 输出到文件 (追加)</li>
+                                <li>`<`: 从文件输入</li>
+                                <li>`2>`: 错误输出到文件</li>
+                                <li>`&>`: 输出与错误到文件</li>
+                                <li>`/dev/null`: 丢弃输出。
+                                    <ul class="list-circle list-inside pl-4 mt-1 space-y-1 text-slate-400">
+                                        <li>`cmd > /dev/null` (忽略stdout)</li>
+                                        <li>`cmd 2> /dev/null` (忽略stderr)</li>
+                                        <li>`cmd &> /dev/null` (忽略所有)</li>
+                                    </ul>
+                                </li>
+                             </ul>
+                        </div>
+                         <!-- Sub-Card 3: Here Strings/Documents -->
+                        <div class="bg-slate-700 p-6 rounded-xl shadow-lg flex flex-col">
+                             <h5 class="font-sans-cn text-lg font-semibold text-moon-white mb-3 flex items-center">
+                                <i class="fas fa-keyboard mr-2 text-indigo-highlight"></i>Here Strings/Documents
+                            </h5>
+                             <ul class="list-disc list-inside space-y-2 text-slate-300 text-sm">
+                                <li>`<<< "字符串"`: 将字符串作为输入</li>
+                                <li>`<<EOF ... EOF`: 提供多行输入</li>
+                             </ul>
+                        </div>
+                        <!-- Sub-Card 4: 管道 -->
+                        <div class="bg-slate-700 p-6 rounded-xl shadow-lg flex flex-col">
+                            <h5 class="font-sans-cn text-lg font-semibold text-moon-white mb-3 flex items-center">
+                                <i class="fas fa-exchange-alt mr-2 text-indigo-highlight"></i>管道 (`|`)
+                            </h5>
+                            <p class="text-slate-300 text-sm mb-2">Unix 哲学核心：连接小程序处理文本流。</p>
+                            <pre class="custom-code-block text-xs"><code class="language-bash"># 示例：查找最大的5个文件/目录
+du -sh * | sort -rh | head -n 5</code></pre>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card for "一个多功能且强大的工具 (A versatile and powerful tool)" -->
+            <div class="bg-slate-800 shadow-2xl rounded-xl overflow-hidden mt-8 md:mt-12">
+                <div class="p-6 md:p-8">
+                    <h3 class="font-sans-cn text-2xl font-semibold text-moon-white mb-6 text-center">一个多功能且强大的工具</h3>
+                    <div class="space-y-4 text-slate-300 text-base leading-relaxed">
+                        <p>在大多数类 Unix 系统上，"root"用户拥有最高权限。通常我们不直接以 root 登录，而是使用 `sudo` 命令临时提升权限执行特定操作。<strong>使用 `sudo` 时务必谨慎！</strong></p>
+                        <p>Linux 系统通过 `/sys` 文件系统暴露内核参数。例如，可以通过读写 `/sys/class/backlight/.../brightness` 文件来控制屏幕亮度。macOS 和 Windows 没有 `/sys`。</p>
+                        <pre class="custom-code-block"><code class="language-bash"># 错误示例：sudo 对重定向无效
+# sudo echo 3 > /sys/class/backlight/intel_backlight/brightness 
+
+# 正确示例：使用 tee 和管道
+echo 3 | sudo tee /sys/class/backlight/intel_backlight/brightness
+</code></pre>
+                        <p>`tee` 命令从标准输入读取并写入到标准输出和文件，当与 `sudo` 配合时，`tee` 以 root 权限运行，从而可以写入受保护的文件。</p>
+                    </div>
+                </div>
+                <!-- Nested Card Grid for "拓展技巧与现代方法" related to "sudo/sys" -->
+                <div class="p-6 md:p-8 border-t border-slate-700">
+                    <h4 class="font-sans-cn text-xl font-semibold text-indigo-highlight mb-6 flex items-center">
+                        <i class="fas fa-shield-alt mr-3 text-lg"></i>拓展技巧与现代方法 (权限与系统交互):
+                    </h4>
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-4">
+                        <div class="bg-slate-700 p-6 rounded-xl shadow-lg flex flex-col">
+                            <h5 class="font-sans-cn text-lg font-semibold text-moon-white mb-3 flex items-center"><i class="fas fa-user-shield mr-2 text-indigo-highlight"></i>`sudo` 的正确使用</h5>
+                            <ul class="list-disc list-inside space-y-2 text-slate-300 text-sm">
+                                <li>`sudo <命令>`: 以 root 执行命令</li>
+                                <li>`sudo -i` 或 `sudo su -`: 切换到 root 的交互式 shell (少用)</li>
+                                <li>`sudoedit <文件>` 或 `sudo -e <文件>`: 安全编辑特权文件</li>
+                            </ul>
+                        </div>
+                        <div class="bg-slate-700 p-6 rounded-xl shadow-lg flex flex-col">
+                            <h5 class="font-sans-cn text-lg font-semibold text-moon-white mb-3 flex items-center"><i class="fas fa-retweet mr-2 text-indigo-highlight"></i>`tee` 命令</h5>
+                            <ul class="list-disc list-inside space-y-2 text-slate-300 text-sm">
+                                <li>从标准输入读，写到标准输出和一个或多个文件。</li>
+                                <li>`command | tee output.txt`</li>
+                                <li>`command | sudo tee /privileged/file`</li>
+                            </ul>
+                        </div>
+                        <div class="bg-slate-700 p-6 rounded-xl shadow-lg flex flex-col">
+                            <h5 class="font-sans-cn text-lg font-semibold text-moon-white mb-3 flex items-center"><i class="fab fa-apple mr-2 text-indigo-highlight"></i>macOS 替代方案</h5>
+                            <ul class="list-disc list-inside space-y-2 text-slate-300 text-sm">
+                                <li>没有 `/sys`。</li>
+                                <li>屏幕亮度: 第三方工具 (`brightness`) 或 AppleScript。</li>
+                                <li>电池状态: `pmset -g batt`</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card for "后续步骤 (Next steps)" -->
+            <div class="bg-slate-800 shadow-2xl rounded-xl overflow-hidden mt-8 md:mt-12">
+                <div class="p-6 md:p-8">
+                    <h3 class="font-sans-cn text-2xl font-semibold text-moon-white mb-6 text-center text-indigo-highlight">后续步骤 (Next steps)</h3>
+                    <div class="space-y-4 text-slate-300 text-base leading-relaxed">
+                        <p>至此，你已经掌握了在 Shell 中完成基本任务的方法。你应该能够在文件系统中导航以查找感兴趣的文件，并使用大多数程序的基本功能。在下一讲中，我们将讨论如何使用 Shell 和许多方便的命令行程序来执行和自动化更复杂的任务。</p>
+                    </div>
+                </div>
+                <div class="bg-slate-700/50 p-6 md:p-8 border-t border-slate-700">
+                    <h4 class="font-sans-cn text-xl font-semibold text-indigo-highlight mb-4 flex items-center">
+                        <i class="fas fa-level-up-alt mr-3 text-lg"></i>拓展建议：
+                    </h4>
+                    <ul class="list-disc list-inside space-y-3 text-slate-300 text-base">
+                        <li><strong>练习，练习，再练习：</strong> 熟悉 Shell 的唯一方法就是多用。尝试用命令行完成你日常用 GUI 完成的任务。</li>
+                        <li><strong>定制你的环境：</strong> 花时间配置你的 Shell (e.g., `.bashrc`, `.zshrc`)，设置别名 (aliases)，安装有用的工具。这将大大提高你的效率和使用体验。</li>
+                        <li><strong>阅读手册：</strong> 遇到不熟悉的命令，记得 `man <命令>` 或 `tldr <命令>`。</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Card for "练习 (Exercises)" -->
+            <div class="bg-slate-800 shadow-2xl rounded-xl overflow-hidden mt-8 md:mt-12">
+                <div class="p-6 md:p-8">
+                    <h2 class="font-sans-cn text-3xl font-bold text-indigo-highlight mb-8 text-center">练习 (Exercises)</h2>
+                    <div class="text-slate-300 text-base leading-relaxed space-y-6">
+                        <p>本课程中的所有课程都附带一系列练习。有些练习要求你完成特定任务，而另一些则是开放性的，例如"尝试使用 X 和 Y 程序"。我们强烈建议你尝试一下。</p>
+                        <p>我们没有为练习编写解决方案。如果你在任何特定问题上遇到困难，请随时给我们发送电子邮件，描述你到目前为止尝试过的方法，我们会尽力帮助你。</p>
+                        <p>对于本课程，你需要使用像 Bash 或 ZSH 这样的 Unix Shell。如果你在 Linux 或 macOS 上，则无需执行任何特殊操作。如果你在 Windows 上，你需要确保你运行的不是 `cmd.exe` 或 PowerShell；你可以使用 Windows Subsystem for Linux 或 Linux 虚拟机来使用 Unix 风格的命令行工具。要确保你正在运行适当的 Shell，可以尝试命令 `echo $SHELL`。如果它显示类似 `/bin/bash` 或 `/usr/bin/zsh` 的内容，则表示你正在运行正确的程序。</p>
+                        
+                        <ol class="list-decimal list-inside space-y-8">
+                            <li>
+                                <p><strong>在 `/tmp` 目录下创建一个名为 `missing` 的新目录。</strong></p>
+                                <pre class="custom-code-block"><code class="language-bash">mkdir /tmp/missing
+# 验证: ls /tmp</code></pre>
+                            </li>
+                            <li>
+                                <p><strong>查阅 `touch` 程序。`man` 程序是你的好朋友。</strong></p>
+                                <pre class="custom-code-block"><code class="language-bash">man touch
+# tldr touch (更简洁)</code></pre>
+                            </li>
+                            <li>
+                                <p><strong>使用 `touch` 在 `missing` 目录中创建一个名为 `semester` 的新文件。</strong></p>
+                                <pre class="custom-code-block"><code class="language-bash">touch /tmp/missing/semester
+# 验证: ls /tmp/missing</code></pre>
+                            </li>
+                            <li>
+                                <p><strong>将以下内容逐行写入该文件：</strong></p>
+                                <pre class="custom-code-block"><code class="language-text">#!/bin/sh
+curl --head --silent https://missing.csail.mit.edu</code></pre>
+                                <p class="text-sm text-slate-400 mt-2">提示: 注意 `!` 的转义，可使用单引号或 Here Document。</p>
+                                <details class="bg-slate-700 p-4 rounded-lg mt-2 text-sm">
+                                    <summary class="cursor-pointer text-indigo-highlight font-semibold">显示写入方法示例</summary>
+                                    <div class="mt-3">
+                                        <p class="font-semibold text-moon-white mb-1">方法一: echo 和重定向</p>
+                                        <pre class="custom-code-block text-xs"><code class="language-bash">echo '#!/bin/sh' > /tmp/missing/semester
+echo 'curl --head --silent https://missing.csail.mit.edu' >> /tmp/missing/semester</code></pre>
+                                        <p class="font-semibold text-moon-white mt-3 mb-1">方法二: cat 和 Here Document</p>
+                                        <pre class="custom-code-block text-xs"><code class="language-bash">cat <<EOF > /tmp/missing/semester
+#!/bin/sh
+curl --head --silent https://missing.csail.mit.edu
+EOF</code></pre>
+                                    </div>
+                                </details>
+                            </li>
+                            <li>
+                                <p><strong>尝试执行该文件 (`./semester`)。理解为何失败，并用 `ls -l` 查看权限。</strong></p>
+                                <pre class="custom-code-block"><code class="language-bash">cd /tmp/missing
+./semester # 可能会提示 Permission denied
+ls -l semester</code></pre>
+                            </li>
+                            <li>
+                                <p><strong>用 `sh semester` 执行脚本。解释为何这样可行。</strong></p>
+                                <pre class="custom-code-block"><code class="language-bash">sh semester</code></pre>
+                                <p class="text-sm text-slate-400 mt-2">原因: `sh` 直接解释文件内容，无需文件有执行权限。</p>
+                            </li>
+                            <li>
+                                <p><strong>查阅 `chmod` 命令。</strong></p>
+                                <pre class="custom-code-block"><code class="language-bash">man chmod</code></pre>
+                            </li>
+                            <li>
+                                <p><strong>使用 `chmod +x semester` 使脚本可直接执行。解释 Shell 如何通过 shebang (`#!`) 知道用哪个解释器。</strong></p>
+                                <pre class="custom-code-block"><code class="language-bash">chmod +x semester
+./semester</code></pre>
+                            </li>
+                            <li>
+                                <p><strong>使用管道和重定向，将 `semester` 脚本输出的 "Last-Modified" 日期写入 `~/last-modified.txt`。</strong></p>
+                                <pre class="custom-code-block"><code class="language-bash">./semester | grep -i "Last-Modified" > ~/last-modified.txt</code></pre>
+                            </li>
+                            <li>
+                                <p><strong>(Linux 用户) 读取电池电量或 CPU 温度。 (macOS 用户可尝试 `pmset -g batt`)</strong></p>
+                                <pre class="custom-code-block"><code class="language-bash"># Linux 电池示例 (路径可能不同):
+cat /sys/class/power_supply/BAT0/capacity
+
+# Linux CPU 温度示例 (路径可能不同):
+awk '{print $1 / 1000 "°C"}' /sys/class/thermal/thermal_zone0/temp
+
+# macOS 电池示例:
+pmset -g batt | grep -Eo "\d+%" | head -n 1</code></pre>
+                            </li>
+                        </ol>
+                    </div>
+                </div>
+            </div>
+
+        </div> <!-- End of Card layout container -->
+
+        <nav class="mt-16 flex justify-between items-center">
+            <a href="lecture-0.html" class="px-6 py-3 text-indigo-highlight hover:bg-indigo-highlight/10 rounded-md font-sans-cn">
+                &larr; 上一单元 (课程介绍与理念)
+            </a>
+            <a href="lecture-2.html" class="px-6 py-3 text-indigo-highlight hover:bg-indigo-highlight/10 rounded-md font-sans-cn">
+                下一单元 (Shell 工具与脚本) &rarr;
+            </a>
+        </nav>
+    </main>
+
+    <footer class="mt-20 py-10 bg-slate-800 border-t border-slate-700 text-center">
+        <p class="font-sans-cn text-slate-400">
+            &copy; 2025 Missing Semester 中文版. 基于 MIT 原始课程.
+        </p>
+        <p class="font-sans-en text-slate-500 text-sm mt-2">
+            <a href="https://missing.csail.mit.edu/" target="_blank" class="hover:text-indigo-highlight">原始课程链接</a> | 
+            <a href="#" class="hover:text-indigo-highlight">GitHub 仓库</a>
+        </p>
+        <p class="font-sans-cn text-slate-400 text-sm mt-2">
+            由 <a href="https://huashanjian.github.io/" target="_blank" class="hover:text-indigo-highlight">Junhua Yao</a> 创建和维护
+        </p>
+    </footer>
+    
+    <script src="https://cdn.jsdelivr.net/npm/framer-motion@latest/dist/framer-motion.js"></script>
+    <script>
+        // Placeholder for Framer Motion scripts
+    </script>
+    <!-- Add PrismJS script (needs to be after content) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+</body>
+</html> 

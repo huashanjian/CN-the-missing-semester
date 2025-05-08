@@ -1,0 +1,711 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>版本控制 (Git) - 计算机的缺失课程</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              'moon-white': '#F5F5F5',
+              'sky-blue-tint': '#F0F9FF',
+              'silver-rat-grey': '#E5E7EB',
+              'ink-black': '#111827',
+              'crow-blue': '#1E40AF',
+              'medium-grey': '#6B7280',
+              'indigo-highlight': '#0EA5E9',
+            },
+            fontFamily: {
+              'sans-cn': ['"Source Han Sans SC"', 'PingFang SC', 'sans-serif'],
+              'sans-en': ['Inter', 'Manrope', 'sans-serif'],
+            }
+          }
+        }
+      }
+    </script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&family=Manrope:wght@400;700&family=Noto+Sans+SC:wght@400;700&display=swap" rel="stylesheet">
+    <!-- Add PrismJS for syntax highlighting -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-okaidia.min.css" rel="stylesheet" />
+    <style>
+      body { font-family: theme('fontFamily.sans-cn'); }
+      .font-sans-en { font-family: theme('fontFamily.sans-en'); }
+      .font-sans-cn { font-family: theme('fontFamily.sans-cn'); }
+      pre[class*="language-"], .custom-code-block { background-color: #1E293B; color: #E2E8F0; padding: theme('spacing.6'); border-radius: theme('borderRadius.xl'); overflow-x: auto; margin-top: theme('spacing.4'); margin-bottom: theme('spacing.6'); }
+      code:not(pre code), .custom-inline-code { background-color: theme('colors.slate.700'); color: theme('colors.slate.200'); padding: theme('spacing.1') theme('spacing.2'); border-radius: theme('borderRadius.md'); font-size: 0.9em; }
+      kbd { background-color: theme('colors.slate.600'); color: theme('colors.slate.100'); padding: theme('spacing.px') theme('spacing.1'); border-radius: theme('borderRadius.md'); font-family: theme('fontFamily.mono'); font-size: 0.85em; border: 1px solid theme('colors.slate.500'); box-shadow: 1px 1px 1px theme('colors.slate.900'); }
+    </style>
+</head>
+<body class="bg-slate-900 text-slate-200"> 
+
+    <header class="py-4 shadow-lg sticky top-0 bg-slate-800/90 backdrop-blur-md z-50 border-b border-slate-700">
+        <nav class="container mx-auto px-6 md:px-8 flex justify-between items-center">
+            <a href="index.html" class="text-2xl font-bold font-sans-cn">
+                <span class="text-moon-white">缺失</span><span class="text-indigo-highlight">环节</span>
+            </a>
+            <div>
+                <a href="index.html#bento-grid" class="font-sans-cn text-slate-300 hover:text-indigo-highlight ml-6">课程列表</a>
+            </div>
+        </nav>
+    </header>
+
+    <main class="container mx-auto p-4 md:p-8">
+        <section class="mb-12 pt-8 text-center">
+            <h1 class="font-sans-cn font-bold text-5xl md:text-7xl text-moon-white mb-2">
+                版本控制 (Git)
+            </h1>
+            <p class="font-sans-en text-lg md:text-xl text-medium-grey">
+                 Version Control (Git)
+            </p>
+        </section>
+
+        <div class="space-y-8 md:space-y-12">
+            <!-- Introduction to VCS and Git -->
+            <div class="bg-slate-800 shadow-2xl rounded-xl overflow-hidden">
+                <div class="p-6 md:p-8">
+                    <h2 class="font-sans-cn text-3xl font-bold text-indigo-highlight mb-6 text-center">版本控制系统 (VCS) 简介</h2>
+                    <div class="space-y-4 text-slate-300 text-base leading-relaxed">
+                        <p>版本控制系统 (Version Control Systems, VCSs) 是用于跟踪源代码（或其他文件集合）更改历史的工具。它们不仅记录了项目的演变过程（一系列的<strong class="font-bold">快照 snapshots</strong>），还极大地促进了团队协作。</p>
+                        <p>即使是个人项目，VCS 也非常有价值，它可以让你：</p>
+                        <ul class="list-disc list-inside space-y-1 text-slate-300 text-sm pl-4">
+                            <li>回顾项目的旧版本。</li>
+                            <li>理解特定更改的原因。</li>
+                            <li>安全地进行并行开发（分支）。</li>
+                        </ul>
+                        <p>在团队协作中，VCS 可以帮助我们：</p>
+                         <ul class="list-disc list-inside space-y-1 text-slate-300 text-sm pl-4">
+                            <li>查看其他成员的修改。</li>
+                            <li>解决并行开发中可能出现的冲突。</li>
+                            <li>回答诸如"谁修改了这行代码？"、"这次修改是什么时候、为什么做的？"等问题。</li>
+                        </ul>
+                        <p class="mt-4">目前，<strong class="font-bold">Git</strong> 是版本控制领域的事实标准。</p>
+                        <div class="flex justify-center mt-4">
+                           <img src="https://imgs.xkcd.com/comics/git.png" alt="XKCD Git Comic 1597" class="rounded-lg shadow-md max-w-sm">
+                        </div>
+                         <p class="text-center text-xs text-slate-400 mt-2">XKCD 漫画 #1597，形象地描绘了 Git 的学习曲线。(<a href="https://xkcd.com/1597/" target="_blank" class="text-indigo-highlight hover:underline">来源</a>)</p>
+                        <p class="mt-4">Git 的命令行界面有时被认为是"<strong class="font-bold">有泄漏的抽象 (leaky abstraction)</strong>"，直接从命令开始学习可能会导致困惑。因此，理解 Git 底层优美的<strong class="font-bold">数据模型</strong>是掌握 Git 的关键。本节将从数据模型入手。</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Git Data Model Card 1: Snapshots, History -->
+            <div class="bg-slate-800 shadow-2xl rounded-xl overflow-hidden">
+                <div class="p-6 md:p-8">
+                    <h2 class="font-sans-cn text-3xl font-bold text-indigo-highlight mb-6 text-center">Git 的数据模型 (核心概念)</h2>
+                    <div class="space-y-4 text-slate-300 text-base leading-relaxed">
+                        
+                        <h3 class="font-sans-cn text-xl font-semibold text-indigo-highlight/80 mt-6 mb-3">核心概念：快照 (Snapshots)</h3>
+                        <p>Git 将项目历史记录为一系列的<strong class="font-bold">快照 (snapshots)</strong>。每个快照代表了项目根目录下所有文件和文件夹在某个时间点的完整状态。</p>
+                        <ul class="list-disc list-inside space-y-1 text-slate-300 text-sm pl-4 mt-2">
+                            <li>文件在 Git 中被称为 <strong class="font-bold">blob</strong> (binary large object)，代表一串字节内容。</li>
+                            <li>目录在 Git 中被称为 <strong class="font-bold">tree</strong>，它将名称映射到其包含的 blob 或其他 tree。</li>
+                            <li>一个快照即对应项目根目录的那个 <strong class="font-bold">tree</strong>。</li>
+                        </ul>
+                        <pre class="custom-code-block text-sm"><code class="language-text"># 示例目录结构对应的 Tree 概念
+<root> (tree)
+|
++- foo (tree)
+|  |
+|  + bar.txt (blob)
+|
++- baz.txt (blob)</code></pre>
+
+                        <h3 class="font-sans-cn text-xl font-semibold text-indigo-highlight/80 mt-8 mb-3">建模历史：提交的有向无环图 (Commit DAG)</h3>
+                        <p>Git 不使用简单的线性历史模型，而是将历史建模为一个<strong class="font-bold">有向无环图 (Directed Acyclic Graph, DAG)</strong>。</p>
+                        <p>每个快照（在 Git 中称为一个 <strong class="font-bold">提交 commit</strong>）都指向它的一个或多个<strong class="font-bold">父提交 (parents)</strong>（即它之前的提交）。允许有多个父提交使得 Git 可以自然地表示分支合并的情况。</p>
+                        <pre class="custom-code-block text-sm"><code class="language-text"># 线性历史
+o <-- o <-- o <-- o
+
+# 分支历史
+o <-- o <-- o <-- o
+            ^
+             \
+              --- o <-- o
+
+# 合并后的历史 (M 是合并提交)
+o <-- o <-- o <-- o <---- M
+            ^            /
+             \          v
+              --- o <-- o</code></pre>
+                         <p class="text-xs text-slate-400">箭头指向父提交，表示"在...之前"的关系。</p>
+                        <p>Git 中的提交是<strong class="font-bold">不可变的 (immutable)</strong>。对历史的修改实际上是创建新的提交，并更新引用指向新的历史。</p>
+
+                        <h4 class="font-sans-cn text-lg font-semibold text-moon-white mt-6 mb-3">数据模型伪代码</h4>
+                        <pre class="custom-code-block text-sm bg-slate-700"><code class="language-pseudocode">// 文件是字节数组
+type blob = array&lt;byte&gt;
+
+// 树(目录)是名称到树或 blob 的映射 (实际存储的是对象的 ID)
+type tree = map&lt;string, tree_id | blob_id&gt;
+
+// 提交包含父节点、元数据和快照树
+type commit = struct {
+    parents: array&lt;commit_id&gt;  // 父提交 ID 列表
+    author: string             // 作者信息 (姓名, 邮箱, 时间戳)
+    committer: string          // 提交者信息 (可能不同)
+    message: string            // 提交说明
+    snapshot: tree_id          // 指向代表快照的顶级树 ID
+}
+
+// 对象可以是 blob, tree 或 commit
+type object = blob | tree | commit</code></pre>
+                    </div>
+                </div>
+            </div>
+
+             <!-- Git Data Model Card 2: Objects, Refs, Repo, Staging -->
+            <div class="bg-slate-800 shadow-2xl rounded-xl overflow-hidden">
+                <div class="p-6 md:p-8">
+                    <h3 class="font-sans-cn text-2xl font-bold text-indigo-highlight mb-6 text-center">数据模型：对象、引用与暂存区</h3>
+                    <div class="space-y-4 text-slate-300 text-base leading-relaxed">
+
+                        <h4 class="font-sans-cn text-xl font-semibold text-indigo-highlight/80 mt-6 mb-3">对象与内容寻址</h4>
+                        <p>在 Git 中，所有的数据单元（blob, tree, commit）都被称为<strong class="font-bold">对象 (objects)</strong>。每个对象都通过其内容的 <strong class="font-bold">SHA-1 哈希值</strong> 来唯一标识和存储。这就是所谓的<strong class="font-bold">内容寻址 (content-addressing)</strong>。</p>
+                        <ul class="list-disc list-inside space-y-1 text-slate-300 text-sm pl-4 mt-2">
+                            <li>如果两个对象内容完全相同，它们的 SHA-1 哈希值必然相同。</li>
+                            <li>对象通过它们的哈希值相互引用，而不是直接包含。</li>
+                        </ul>
+                        <pre class="custom-code-block text-sm"><code class="language-pseudocode">// 简化的对象存储概念
+objects = map&lt;sha1_hash_string, object_content&gt;
+
+def store(object_content):
+    id = sha1(object_content)
+    objects[id] = object_content
+    return id
+
+def load(id):
+    return objects[id]</code></pre>
+                        <p class="text-xs text-slate-400">你可以使用 <code class="custom-inline-code">git cat-file -p &lt;hash&gt;</code> 查看对象的内容。</p>
+
+                        <h4 class="font-sans-cn text-xl font-semibold text-indigo-highlight/80 mt-8 mb-3">引用 (References / refs)</h4>
+                        <p>直接使用 40 位的 SHA-1 哈希值来引用提交很不方便。Git 提供了<strong class="font-bold">引用 (references)</strong>，它们是人类可读的名称（如 <code class="custom-inline-code">main</code>, <code class="custom-inline-code">v1.0</code>），指向特定的提交哈希值。</p>
+                        <ul class="list-disc list-inside space-y-1 text-slate-300 text-sm pl-4 mt-2">
+                            <li>引用是<strong class="font-bold">可变的 (mutable)</strong>，可以更新指向新的提交（例如，当你在分支上创建新提交时，分支引用会更新）。</li>
+                            <li>常见的引用类型包括：
+                                <ul class="list-disc list-inside space-y-1 text-slate-300 text-xs pl-5 mt-1">
+                                    <li><strong class="font-bold">分支 (Branches):</strong> 如 <code class="custom-inline-code">refs/heads/main</code></li>
+                                    <li><strong class="font-bold">标签 (Tags):</strong> 如 <code class="custom-inline-code">refs/tags/v1.0</code> (指向特定发布点)</li>
+                                    <li><strong class="font-bold">远程跟踪分支:</strong> 如 <code class="custom-inline-code">refs/remotes/origin/main</code> (反映远程状态)</li>
+                                </ul>
+                            </li>
+                            <li><strong class="font-bold">HEAD</strong> 是一个特殊的引用，通常指向你当前所在（检出 checkout）的本地分支。</li>
+                        </ul>
+
+                        <h4 class="font-sans-cn text-xl font-semibold text-indigo-highlight/80 mt-8 mb-3">仓库 (Repository)</h4>
+                        <p>一个 Git <strong class="font-bold">仓库 (repository)</strong> 本质上就是项目历史中所有<strong class="font-bold">对象</strong>的集合，以及指向这些对象的<strong class="font-bold">引用</strong>的集合。所有 Git 命令最终都是在操作这些对象和引用，从而维护项目的提交历史 DAG。</p>
+
+                         <h4 class="font-sans-cn text-xl font-semibold text-indigo-highlight/80 mt-8 mb-3">暂存区 (Staging Area / Index)</h4>
+                         <p>在创建新提交（快照）之前，Git 提供了一个<strong class="font-bold">暂存区 (staging area)</strong> (也叫索引 index)。它允许你精确地选择工作目录中的哪些更改应该包含在下一次提交中。</p>
+                         <p>你可以将修改添加到暂存区 (<code class="custom-inline-code">git add</code>)，然后 <code class="custom-inline-code">git commit</code> 命令会基于暂存区的内容创建提交，而不是工作目录的当前状态。这使得创建逻辑清晰、原子化的提交成为可能。</p>
+                          <div class="mt-4 bg-slate-700 p-4 rounded-xl shadow-lg">
+                             <h5 class="font-sans-cn text-lg font-semibold text-moon-white mb-3 flex items-center"><i class="fas fa-layer-group mr-2 text-indigo-highlight"></i>Git 工作流程中的三个区域:</h5>
+                             <ol class="list-decimal list-inside space-y-1 text-slate-300 text-sm pl-4">
+                                <li><strong class="font-bold">工作目录 (Working Directory):</strong> 你实际编辑文件的项目副本。</li>
+                                <li><strong class="font-bold">暂存区 (Staging Area / Index):</strong> 标记了哪些更改将进入下一次提交。</li>
+                                <li><strong class="font-bold">Git 仓库 (.git directory / Repository):</strong> 永久存储项目历史的地方。</li>
+                             </ol>
+                         </div>
+                    </div>
+                </div>
+            </div>
+                  <!-- Git CLI Card 1: Basics -->
+                  <div class="bg-slate-800 shadow-2xl rounded-xl overflow-hidden">
+                    <div class="p-6 md:p-8">
+                        <h2 class="font-sans-cn text-3xl font-bold text-indigo-highlight mb-6 text-center">Git 命令行界面 (基础)</h2>
+                        <div class="space-y-4 text-slate-300 text-base leading-relaxed">
+                            <p>理解了 Git 的数据模型后，我们可以更好地理解命令行工具如何操作这些模型。以下是一些最基础和常用的 Git 命令：</p>
+                            
+                            <div class="mt-6 bg-slate-700 p-4 rounded-xl shadow-lg">
+                                 <ul class="list-none space-y-4 text-slate-300 text-sm">
+                                    <li>
+                                        <code class="custom-inline-code font-semibold text-indigo-highlight/90">git help &lt;command&gt;</code>
+                                        <p class="text-xs mt-1">获取指定 Git 命令的详细帮助文档。</p>
+                                    </li>
+                                    <li>
+                                        <code class="custom-inline-code font-semibold text-indigo-highlight/90">git init</code>
+                                        <p class="text-xs mt-1">在当前目录创建一个新的 Git 仓库。所有版本控制相关的数据将存储在生成的 <code class="custom-inline-code">.git</code> 隐藏目录中。</p>
+                                    </li>
+                                    <li>
+                                        <code class="custom-inline-code font-semibold text-indigo-highlight/90">git status</code>
+                                        <p class="text-xs mt-1">显示当前工作目录和暂存区的状态：哪些文件被修改了、哪些文件已暂存、哪些文件还未被 Git 跟踪等。</p>
+                                    </li>
+                                    <li>
+                                        <code class="custom-inline-code font-semibold text-indigo-highlight/90">git add &lt;filename&gt;</code>
+                                        <p class="text-xs mt-1">将指定文件的当前更改添加到暂存区，准备包含在下一次提交中。</p>
+                                        <ul class="list-disc list-inside space-y-1 text-slate-300 text-xs pl-5 mt-1">
+                                            <li><code class="custom-inline-code">git add .</code>: 添加当前目录下所有已修改和新创建（未跟踪）的文件到暂存区。</li>
+                                            <li><code class="custom-inline-code">git add -u</code>: 仅添加已跟踪文件中被修改或删除的内容到暂存区（不包括新文件）。</li>
+                                        </ul>
+                                    </li>
+                                    <li>
+                                        <code class="custom-inline-code font-semibold text-indigo-highlight/90">git commit</code>
+                                        <p class="text-xs mt-1">根据暂存区的内容创建一个新的提交（快照）。默认会打开文本编辑器让你输入提交信息。</p>
+                                         <ul class="list-disc list-inside space-y-1 text-slate-300 text-xs pl-5 mt-1">
+                                            <li><code class="custom-inline-code">git commit -m "Your commit message"</code>: 直接在命令行提供提交信息。</li>
+                                            <li><code class="custom-inline-code">git commit -a -m "Message"</code>: 自动暂存所有已跟踪且已修改的文件（不包括新文件），然后提交。</li>
+                                            <li>编写清晰、有意义的提交信息非常重要！参考 <a href="https://chris.beams.io/posts/git-commit/" target="_blank" class="text-indigo-highlight hover:underline">这篇指南</a>。</li>
+                                        </ul>
+                                    </li>
+                                    <li>
+                                        <code class="custom-inline-code font-semibold text-indigo-highlight/90">git log</code>
+                                        <p class="text-xs mt-1">显示当前分支的提交历史记录。</p>
+                                        <ul class="list-disc list-inside space-y-1 text-slate-300 text-xs pl-5 mt-1">
+                                            <li><code class="custom-inline-code">--oneline</code>: 每个提交显示为简洁的一行。</li>
+                                            <li><code class="custom-inline-code">--all --graph --decorate --oneline</code>: 以图形方式显示所有分支的提交历史 DAG，非常有用！(建议为此创建别名)。</li>
+                                        </ul>
+                                    </li>
+                                    <li>
+                                        <code class="custom-inline-code font-semibold text-indigo-highlight/90">git diff [&lt;filename&gt;]</code>
+                                        <p class="text-xs mt-1">显示工作目录中的更改（相对于暂存区）。</p>
+                                         <ul class="list-disc list-inside space-y-1 text-slate-300 text-xs pl-5 mt-1">
+                                            <li><code class="custom-inline-code">--staged</code> (或 <code class="custom-inline-code">--cached</code>): 显示暂存区中的更改（相对于上一次提交）。</li>
+                                            <li><code class="custom-inline-code">&lt;revision&gt; [&lt;filename&gt;]</code>: 显示工作目录相对于指定提交 <code class="custom-inline-code">&lt;revision&gt;</code> 的更改。</li>
+                                            <li><code class="custom-inline-code">HEAD [&lt;filename&gt;]</code>: 显示工作目录相对于上次提交 (HEAD) 的更改。</li>
+                                            <li><code class="custom-inline-code">&lt;commit1&gt;..&lt;commit2&gt; [&lt;filename&gt;]</code>: 显示两个提交之间的更改。</li>
+                                        </ul>
+                                    </li>
+                                     <li>
+                                        <code class="custom-inline-code font-semibold text-indigo-highlight/90">git checkout &lt;revision_or_branch&gt;</code>
+                                        <p class="text-xs mt-1">更新 HEAD 和工作目录以匹配指定的提交或分支。</p>
+                                        <ul class="list-disc list-inside space-y-1 text-slate-300 text-xs pl-5 mt-1">
+                                            <li>如果检出的是分支名，HEAD 将指向该分支引用。</li>
+                                            <li>如果检出的是提交哈希、标签或远程分支，HEAD 将直接指向该提交，进入"<strong class="font-bold">分离 HEAD (detached HEAD)</strong>"状态。在这种状态下做的提交不会属于任何分支，除非你基于它创建新分支。</li>
+                                        </ul>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Git CLI Card 2: Branching and Merging -->
+            <div class="bg-slate-800 shadow-2xl rounded-xl overflow-hidden">
+                <div class="p-6 md:p-8">
+                    <h2 class="font-sans-cn text-3xl font-bold text-indigo-highlight mb-6 text-center">Git 命令行：分支与合并</h2>
+                    <div class="space-y-4 text-slate-300 text-base leading-relaxed">
+                        <p>分支是 Git 的核心特性之一，它允许你在项目的主线（如 <code class="custom-inline-code">main</code> 分支）之外进行独立的开发，例如修复 bug 或开发新功能，而不会影响主线。完成后，你可以将分支的更改合并回主线。</p>
+                        
+                        <div class="mt-6 bg-slate-700 p-4 rounded-xl shadow-lg">
+                             <ul class="list-none space-y-4 text-slate-300 text-sm">
+                                <li>
+                                    <code class="custom-inline-code font-semibold text-indigo-highlight/90">git branch</code>
+                                    <p class="text-xs mt-1">列出所有本地分支。当前所在的分支会用星号 <code class="custom-inline-code">*</code> 标记。</p>
+                                    <ul class="list-disc list-inside space-y-1 text-slate-300 text-xs pl-5 mt-1">
+                                        <li><code class="custom-inline-code">-a</code>: 显示所有本地分支和远程跟踪分支。</li>
+                                    </ul>
+                                </li>
+                                <li>
+                                    <code class="custom-inline-code font-semibold text-indigo-highlight/90">git branch &lt;name&gt;</code>
+                                    <p class="text-xs mt-1">创建一个名为 <code class="custom-inline-code">&lt;name&gt;</code> 的新分支，它将指向当前所在的提交 (HEAD)。这只是创建了分支引用，并没有切换过去。</p>
+                                </li>
+                                <li>
+                                    <code class="custom-inline-code font-semibold text-indigo-highlight/90">git checkout -b &lt;name&gt;</code>
+                                    <p class="text-xs mt-1">一个便捷命令，相当于执行 <code class="custom-inline-code">git branch &lt;name&gt;</code> 后立即执行 <code class="custom-inline-code">git checkout &lt;name&gt;</code>，即创建新分支并切换到该分支。</p>
+                                </li>
+                                <li>
+                                    <code class="custom-inline-code font-semibold text-indigo-highlight/90">git merge &lt;branch_to_merge&gt;</code>
+                                    <p class="text-xs mt-1">将指定分支 <code class="custom-inline-code">&lt;branch_to_merge&gt;</code> 的历史合并到<strong class="font-bold">当前所在的分支</strong>。Git 会尝试自动合并更改。</p>
+                                    <ul class="list-disc list-inside space-y-1 text-slate-300 text-xs pl-5 mt-1">
+                                        <li>如果两个分支修改了同一文件的相同部分，可能会发生<strong class="font-bold">合并冲突 (merge conflicts)</strong>。Git 会在冲突文件中标记出冲突区域，需要你手动编辑解决冲突，然后使用 <code class="custom-inline-code">git add</code> 标记为已解决，最后完成合并提交。</li>
+                                        <li><code class="custom-inline-code">git mergetool</code>: 可以调用配置好的图形化合并工具来辅助解决冲突。</li>
+                                    </ul>
+                                </li>
+                                 <li>
+                                    <code class="custom-inline-code font-semibold text-indigo-highlight/90">git rebase &lt;base_branch&gt;</code>
+                                    <p class="text-xs mt-1">变基 (Rebase) 是另一种合并分支更改的方式。它将当前分支上自从与 <code class="custom-inline-code">&lt;base_branch&gt;</code> 分叉之后的所有提交，在 <code class="custom-inline-code">&lt;base_branch&gt;</code> 的最新提交之上重新应用一遍。这会使当前分支的历史看起来像是一条直线，仿佛是直接从 <code class="custom-inline-code">&lt;base_branch&gt;</code> 的最新状态开始开发的。</p>
+                                    <p class="text-xs text-red-400 mt-1 font-semibold"><i class="fas fa-exclamation-triangle mr-1"></i>变基黄金法则：永远不要对已经被推送到公共仓库并可能被他人使用的分支进行变基，因为它会重写提交历史。</p>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Git CLI Card 3: Remotes -->
+            <div class="bg-slate-800 shadow-2xl rounded-xl overflow-hidden">
+                <div class="p-6 md:p-8">
+                    <h2 class="font-sans-cn text-3xl font-bold text-indigo-highlight mb-6 text-center">Git 命令行：远程操作</h2>
+                    <div class="space-y-4 text-slate-300 text-base leading-relaxed">
+                        <p>Git 是一个分布式版本控制系统，这意味着你可以拥有项目的完整本地副本，并与其他（远程）仓库进行同步和协作。远程仓库通常托管在 GitHub, GitLab, Bitbucket 等平台上。</p>
+                        
+                        <div class="mt-6 bg-slate-700 p-4 rounded-xl shadow-lg">
+                             <ul class="list-none space-y-4 text-slate-300 text-sm">
+                                <li>
+                                    <code class="custom-inline-code font-semibold text-indigo-highlight/90">git remote</code>
+                                    <p class="text-xs mt-1">列出当前配置的所有远程仓库的简称 (例如 <code class="custom-inline-code">origin</code>)。</p>
+                                    <ul class="list-disc list-inside space-y-1 text-slate-300 text-xs pl-5 mt-1">
+                                        <li><code class="custom-inline-code">-v</code>: 显示远程仓库的简称及其对应的 URL。</li>
+                                    </ul>
+                                </li>
+                                <li>
+                                    <code class="custom-inline-code font-semibold text-indigo-highlight/90">git remote add &lt;name&gt; &lt;url&gt;</code>
+                                    <p class="text-xs mt-1">添加一个新的远程仓库，并为其指定一个简称 <code class="custom-inline-code">&lt;name&gt;</code> (通常是 <code class="custom-inline-code">origin</code>) 和 URL <code class="custom-inline-code">&lt;url&gt;</code>。</p>
+                                    <pre class="custom-code-block text-xs mt-1"><code class="language-bash"># 示例
+git remote add origin git@github.com:user/repo.git</code></pre>
+                                </li>
+                                <li>
+                                    <code class="custom-inline-code font-semibold text-indigo-highlight/90">git push &lt;remote_name&gt; &lt;local_branch&gt;[:&lt;remote_branch&gt;]</code>
+                                    <p class="text-xs mt-1">将本地的对象和引用（提交）推送到指定的远程仓库 <code class="custom-inline-code">&lt;remote_name&gt;</code>。它会更新远程仓库上对应的分支 <code class="custom-inline-code">&lt;remote_branch&gt;</code>（如果省略，通常与本地分支同名）。</p>
+                                    <ul class="list-disc list-inside space-y-1 text-slate-300 text-xs pl-5 mt-1">
+                                        <li><code class="custom-inline-code">git push origin main</code>: 将本地 <code class="custom-inline-code">main</code> 分支推送到 <code class="custom-inline-code">origin</code> 远程仓库的 <code class="custom-inline-code">main</code> 分支。</li>
+                                        <li><code class="custom-inline-code">-u</code> (或 <code class="custom-inline-code">--set-upstream</code>): 首次推送新分支时使用，建立本地分支与远程分支的跟踪关系，之后可以直接使用 <code class="custom-inline-code">git push</code>。</li>
+                                    </ul>
+                                </li>
+                                <li>
+                                    <code class="custom-inline-code font-semibold text-indigo-highlight/90">git branch --set-upstream-to=&lt;remote&gt;/&lt;remote_branch&gt;</code>
+                                    <p class="text-xs mt-1">如果推送时未使用 <code class="custom-inline-code">-u</code>，可以使用此命令手动设置当前本地分支跟踪指定的远程分支。</p>
+                                </li>
+                                 <li>
+                                    <code class="custom-inline-code font-semibold text-indigo-highlight/90">git fetch &lt;remote_name&gt;</code>
+                                    <p class="text-xs mt-1">从指定的远程仓库下载所有本地没有的对象和引用（更新本地的远程跟踪分支，如 <code class="custom-inline-code">origin/main</code>）。这个命令<strong class="font-bold">不会</strong>修改你当前的工作目录或本地分支，只是获取远程的最新信息。</p>
+                                </li>
+                                <li>
+                                    <code class="custom-inline-code font-semibold text-indigo-highlight/90">git pull [&lt;remote_name&gt; &lt;remote_branch&gt;]</code>
+                                    <p class="text-xs mt-1">拉取远程更改并尝试合并到当前本地分支。它大致相当于先执行 <code class="custom-inline-code">git fetch</code>，然后执行 <code class="custom-inline-code">git merge</code> (将对应的远程跟踪分支合并到当前本地分支)。</p>
+                                     <ul class="list-disc list-inside space-y-1 text-slate-300 text-xs pl-5 mt-1">
+                                        <li><code class="custom-inline-code">--rebase</code>: 使用变基 (<code class="custom-inline-code">git rebase</code>) 而不是合并 (<code class="custom-inline-code">git merge</code>) 来整合远程更改，可以保持本地提交历史的线性。</li>
+                                    </ul>
+                                </li>
+                                <li>
+                                    <code class="custom-inline-code font-semibold text-indigo-highlight/90">git clone &lt;url&gt;</code>
+                                    <p class="text-xs mt-1">从指定的 URL 下载一个完整的远程仓库副本到本地，包括所有文件的历史记录、分支和标签。它会自动将源 URL 配置为名为 <code class="custom-inline-code">origin</code> 的远程仓库。</p>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Git CLI Card 4: Undo -->
+            <div class="bg-slate-800 shadow-2xl rounded-xl overflow-hidden">
+                <div class="p-6 md:p-8">
+                    <h2 class="font-sans-cn text-3xl font-bold text-indigo-highlight mb-6 text-center">Git 命令行：撤销操作</h2>
+                    <div class="space-y-4 text-slate-300 text-base leading-relaxed">
+                        <p>在 Git 中进行操作时，难免会遇到需要撤销或修改某些操作的情况。Git 提供了多种工具来处理这些场景，但使用时需要理解它们的区别和潜在风险。</p>
+                        
+                        <div class="mt-6 bg-slate-700 p-4 rounded-xl shadow-lg">
+                             <ul class="list-none space-y-4 text-slate-300 text-sm">
+                                <li>
+                                    <code class="custom-inline-code font-semibold text-indigo-highlight/90">git commit --amend</code>
+                                    <p class="text-xs mt-1">修改<strong class="font-bold">上一次</strong>提交。可以用来修改提交信息，或者将当前暂存区的更改合并到上一次提交中。它实际上是用一个新的提交替换掉旧的上一次提交。</p>
+                                    <p class="text-xs text-orange-400 mt-1"><i class="fas fa-exclamation-circle mr-1"></i>注意：如果上一次提交已经被推送到远程仓库，修改它会改变历史，可能给协作者带来麻烦（除非你确定只有你自己在用这个分支）。</p>
+                                </li>
+                                <li>
+                                    <code class="custom-inline-code font-semibold text-indigo-highlight/90">git reset HEAD &lt;file&gt;</code>
+                                    <p class="text-xs mt-1">将文件从暂存区移除（取消 <code class="custom-inline-code">git add</code> 操作），但保留工作目录中的修改。</p>
+                                    <ul class="list-disc list-inside space-y-1 text-slate-300 text-xs pl-5 mt-1">
+                                         <li><code class="custom-inline-code">git reset</code> (不带文件名): 取消所有已暂存的更改。</li>
+                                    </ul>
+                                </li>
+                                <li>
+                                    <code class="custom-inline-code font-semibold text-indigo-highlight/90">git checkout -- &lt;file&gt;</code>
+                                    <p class="text-xs mt-1">丢弃工作目录中对指定文件的<strong class="font-bold">未暂存</strong>更改，将其恢复到上次提交 (HEAD) 或暂存区中的状态。</p>
+                                    <p class="text-xs text-red-500 mt-1 font-bold"><i class="fas fa-skull-crossbones mr-1"></i>危险：这是一个不可逆的操作，工作目录中的修改会丢失！</p>
+                                </li>
+                                <li>
+                                    <code class="custom-inline-code font-semibold text-indigo-highlight/90">git revert &lt;commit_hash&gt;</code>
+                                    <p class="text-xs mt-1">创建 一个<strong class="font-bold">新的</strong>提交，该提交的内容是指定 <code class="custom-inline-code">&lt;commit_hash&gt;</code> 提交的逆操作。这是一种安全的撤销方式，因为它不会改变现有的提交历史，而是添加一个新的"反做"提交。适用于撤销已经推送到公共分支的提交。</p>
+                                </li>
+                                <li>
+                                    <code class="custom-inline-code font-semibold text-indigo-highlight/90">git reset --hard &lt;commit_hash&gt;</code>
+                                    <p class="text-xs mt-1">将当前分支的 HEAD 指针、暂存区和工作目录全部重置到指定的 <code class="custom-inline-code">&lt;commit_hash&gt;</code> 的状态。</p>
+                                     <p class="text-xs text-red-500 mt-1 font-bold"><i class="fas fa-skull-crossbones mr-1"></i>极度危险：所有在该提交之后的提交历史、以及工作目录和暂存区中的未提交更改都将<strong class="font-bold">永久丢失</strong>！请谨慎使用！</p>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+                       <!-- Git CLI Card 5: Advanced -->
+            <div class="bg-slate-800 shadow-2xl rounded-xl overflow-hidden">
+                <div class="p-6 md:p-8">
+                    <h2 class="font-sans-cn text-3xl font-bold text-indigo-highlight mb-6 text-center">Git 命令行：高级技巧</h2>
+                    <div class="space-y-4 text-slate-300 text-base leading-relaxed">
+                        <p>除了基础操作，Git 还提供了许多高级命令和特性，可以帮助你更高效地管理项目历史和工作流程。</p>
+                        
+                        <div class="mt-6 bg-slate-700 p-4 rounded-xl shadow-lg">
+                             <ul class="list-none space-y-4 text-slate-300 text-sm">
+                                <li>
+                                    <code class="custom-inline-code font-semibold text-indigo-highlight/90">git config</code>
+                                    <p class="text-xs mt-1">配置 Git 的行为。可以通过 <code class="custom-inline-code">--local</code> (当前仓库), <code class="custom-inline-code">--global</code> (当前用户), 或 <code class="custom-inline-code">--system</code> (系统范围) 来指定配置级别。</p>
+                                </li>
+                                <li>
+                                    <code class="custom-inline-code font-semibold text-indigo-highlight/90">git clone --depth=1 &lt;url&gt;</code>
+                                    <p class="text-xs mt-1">浅克隆 (Shallow Clone)。只下载最近一次提交的历史，而不是完整的项目历史。适用于你只需要最新代码而不需要完整历史记录的场景（例如 CI/CD）。</p>
+                                </li>
+                                <li>
+                                    <code class="custom-inline-code font-semibold text-indigo-highlight/90">git add -p</code> (或 <code class="custom-inline-code">--patch</code>)
+                                    <p class="text-xs mt-1">交互式暂存。Git 会逐块 (hunk) 显示文件中的更改，让你选择是否将该块添加到暂存区。非常适合将逻辑上相关的更改分块暂存到不同的提交中。</p>
+                                </li>
+                                <li>
+                                    <code class="custom-inline-code font-semibold text-indigo-highlight/90">git rebase -i &lt;base&gt;</code> (或 <code class="custom-inline-code">--interactive</code>)
+                                    <p class="text-xs mt-1">交互式变基。打开一个编辑器，列出当前分支相对于 <code class="custom-inline-code">&lt;base&gt;</code> 的所有提交。你可以编辑这个列表来：</p>
+                                    <ul class="list-disc list-inside space-y-1 text-slate-300 text-xs pl-5 mt-1">
+                                        <li><strong class="font-bold">reorder:</strong> 重排提交顺序。</li>
+                                        <li><strong class="font-bold">edit:</strong> 修改某个提交的内容或信息。</li>
+                                        <li><strong class="font-bold">squash:</strong> 将一个提交合并到前一个提交中（保留两个提交信息）。</li>
+                                        <li><strong class="font-bold">fixup:</strong> 将一个提交合并到前一个提交中（丢弃当前提交信息）。</li>
+                                        <li><strong class="font-bold">drop:</strong> 删除一个提交。</li>
+                                    </ul>
+                                    <p class="text-xs text-orange-400 mt-1"><i class="fas fa-exclamation-circle mr-1"></i>同样遵循变基黄金法则：不要对公共分支进行交互式变基。</p>
+                                </li>
+                                 <li>
+                                    <code class="custom-inline-code font-semibold text-indigo-highlight/90">git blame &lt;filename&gt;</code>
+                                    <p class="text-xs mt-1">逐行显示文件内容，并标注每一行最后是由谁在哪次提交中修改的。对于追溯代码来源和理解历史变更非常有帮助。</p>
+                                </li>
+                                <li>
+                                    <code class="custom-inline-code font-semibold text-indigo-highlight/90">git stash</code>
+                                    <p class="text-xs mt-1">临时保存当前工作目录和暂存区中的未提交更改，并将工作目录恢复到干净状态 (HEAD)。</p>
+                                     <ul class="list-disc list-inside space-y-1 text-slate-300 text-xs pl-5 mt-1">
+                                        <li><code class="custom-inline-code">save "message"</code>: 保存时添加描述信息。</li>
+                                        <li><code class="custom-inline-code">list</code>: 列出所有保存的 stash。</li>
+                                        <li><code class="custom-inline-code">apply [&lt;stash_id&gt;]</code>: 应用指定的 stash (默认最新)，但不从列表中移除。</li>
+                                        <li><code class="custom-inline-code">pop [&lt;stash_id&gt;]</code>: 应用指定的 stash (默认最新) 并从列表中移除。</li>
+                                        <li><code class="custom-inline-code">drop [&lt;stash_id&gt;]</code>: 删除指定的 stash。</li>
+                                    </ul>
+                                    <p class="text-xs text-slate-400 mt-1">当你需要快速切换分支处理紧急任务，或者在执行可能因工作目录不干净而失败的操作（如 pull, rebase）前，<code class="custom-inline-code">git stash</code> 非常有用。</p>
+                                </li>
+                                <li>
+                                    <code class="custom-inline-code font-semibold text-indigo-highlight/90">git bisect</code>
+                                    <p class="text-xs mt-1">通过在提交历史中进行二分查找来定位引入错误的提交。你标记一个"好"的提交（没有错误）和一个"坏"的提交（有错误），然后 Git 会自动检出中间的提交，你测试并告诉 Git 这个提交是好是坏，重复此过程直到找到引入错误的第一个提交。</p>
+                                </li>
+                                <li>
+                                    <code class="custom-inline-code font-semibold text-indigo-highlight/90">.gitignore 文件</code>
+                                    <p class="text-xs mt-1">一个纯文本文件，用于指定 Git 应该忽略、不进行版本控制的文件和目录模式。例如编译产物 (<code class="custom-inline-code">*.o</code>, <code class="custom-inline-code">*.class</code>), 日志文件 (<code class="custom-inline-code">*.log</code>), 编辑器临时文件 (<code class="custom-inline-code">*~</code>, <code class="custom-inline-code">.swp</code>), 依赖目录 (<code class="custom-inline-code">node_modules/</code>), 缓存目录 (<code class="custom-inline-code">__pycache__/</code>) 等。</p>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Git CLI Card 6: Miscellaneous -->
+            <div class="bg-slate-800 shadow-2xl rounded-xl overflow-hidden">
+                <div class="p-6 md:p-8">
+                    <h2 class="font-sans-cn text-3xl font-bold text-indigo-highlight mb-6 text-center">Git 其他相关信息</h2>
+                    <div class="space-y-4 text-slate-300 text-base leading-relaxed">
+                        <p>除了核心命令和数据模型，还有一些与 Git 生态相关的工具和概念值得了解：</p>
+                        
+                        <div class="mt-6 bg-slate-700 p-4 rounded-xl shadow-lg">
+                             <ul class="list-disc list-inside space-y-3 text-slate-300 text-sm pl-4">
+                                <li>
+                                    <strong class="font-bold">GUI 客户端:</strong> 
+                                    虽然本课程主要关注命令行界面，但存在许多图形用户界面 (GUI) 客户端可以帮助可视化历史和简化操作，例如 Sourcetree, GitKraken, GitHub Desktop, 以及 VS Code 等编辑器内置的 Git 工具。
+                                </li>
+                                 <li>
+                                    <strong class="font-bold">Shell 集成:</strong> 
+                                    将当前的 Git 分支和状态信息集成到你的 Shell 提示符中非常方便，可以让你时刻了解仓库状态。许多 Shell 框架 (如 Oh My Zsh) 都提供了此类功能。
+                                </li>
+                                <li>
+                                    <strong class="font-bold">编辑器集成:</strong> 
+                                    大多数现代代码编辑器都提供了强大的 Git 集成，允许你在编辑器内部执行常见的 Git 操作（如查看 diff、暂存、提交、切换分支等）。例如 Vim 的 <a href="https://github.com/tpope/vim-fugitive" target="_blank" class="text-indigo-highlight hover:underline">fugitive.vim</a> 插件，以及 VS Code 和 JetBrains IDEs 的内置功能。
+                                </li>
+                                <li>
+                                    <strong class="font-bold">工作流程 (Workflows):</strong> 
+                                    对于团队协作和大型项目，通常会遵循特定的 Git 工作流程来规范分支管理、代码审查和发布流程。常见的工作流包括 GitFlow, GitHub Flow, GitLab Flow 等。选择哪种工作流取决于团队的需求和偏好。
+                                </li>
+                                 <li>
+                                    <strong class="font-bold">GitHub (及类似平台):</strong> 
+                                    需要明确区分 Git (版本控制工具本身) 和 GitHub (一个基于 Git 的代码托管和协作平台)。GitHub 提供了仓库托管、问题跟踪、代码审查 (通过 Pull Requests)、自动化 (Actions) 等功能。GitLab 和 Bitbucket 是其他流行的类似平台。
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Resources Card -->
+            <div class="bg-slate-800 shadow-2xl rounded-xl overflow-hidden">
+                <div class="p-6 md:p-8">
+                    <h2 class="font-sans-cn text-3xl font-bold text-indigo-highlight mb-6 text-center">学习资源 (Resources)</h2>
+                    <div class="space-y-4 text-slate-300 text-base leading-relaxed">
+                        <p>以下是一些推荐的深入学习 Git 的资源：</p>
+                        
+                        <div class="mt-6 bg-slate-700 p-4 rounded-xl shadow-lg">
+                             <ul class="list-disc list-inside space-y-3 text-slate-300 text-sm pl-4">
+                                <li>
+                                    <a href="https://git-scm.com/book/en/v2" target="_blank" class="text-indigo-highlight hover:underline font-semibold">Pro Git Book</a>: 官方推荐书籍，非常全面。建议阅读前 5 章以熟练掌握基础，后续章节包含高级内容。
+                                </li>
+                                 <li>
+                                     <a href="https://ohshitgit.com/" target="_blank" class="text-indigo-highlight hover:underline font-semibold">Oh Shit, Git!?!</a>: 如何从常见的 Git 错误中恢复的实用指南。
+                                </li>
+                                <li>
+                                     <a href="https://eagain.net/articles/git-for-computer-scientists/" target="_blank" class="text-indigo-highlight hover:underline font-semibold">Git for Computer Scientists</a>: 对 Git 数据模型的简洁解释，包含图示。
+                                </li>
+                                <li>
+                                     <a href="https://jwiegley.github.io/git-from-the-bottom-up/" target="_blank" class="text-indigo-highlight hover:underline font-semibold">Git from the Bottom Up</a>: 对 Git 实现细节的深入探讨。
+                                </li>
+                                <li>
+                                     <a href="https://smusamashah.github.io/blog/2017/10/14/explain-git-in-simple-words" target="_blank" class="text-indigo-highlight hover:underline font-semibold">How to explain git in simple words</a>: 另一种简化解释 Git 的尝试。
+                                </li>
+                                <li>
+                                     <a href="https://learngitbranching.js.org/" target="_blank" class="text-indigo-highlight hover:underline font-semibold">Learn Git Branching</a>: 一个交互式的、基于浏览器的学习 Git 分支的游戏化教程。
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Exercises Card 1-5 -->
+            <div class="bg-slate-800 shadow-2xl rounded-xl overflow-hidden">
+                <div class="p-6 md:p-8">
+                    <h2 class="font-sans-cn text-3xl font-bold text-indigo-highlight mb-6 text-center">练习 (1-5)</h2>
+                    <ol class="list-decimal list-inside space-y-8 text-slate-300 text-sm pl-4">
+                        
+                        <li class="pt-6 border-t border-slate-700">
+                            <p>如果你是 Git 新手，阅读 Pro Git 的前几章或完成 Learn Git Branching 教程。在学习时，注意将命令与数据模型联系起来。</p>
+                             <!-- No specific answer hint needed -->
+                        </li>
+
+                        <li class="pt-6 border-t border-slate-700">
+                             <p>克隆<a href="https://github.com/missing-semester/missing-semester" target="_blank" class="text-indigo-highlight hover:underline">课程网站的仓库</a>。</p>
+                             <!-- No specific answer hint needed -->
+                        </li>
+                        
+                        <li class="pt-6 border-t border-slate-700">
+                             <p>通过可视化图形来探索克隆仓库的版本历史。</p>
+                             <details class="mt-3 bg-slate-700 p-3 rounded-lg">
+                                <summary class="cursor-pointer text-indigo-highlight/80 hover:text-indigo-highlight text-xs font-semibold">查看解答提示</summary>
+                                <div class="pt-3 text-slate-300 text-xs space-y-2">
+                                     <pre class="custom-code-block text-xs whitespace-pre-wrap"><code class="language-bash">git log --all --graph --decorate --oneline</code></pre>
+                                </div>
+                            </details>
+                        </li>
+
+                        <li class="pt-6 border-t border-slate-700">
+                             <p>谁是最后一个修改 <code class="custom-inline-code">README.md</code> 文件的人？</p>
+                              <details class="mt-3 bg-slate-700 p-3 rounded-lg">
+                                <summary class="cursor-pointer text-indigo-highlight/80 hover:text-indigo-highlight text-xs font-semibold">查看解答提示</summary>
+                                <div class="pt-3 text-slate-300 text-xs space-y-2">
+                                     <pre class="custom-code-block text-xs whitespace-pre-wrap"><code class="language-bash"># 显示最后一次修改 README.md 的提交作者信息
+git log -n 1 --pretty=format:"%an (%ae)" -- README.md</code></pre>
+                                     <p>(<code class="custom-inline-code">-n 1</code>: 只显示最近一次提交, <code class="custom-inline-code">--pretty=format:...</code>: 自定义输出格式, <code class="custom-inline-code">%an</code>: 作者名, <code class="custom-inline-code">%ae</code>: 作者邮箱, <code class="custom-inline-code">-- README.md</code>: 指定文件)</p>
+                                </div>
+                            </details>
+                        </li>
+
+                        <li class="pt-6 border-t border-slate-700">
+                            <p>与 <code class="custom-inline-code">_config.yml</code> 文件中包含 <code class="custom-inline-code">collections:</code> 的那一行相关的最后一次修改的提交信息是什么？</p>
+                             <details class="mt-3 bg-slate-700 p-3 rounded-lg">
+                                <summary class="cursor-pointer text-indigo-highlight/80 hover:text-indigo-highlight text-xs font-semibold">查看解答提示</summary>
+                                <div class="pt-3 text-slate-300 text-xs space-y-2">
+                                    <pre class="custom-code-block text-xs whitespace-pre-wrap"><code class="language-bash"># 1. 使用 git blame 找到修改该行的提交哈希
+git blame _config.yml | grep "collections:"
+# (假设输出的第一列是提交哈希 <hash>)
+
+# 2. 使用 git show 显示该提交的详细信息（包括提交信息）
+git show <hash></code></pre>
+                                </div>
+                            </details>
+                        </li>
+                    </ol>
+                </div>
+            </div>
+            <!-- Exercises Card 6-10 -->
+            <div class="bg-slate-800 shadow-2xl rounded-xl overflow-hidden">
+                 <div class="p-6 md:p-8">
+                    <h2 class="font-sans-cn text-3xl font-bold text-indigo-highlight mb-6 text-center">练习 (6-10)</h2>
+                    <ol start="6" class="list-decimal list-inside space-y-8 text-slate-300 text-sm pl-4">
+                        <li class="pt-6 border-t border-slate-700">
+                            <p>(高级，请谨慎操作) 假设你不小心提交了一个大文件或敏感信息。尝试在一个<strong class="font-bold">测试仓库</strong>中添加一个文件，进行几次提交，然后学习如何从 Git 的历史记录中彻底删除这个文件及其所有痕迹 (搜索 "git remove file from history" 或参考 <a href="https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/removing-sensitive-data-from-a-repository" target="_blank" class="text-indigo-highlight hover:underline">GitHub 文档</a>)。</p>
+                            <details class="mt-3 bg-slate-700 p-3 rounded-lg">
+                                <summary class="cursor-pointer text-indigo-highlight/80 hover:text-indigo-highlight text-xs font-semibold">查看解答提示</summary>
+                                <div class="pt-3 text-slate-300 text-xs space-y-2">
+                                    <p class="text-orange-400"><i class="fas fa-exclamation-triangle mr-1"></i>警告：这是一个危险操作，建议使用专门工具并在操作前备份！</p>
+                                    <p>推荐工具：<code class="custom-inline-code">git filter-repo</code> (需要单独安装) 或 <code class="custom-inline-code">bfg-repo-cleaner</code>。</p>
+                                    <pre class="custom-code-block text-xs whitespace-pre-wrap"><code class="language-bash"># 使用 git filter-repo (示例)
+# 按路径删除文件:
+# git filter-repo --path path/to/your/file --invert-paths
+# 按文件名模式删除:
+# git filter-repo --path-glob '*.secret' --invert-paths
+
+# 操作完成后，通常需要强制推送覆盖远程历史 (如果已推送):
+# git push origin --force --all
+# git push origin --force --tags
+
+# 清理本地残留引用和垃圾回收:
+# git for-each-ref --format='%(refname)' refs/original/ | xargs -n 1 git update-ref -d
+# git reflog expire --expire=now --all
+# git gc --prune=now --aggressive</code></pre>
+                                    <p>(旧方法 <code class="custom-inline-code">git filter-branch</code> 已不推荐使用，复杂且慢)。</p>
+                                </div>
+                            </details>
+                        </li>
+
+                        <li class="pt-6 border-t border-slate-700">
+                            <p>克隆一个仓库，修改其中一个文件但不提交。执行 <code class="custom-inline-code">git stash</code>。你的工作目录发生了什么变化？执行 <code class="custom-inline-code">git log --all --oneline</code> 能看到 stash 吗？执行 <code class="custom-inline-code">git stash pop</code> 恢复更改。描述一下 <code class="custom-inline-code">git stash</code> 可能有用的场景。</p>
+                            <details class="mt-3 bg-slate-700 p-3 rounded-lg">
+                                <summary class="cursor-pointer text-indigo-highlight/80 hover:text-indigo-highlight text-xs font-semibold">查看解答提示</summary>
+                                <div class="pt-3 text-slate-300 text-xs space-y-2">
+                                    <ul>
+                                        <li><code class="custom-inline-code">git stash</code>: 工作目录恢复到 HEAD 状态（变干净），修改被保存到一个临时的 stash 记录中。</li>
+                                        <li><code class="custom-inline-code">git log</code>: 看不到 stash，因为它不属于正常的提交历史。</li>
+                                        <li><code class="custom-inline-code">git stash pop</code>: 恢复之前保存的修改，并从 stash 列表中移除该记录。</li>
+                                        <li>有用场景：需要临时切换分支处理紧急任务；在 pull/rebase 前清理工作区等。</li>
+                                    </ul>
+                                </div>
+                            </details>
+                        </li>
+                        
+                         <li class="pt-6 border-t border-slate-700">
+                            <p>在你的 <code class="custom-inline-code">~/.gitconfig</code> 文件中创建一个别名 <code class="custom-inline-code">graph</code>，使其执行 <code class="custom-inline-code">git log --all --graph --decorate --oneline</code>。</p>
+                             <details class="mt-3 bg-slate-700 p-3 rounded-lg">
+                                <summary class="cursor-pointer text-indigo-highlight/80 hover:text-indigo-highlight text-xs font-semibold">查看解答提示</summary>
+                                <div class="pt-3 text-slate-300 text-xs space-y-2">
+                                    <p>方法1: 编辑 <code class="custom-inline-code">~/.gitconfig</code> 添加:</p>
+                                    <pre class="custom-code-block text-xs whitespace-pre-wrap"><code class="language-ini">[alias]
+    graph = log --all --graph --decorate --oneline</code></pre>
+                                    <p>方法2: 使用命令:</p>
+                                     <pre class="custom-code-block text-xs whitespace-pre-wrap"><code class="language-bash">git config --global alias.graph "log --all --graph --decorate --oneline"</code></pre>
+                                </div>
+                            </details>
+                        </li>
+
+                        <li class="pt-6 border-t border-slate-700">
+                            <p>设置全局 Git 忽略文件。首先运行 <code class="custom-inline-code">git config --global core.excludesfile ~/.gitignore_global</code>，然后创建并编辑 <code class="custom-inline-code">~/.gitignore_global</code> 文件，添加一些常见的忽略模式，例如 <code class="custom-inline-code">.DS_Store</code>, <code class="custom-inline-code">Thumbs.db</code>, <code class="custom-inline-code">*~</code>, <code class="custom-inline-code">*.swp</code>, <code class="custom-inline-code">node_modules/</code>, <code class="custom-inline-code">__pycache__/</code> 等。</p>
+                             <!-- No specific answer hint needed, involves user configuration -->
+                        </li>
+
+                        <li class="pt-6 border-t border-slate-700">
+                            <p>(可选) Fork <a href="https://github.com/missing-semester/missing-semester" target="_blank" class="text-indigo-highlight hover:underline">课程网站仓库</a>，找到一处可以改进的地方（例如拼写错误、链接失效、样式微调等），提交一个 Pull Request 到原始仓库 (请确保你的修改是有意义的)。</p>
+                             <!-- No specific answer hint needed, involves external interaction -->
+                        </li>
+
+                    </ol>
+                 </div>
+            </div>
+        </div>
+
+        <!-- 导航 -->
+        <nav class="mt-16 flex justify-between items-center">
+            <a href="lecture-5.html" class="px-6 py-3 text-indigo-highlight hover:bg-indigo-highlight/10 rounded-md font-sans-cn">
+                &larr; 上一单元 (命令行环境)
+            </a>
+            <a href="lecture-7.html" class="px-6 py-3 text-indigo-highlight hover:bg-indigo-highlight/10 rounded-md font-sans-cn">
+                下一单元 (调试和性能分析) &rarr;
+            </a>
+        </nav>
+    </main>
+
+    <footer class="mt-20 py-10 bg-slate-800 border-t border-slate-700 text-center">
+        <p class="font-sans-cn text-slate-400">
+            &copy; 2025 Missing Semester 中文版. 基于 MIT 原始课程.
+        </p>
+        <p class="font-sans-en text-slate-500 text-sm mt-2">
+            <a href="https://missing.csail.mit.edu/" target="_blank" class="hover:text-indigo-highlight">原始课程链接</a> | 
+            <a href="#" class="hover:text-indigo-highlight">GitHub 仓库</a>
+        </p>
+        <p class="font-sans-cn text-slate-400 text-sm mt-2">
+            由 <a href="https://huashanjian.github.io/" target="_blank" class="hover:text-indigo-highlight">Junhua Yao</a> 创建和维护
+        </p>
+    </footer>
+    
+    <script src="https://cdn.jsdelivr.net/npm/framer-motion@latest/dist/framer-motion.js"></script>
+    <script>
+        // Placeholder for Framer Motion scripts
+    </script>
+    <!-- Add PrismJS script (needs to be after content) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+</body>
+</html> 

@@ -1,0 +1,755 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>杂项 - 计算机的缺失课程</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              'moon-white': '#F5F5F5',
+              'sky-blue-tint': '#F0F9FF',
+              'silver-rat-grey': '#E5E7EB',
+              'ink-black': '#111827',
+              'crow-blue': '#1E40AF',
+              'medium-grey': '#6B7280',
+              'indigo-highlight': '#0EA5E9',
+            },
+            fontFamily: {
+              'sans-cn': ['"Source Han Sans SC"', 'PingFang SC', 'sans-serif'],
+              'sans-en': ['Inter', 'Manrope', 'sans-serif'],
+            }
+          }
+        }
+      }
+    </script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&family=Manrope:wght@400;700&family=Noto+Sans+SC:wght@400;700&display=swap" rel="stylesheet">
+    <script>
+    MathJax = {
+      tex: {
+        inlineMath: [['\\(', '\\)']],
+        displayMath: [['\\[', '\\]']]
+      },
+      svg: {
+        fontCache: 'global'
+      }
+    };
+    </script>
+    <script type="text/javascript" id="MathJax-script" async
+        src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js">
+    </script>
+    <style>
+      body { font-family: theme('fontFamily.sans-cn'); }
+      .font-sans-en { font-family: theme('fontFamily.sans-en'); }
+      .font-sans-cn { font-family: theme('fontFamily.sans-cn'); }
+      pre[class*="language-"], .custom-code-block { background-color: #1E293B; color: #E2E8F0; padding: theme('spacing.6'); border-radius: theme('borderRadius.xl'); overflow-x: auto; margin-top: theme('spacing.4'); margin-bottom: theme('spacing.6'); }
+      code:not(pre code), .custom-inline-code { background-color: theme('colors.slate.700'); color: theme('colors.slate.200'); padding: theme('spacing.1') theme('spacing.2'); border-radius: theme('borderRadius.md'); font-size: 0.9em; }
+      kbd { background-color: theme('colors.slate.600'); color: theme('colors.slate.100'); padding: theme('spacing.px') theme('spacing.1'); border-radius: theme('borderRadius.md'); font-family: theme('fontFamily.mono'); font-size: 0.85em; border: 1px solid theme('colors.slate.500'); box-shadow: 1px 1px 1px theme('colors.slate.900'); }
+    </style>
+</head>
+<body class="bg-slate-900 text-slate-200"> 
+
+    <header class="py-4 shadow-lg sticky top-0 bg-slate-800/90 backdrop-blur-md z-50 border-b border-slate-700">
+        <nav class="container mx-auto px-6 md:px-8 flex justify-between items-center">
+            <a href="index.html" class="text-2xl font-bold font-sans-cn">
+                <span class="text-moon-white">缺失</span><span class="text-indigo-highlight">环节</span>
+            </a>
+            <div>
+                <a href="index.html#bento-grid" class="font-sans-cn text-slate-300 hover:text-indigo-highlight ml-6">课程列表</a>
+            </div>
+        </nav>
+    </header>
+
+    <main class="container mx-auto p-4 md:p-8">
+        <section class="mb-12 pt-8 text-center">
+            <h1 class="font-sans-cn font-bold text-5xl md:text-7xl text-moon-white mb-2">
+                杂项
+            </h1>
+            <p class="font-sans-en text-lg md:text-xl text-medium-grey">
+                 Potpourri
+            </p>
+        </section>
+
+        <div class="space-y-8 md:space-y-12">
+            <!-- Keyboard Remapping Card -->
+            <div class="bg-slate-800 shadow-2xl rounded-xl overflow-hidden">
+                <div class="p-6 md:p-8">
+                    <h2 class="font-sans-cn text-3xl font-bold text-indigo-highlight mb-6 text-center">键盘重映射 (Keyboard Remapping)</h2>
+                    <div class="space-y-4 text-slate-300 text-base leading-relaxed">
+                        <p>键盘是你与计算机交互的主要工具之一。与计算机的大多数方面一样，它是高度可配置的，进行一些个性化设置可以显著提高效率和舒适度。</p>
+                        
+                        <h3 class="font-sans-cn text-xl font-semibold text-indigo-highlight/80 mt-6 mb-3">基本重映射</h3>
+                        <p>最常见的定制是重新映射按键。例如，很多人发现 <kbd>Caps Lock</kbd> 键位置优越但功能鸡肋，因此将其重映射为更有用的键：</p>
+                         <ul class="list-disc list-inside space-y-1 text-slate-300 text-sm pl-4 mt-2">
+                            <li><kbd>Caps Lock</kbd> -> <kbd>Ctrl</kbd> (对 Emacs 或大量使用 Ctrl 快捷键的用户非常友好)</li>
+                            <li><kbd>Caps Lock</kbd> -> <kbd>Esc</kbd> (对 Vim 用户非常方便)</li>
+                            <li>交换 <kbd>Ctrl</kbd> 和 <kbd>Meta</kbd> (Win/Cmd) 键，以便在不同操作系统间保持肌肉记忆。</li>
+                         </ul>
+
+                        <h3 class="font-sans-cn text-xl font-semibold text-indigo-highlight/80 mt-8 mb-3">映射到自定义命令/宏</h3>
+                        <p>更进一步，你可以将按键或组合键映射到任意自定义命令或宏：</p>
+                        <ul class="list-disc list-inside space-y-1 text-slate-300 text-sm pl-4 mt-2">
+                           <li>绑定快捷键打开新的终端窗口或特定应用程序。</li>
+                           <li>设置宏快速输入常用文本（如邮箱地址）。</li>
+                           <li>绑定按键使电脑或显示器进入睡眠状态。</li>
+                        </ul>
+                        
+                        <h3 class="font-sans-cn text-xl font-semibold text-indigo-highlight/80 mt-8 mb-3">高级定制与工具</h3>
+                        <p>一些工具支持更复杂的定制，如根据按键时长执行不同操作（Tap vs Hold）、按键序列、或仅在特定应用中生效的映射。</p>
+                        <div class="mt-6 bg-slate-700 p-4 rounded-xl shadow-lg">
+                             <h4 class="font-sans-cn text-lg font-semibold text-moon-white mb-3 flex items-center"><i class="fas fa-tools mr-2 text-indigo-highlight"></i>常用工具:</h4>
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                <div>
+                                    <h5 class="font-semibold text-sky-300 mb-1">macOS</h5>
+                                    <ul class="list-disc list-inside space-y-1 text-slate-300 text-xs pl-4">
+                                        <li>Karabiner-Elements</li>
+                                        <li>skhd (常与 yabai 配合)</li>
+                                        <li>BetterTouchTool</li>
+                                        <li>系统设置</li>
+                                    </ul>
+                                </div>
+                                 <div>
+                                    <h5 class="font-semibold text-emerald-300 mb-1">Linux</h5>
+                                    <ul class="list-disc list-inside space-y-1 text-slate-300 text-xs pl-4">
+                                        <li>xmodmap, setxkbmap, xkb</li>
+                                        <li>Autokey</li>
+                                        <li>kmonad (跨平台)</li>
+                                        <li>桌面环境设置 (GNOME Tweaks, KDE)</li>
+                                    </ul>
+                                </div>
+                                 <div>
+                                    <h5 class="font-semibold text-blue-300 mb-1">Windows</h5>
+                                     <ul class="list-disc list-inside space-y-1 text-slate-300 text-xs pl-4">
+                                        <li>PowerToys Keyboard Manager</li>
+                                        <li>AutoHotkey</li>
+                                        <li>SharpKeys</li>
+                                    </ul>
+                                </div>
+                            </div>
+                             <h5 class="font-semibold text-purple-300 mt-4 mb-1">跨平台/固件级</h5>
+                             <ul class="list-disc list-inside space-y-1 text-slate-300 text-xs pl-4">
+                                <li>QMK Firmware / VIA / Vial (用于支持的机械键盘)</li>
+                             </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Daemons Card -->
+            <div class="bg-slate-800 shadow-2xl rounded-xl overflow-hidden">
+                 <div class="p-6 md:p-8">
+                    <h2 class="font-sans-cn text-3xl font-bold text-indigo-highlight mb-6 text-center">守护进程 (Daemons)</h2>
+                    <div class="space-y-4 text-slate-300 text-base leading-relaxed">
+                        <p>守护进程 (daemon) 是指那些在后台持续运行、通常在系统启动时就开始执行的程序。它们不像普通程序那样需要用户交互启动，而是默默地提供各种系统服务。常见的例子有 <code class="custom-inline-code">sshd</code> (SSH 服务)，<code class="custom-inline-code">nginx</code> (Web 服务器)，数据库服务等。</p>
+                        
+                        <h3 class="font-sans-cn text-xl font-semibold text-indigo-highlight/80 mt-6 mb-3">服务管理</h3>
+                        <div class="mt-4 grid grid-cols-1 md:grid-cols-3 gap-4">
+                            <!-- Linux -->
+                            <div class="bg-slate-700 p-4 rounded-xl shadow-lg">
+                                <h4 class="font-semibold text-emerald-300 mb-2"><i class="fab fa-linux mr-1"></i>Linux (<code class="custom-inline-code">systemd</code>)</h4>
+                                <ul class="list-disc list-inside space-y-1 text-slate-300 text-xs pl-4">
+                                    <li>管理器: <code class="custom-inline-code">systemd</code></li>
+                                    <li>控制命令: <code class="custom-inline-code">systemctl</code>
+                                        <ul class="list-disc list-inside space-y-1 text-slate-400 text-xs pl-5 mt-1">
+                                            <li><code class="custom-inline-code">status</code>, <code class="custom-inline-code">start</code>, <code class="custom-inline-code">stop</code>, <code class="custom-inline-code">restart</code></li>
+                                            <li><code class="custom-inline-code">enable</code> (开机自启), <code class="custom-inline-code">disable</code></li>
+                                        </ul>
+                                    </li>
+                                    <li>配置文件: <code class="custom-inline-code">.service</code> 文件 (位于 <code class="custom-inline-code">/etc/systemd/system/</code> 或 <code class="custom-inline-code">~/.config/systemd/user/</code>)</li>
+                                </ul>
+                            </div>
+                            <!-- macOS -->
+                             <div class="bg-slate-700 p-4 rounded-xl shadow-lg">
+                                <h4 class="font-semibold text-sky-300 mb-2"><i class="fab fa-apple mr-1"></i>macOS (<code class="custom-inline-code">launchd</code>)</h4>
+                                 <ul class="list-disc list-inside space-y-1 text-slate-300 text-xs pl-4">
+                                    <li>管理器: <code class="custom-inline-code">launchd</code></li>
+                                    <li>控制命令: <code class="custom-inline-code">launchctl</code></li>
+                                    <li>配置文件: <code class="custom-inline-code">.plist</code> 文件 (位于 <code class="custom-inline-code">/Library/LaunchDaemons</code>, <code class="custom-inline-code">/Library/LaunchAgents</code>, <code class="custom-inline-code">~/Library/LaunchAgents</code>)</li>
+                                </ul>
+                            </div>
+                             <!-- Windows -->
+                             <div class="bg-slate-700 p-4 rounded-xl shadow-lg">
+                                <h4 class="font-semibold text-blue-300 mb-2"><i class="fab fa-windows mr-1"></i>Windows (Services)</h4>
+                                 <ul class="list-disc list-inside space-y-1 text-slate-300 text-xs pl-4">
+                                     <li>管理工具: <code class="custom-inline-code">services.msc</code> (图形化)</li>
+                                     <li>命令行: PowerShell (<code class="custom-inline-code">Get-Service</code>, <code class="custom-inline-code">Start-Service</code> 等)</li>
+                                 </ul>
+                            </div>
+                        </div>
+                        <p class="text-xs text-slate-400 mt-2">创建自定义服务文件（如 systemd 的 .service 或 launchd 的 .plist）可以让你将自己的应用程序或脚本作为后台服务来管理。</p>
+                        
+                        <h3 class="font-sans-cn text-xl font-semibold text-indigo-highlight/80 mt-8 mb-3">定时任务 (Scheduled Tasks)</h3>
+                        <p>定时任务允许你安排命令或脚本在特定时间或按固定间隔自动执行。</p>
+                        <div class="mt-4 bg-slate-700 p-4 rounded-xl shadow-lg">
+                            <ul class="list-disc list-inside space-y-2 text-slate-300 text-sm pl-4">
+                                <li><code class="custom-inline-code">cron</code> (Linux/macOS): 经典工具，使用 <code class="custom-inline-code">crontab -e</code> 编辑任务列表，通过 crontab 表达式指定时间。</li>
+                                <li><code class="custom-inline-code">systemd Timers</code> (Linux): 更现代、灵活的替代方案，通过 <code class="custom-inline-code">.timer</code> 文件配置。</li>
+                                <li><code class="custom-inline-code">launchd</code> Timers (macOS): 在 <code class="custom-inline-code">.plist</code> 文件中使用 <code class="custom-inline-code">StartInterval</code> 或 <code class="custom-inline-code">StartCalendarInterval</code>。</li>
+                                <li>任务计划程序 (Task Scheduler) (Windows): Windows 内置的图形化定时任务工具。</li>
+                            </ul>
+                        </div>
+                    </div>
+                 </div>
+            </div>
+            <!-- FUSE Card -->
+            <div class="bg-slate-800 shadow-2xl rounded-xl overflow-hidden">
+                 <div class="p-6 md:p-8">
+                    <h2 class="font-sans-cn text-3xl font-bold text-indigo-highlight mb-6 text-center">FUSE (用户空间文件系统)</h2>
+                    <div class="space-y-4 text-slate-300 text-base leading-relaxed">
+                        <p>通常，文件系统的实现位于操作系统内核中。但 <strong class="font-bold">FUSE (Filesystem in Userspace)</strong> 是一种允许用户程序实现文件系统接口的机制。它充当内核和用户空间代码之间的桥梁，使得在用户态响应和处理文件系统操作成为可能。</p>
+                        <p>这意味着你可以编写程序，将各种数据源或服务"挂载"为看起来像普通文件和目录的文件系统，然后使用标准的文件操作命令（`ls`, `cd`, `cat`, `cp` 等）或图形化文件管理器来与之交互。</p>
+
+                         <h3 class="font-sans-cn text-xl font-semibold text-indigo-highlight/80 mt-8 mb-3">有趣的 FUSE 应用示例</h3>
+                          <div class="mt-4 bg-slate-700 p-4 rounded-xl shadow-lg">
+                             <ul class="list-disc list-inside space-y-2 text-slate-300 text-sm pl-4">
+                                <li><code class="custom-inline-code">sshfs</code>: 通过 SSH 将远程目录挂载到本地。</li>
+                                <li><code class="custom-inline-code">rclone mount</code>: 将多种云存储服务 (Dropbox, Google Drive, S3 等) 挂载为本地文件系统。</li>
+                                <li><code class="custom-inline-code">gocryptfs</code> / <code class="custom-inline-code">cryfs</code> / <code class="custom-inline-code">encfs</code>: 创建加密的覆盖文件系统。</li>
+                                <li><code class="custom-inline-code">kbfs</code> (Keybase Filesystem): 端到端加密的分布式文件系统。</li>
+                                <li><code class="custom-inline-code">borgbackup mount</code>: 挂载 BorgBackup 备份仓库以浏览文件。</li>
+                                <li><code class="custom-inline-code">mergerfs</code>: 合并多个目录或文件系统为一个虚拟视图。</li>
+                                <li><code class="custom-inline-code">s3fs-fuse</code>: 将 Amazon S3 存储桶挂载为文件系统。</li>
+                                <li><code class="custom-inline-code">NTFS-3G</code>: (非 Windows 系统) 提供 NTFS 文件系统读写支持。</li>
+                             </ul>
+                         </div>
+                    </div>
+                 </div>
+            </div>
+            <!-- Backups Card -->
+            <div class="bg-slate-800 shadow-2xl rounded-xl overflow-hidden">
+                 <div class="p-6 md:p-8">
+                    <h2 class="font-sans-cn text-3xl font-bold text-indigo-highlight mb-6 text-center">备份策略 (Backups)</h2>
+                    <div class="space-y-4 text-slate-300 text-base leading-relaxed">
+                        <p class="font-semibold text-red-400"><i class="fas fa-database mr-1"></i>任何没有备份的数据，都可能在任何时刻永远消失。</p>
+                        <p>可靠地备份数据比简单地复制数据要复杂得多。</p>
+                        
+                        <h3 class="font-sans-cn text-xl font-semibold text-indigo-highlight/80 mt-6 mb-3">常见备份误区</h3>
+                        <div class="mt-4 bg-slate-700 p-4 rounded-xl shadow-lg">
+                             <ul class="list-disc list-inside space-y-1 text-slate-300 text-sm pl-4">
+                                <li><strong class="font-bold">误区1: 同一磁盘上的副本是备份。</strong> 错误！磁盘是单点故障。</li>
+                                <li><strong class="font-bold">误区2: 家中的外部硬盘是可靠备份。</strong> 不够可靠！火灾、盗窃等可能同时毁掉原数据和备份。</li>
+                                <li><strong class="font-bold">误区3: 同步方案 (如 Dropbox) 等同于备份。</strong> 错误！文件删除或损坏会被同步，可能覆盖历史版本。</li>
+                                 <li><strong class="font-bold">误区4: RAID 是备份。</strong> 错误！RAID 提高可用性/性能，但不能防止删除、损坏或勒索软件。</li>
+                             </ul>
+                         </div>
+
+                        <h3 class="font-sans-cn text-xl font-semibold text-indigo-highlight/80 mt-8 mb-3">良好备份方案的特性</h3>
+                         <div class="mt-4 bg-slate-700 p-4 rounded-xl shadow-lg">
+                            <ul class="list-disc list-inside space-y-2 text-slate-300 text-sm pl-4">
+                                <li><strong class="font-bold">版本控制 (Versioning):</strong> 能够恢复到历史上的任意时间点。</li>
+                                <li><strong class="font-bold">重复数据删除 (Deduplication):</strong> 仅存储变化的部分或共享的数据块，节省空间。</li>
+                                <li><strong class="font-bold">加密 (Encryption):</strong> 保护备份数据的机密性，尤其是在异地或云端存储时（最好是客户端加密）。</li>
+                                <li><strong class="font-bold">安全性 (Security):</strong> 控制谁能访问甚至删除你的备份。</li>
+                                <li><strong class="font-bold text-emerald-400">可恢复性验证 (Verifiability):</strong> 定期测试恢复流程，确保备份确实可用！</li>
+                                <li><strong class="font-bold">自动化 (Automation):</strong> 自动执行备份，减少人为错误。</li>
+                             </ul>
+                         </div>
+
+                         <h3 class="font-sans-cn text-xl font-semibold text-indigo-highlight/80 mt-8 mb-3">3-2-1 备份规则</h3>
+                         <div class="mt-4 bg-slate-700 p-4 rounded-xl shadow-lg text-center">
+                            <p>一个经典的有效策略：</p>
+                            <p class="text-lg font-semibold mt-2">至少 <strong class="text-indigo-highlight">3</strong> 份数据副本</p>
+                            <p>存储在 <strong class="text-indigo-highlight">2</strong> 种不同的介质上</p>
+                            <p>至少有 <strong class="text-indigo-highlight">1</strong> 份在异地</p>
+                         </div>
+
+                         <h3 class="font-sans-cn text-xl font-semibold text-indigo-highlight/80 mt-8 mb-3">超越本地文件：云端数据备份</h3>
+                         <p>考虑备份存储在云服务上的重要数据（邮件、照片、文档等），以防账户丢失。可使用服务提供商的导出工具 (<code class="custom-inline-code">takeout.google.com</code>) 或第三方工具 (<code class="custom-inline-code">rclone</code>)。</p>
+
+                        <h3 class="font-sans-cn text-xl font-semibold text-indigo-highlight/80 mt-8 mb-3">推荐的备份工具</h3>
+                         <div class="mt-4 bg-slate-700 p-4 rounded-xl shadow-lg">
+                             <ul class="list-disc list-inside space-y-1 text-slate-300 text-sm pl-4">
+                                <li><code class="custom-inline-code">rsync</code>: 文件同步基础工具。</li>
+                                <li>Restic, BorgBackup, Kopia: 现代命令行工具，支持加密、去重、快照。</li>
+                                <li>Time Machine (macOS): 用户友好，主要用于本地备份。</li>
+                                <li>File History / Backup and Restore (Windows): 内置功能。</li>
+                                <li>云存储 (配合 Restic/Borg): Backblaze B2, S3 Glacier, Wasabi。</li>
+                                <li>云备份服务: Backblaze Personal, Carbonite。</li>
+                             </ul>
+                         </div>
+                    </div>
+                 </div>
+            </div>
+            <!-- APIs Card -->
+            <div class="bg-slate-800 shadow-2xl rounded-xl overflow-hidden">
+                 <div class="p-6 md:p-8">
+                    <h2 class="font-sans-cn text-3xl font-bold text-indigo-highlight mb-6 text-center">API (应用程序编程接口)</h2>
+                    <div class="space-y-4 text-slate-300 text-base leading-relaxed">
+                        <p>许多在线服务都提供 <strong class="font-bold">API (Application Programming Interfaces)</strong>，允许你通过编程方式访问它们的数据和功能，而不是必须通过图形用户界面。这使得自动化、集成和构建基于这些服务的新应用成为可能。</p>
+                        
+                        <h3 class="font-sans-cn text-xl font-semibold text-indigo-highlight/80 mt-6 mb-3">API 的常见形式与特征</h3>
+                         <div class="mt-4 grid grid-cols-1 md:grid-cols-2 gap-6">
+                             <!-- Left Column -->
+                             <div class="bg-slate-700 p-4 rounded-xl shadow-lg space-y-3">
+                                 <div>
+                                     <h4 class="font-semibold text-moon-white mb-1"><i class="fas fa-link mr-1"></i>结构化 URL</h4>
+                                     <p class="text-xs">通常基于 HTTP(S)，使用特定的 URL 路径和查询参数来指定要访问的资源或执行的操作 (如 <code class="custom-inline-code">api.service.com/users?id=123</code>)。</p>
+                                 </div>
+                                  <div>
+                                     <h4 class="font-semibold text-moon-white mb-1"><i class="fas fa-code mr-1"></i>响应格式</h4>
+                                     <p class="text-xs">最常见的是 <strong class="font-bold">JSON</strong> (易于解析)。XML 也曾流行。</p>
+                                 </div>
+                                  <div>
+                                     <h4 class="font-semibold text-moon-white mb-1"><i class="fas fa-exchange-alt mr-1"></i>HTTP 方法</h4>
+                                     <p class="text-xs">常用于指示操作类型 (RESTful 约定): <code class="custom-inline-code">GET</code> (获取), <code class="custom-inline-code">POST</code> (创建), <code class="custom-inline-code">PUT</code> (替换), <code class="custom-inline-code">PATCH</code> (部分更新), <code class="custom-inline-code">DELETE</code> (删除)。</p>
+                                 </div>
+                             </div>
+                             <!-- Right Column -->
+                             <div class="bg-slate-700 p-4 rounded-xl shadow-lg space-y-3">
+                                  <div>
+                                     <h4 class="font-semibold text-moon-white mb-1"><i class="fas fa-key mr-1"></i>身份验证</h4>
+                                     <p class="text-xs">通常需要验证调用者身份:</p>
+                                     <ul class="list-disc list-inside space-y-1 text-slate-300 text-xs pl-4">
+                                         <li>API 密钥 (API Keys)</li>
+                                         <li>OAuth (用于授权第三方应用)</li>
+                                         <li>JWT (JSON Web Tokens)</li>
+                                     </ul>
+                                     <p class="text-xs text-red-400 mt-1">务必像保护密码一样保护好你的 API 密钥和令牌！</p>
+                                 </div>
+                                  <div>
+                                     <h4 class="font-semibold text-moon-white mb-1"><i class="fas fa-traffic-light mr-1"></i>速率限制</h4>
+                                     <p class="text-xs">API 通常会限制单位时间内的请求次数，防止滥用。</p>
+                                 </div>
+                             </div>
+                        </div>
+
+                        <h3 class="font-sans-cn text-xl font-semibold text-indigo-highlight/80 mt-8 mb-3">API 设计风格</h3>
+                         <div class="mt-4 bg-slate-700 p-4 rounded-xl shadow-lg">
+                            <ul class="list-disc list-inside space-y-1 text-slate-300 text-sm pl-4">
+                                <li><strong class="font-bold">REST (Representational State Transfer):</strong> 基于 HTTP 的主流架构风格，面向资源。</li>
+                                <li><strong class="font-bold">GraphQL:</strong> 查询语言，允许客户端精确请求所需数据，避免冗余。</li>
+                                <li><strong class="font-bold">gRPC:</strong> Google 开发的高性能 RPC 框架。</li>
+                            </ul>
+                        </div>
+                        
+                        <h3 class="font-sans-cn text-xl font-semibold text-indigo-highlight/80 mt-8 mb-3">与 API 交互的工具</h3>
+                        <div class="mt-4 bg-slate-700 p-4 rounded-xl shadow-lg">
+                             <ul class="list-disc list-inside space-y-1 text-slate-300 text-sm pl-4">
+                                <li><code class="custom-inline-code">curl</code>: 强大的命令行 HTTP 客户端。</li>
+                                <li>Postman, Insomnia, HTTPie: 流行的 API 开发和测试工具。</li>
+                                <li><code class="custom-inline-code">jq</code>: 命令行 JSON 处理工具。</li>
+                                <li>IFTTT, Zapier: API 自动化和集成服务。</li>
+                             </ul>
+                         </div>
+                    </div>
+                 </div>
+            </div>
+            <!-- Common CLI Flags Card -->
+            <div class="bg-slate-800 shadow-2xl rounded-xl overflow-hidden">
+                 <div class="p-6 md:p-8">
+                    <h2 class="font-sans-cn text-3xl font-bold text-indigo-highlight mb-6 text-center">常用命令行标志/模式</h2>
+                    <div class="space-y-4 text-slate-300 text-base leading-relaxed">
+                        <p>虽然每个命令行工具都有其独特的选项，但在不同的工具之间也存在一些常见的标志和使用模式，了解它们可以帮助你更快地学习和使用新工具。</p>
+                         <div class="mt-6 bg-slate-700 p-4 rounded-xl shadow-lg">
+                             <ul class="list-disc list-inside space-y-2 text-slate-300 text-sm pl-4">
+                                <li><code class="custom-inline-code">--help</code> 或 <code class="custom-inline-code">-h</code> (有时是 <code class="custom-inline-code">-?</code>): 显示简要的帮助信息和用法。</li>
+                                <li><code class="custom-inline-code">--dry-run</code> 或 <code class="custom-inline-code">-n</code>: 试运行模式。打印将要执行的操作，但<strong>不实际执</strong>。用于预览潜在的破坏性操作。</li>
+                                <li><code class="custom-inline-code">--interactive</code> 或 <code class="custom-inline-code">-i</code>: 交互模式。在执行每个破坏性操作前提示用户确认。</li>
+                                <li><code class="custom-inline-code">--version</code> 或 <code class="custom-inline-code">-V</code> (有时是小写 <code class="custom-inline-code">-v</code>): 显示程序的版本号。</li>
+                                <li><code class="custom-inline-code">--verbose</code> 或 <code class="custom-inline-code">-v</code>: 启用详细输出模式。可以多次使用（如 <code class="custom-inline-code">-vv</code>, <code class="custom-inline-code">-vvv</code>）来增加详细程度，便于调试。</li>
+                                <li><code class="custom-inline-code">--quiet</code> 或 <code class="custom-inline-code">-q</code>: 静默模式。减少输出信息，通常只在出错时打印。</li>
+                                <li>文件名位置的 <code class="custom-inline-code">-</code>: 通常表示从<strong class="font-bold">标准输入 (stdin)</strong> 读取或写入到<strong class="font-bold">标准输出 (stdout)</strong>。</li>
+                                <li><code class="custom-inline-code">-r</code> 或 <code class="custom-inline-code">-R</code>: 递归操作。常用于 <code class="custom-inline-code">cp</code>, <code class="custom-inline-code">rm</code> 等命令，使其作用于目录及其内容。</li>
+                                <li><code class="custom-inline-code">--</code> (双破折号): 特殊参数，告知程序停止解析后面的参数为选项或标志。之后的所有内容都视为普通参数（即使以 <code class="custom-inline-code">-</code> 开头）。例如，删除名为 <code class="custom-inline-code">-file.txt</code> 的文件：<code class="custom-inline-code">rm -- -file.txt</code>。</li>
+                                <li><code class="custom-inline-code">--output &lt;format&gt;</code> 或 <code class="custom-inline-code">-o &lt;file&gt;</code>: 指定输出格式 (如 <code class="custom-inline-code">json</code>, <code class="custom-inline-code">yaml</code>) 或将输出写入指定文件。</li>
+                            </ul>
+                        </div>
+                    </div>
+                 </div>
+            </div>
+            <!-- Window Managers Card -->
+            <div class="bg-slate-800 shadow-2xl rounded-xl overflow-hidden">
+                 <div class="p-6 md:p-8">
+                    <h2 class="font-sans-cn text-3xl font-bold text-indigo-highlight mb-6 text-center">窗口管理器 (Window Managers)</h2>
+                    <div class="space-y-4 text-slate-300 text-base leading-relaxed">
+                        <p>你日常使用的桌面环境（如 Windows, macOS, Ubuntu 默认的 GNOME）通常包含一个<strong class="font-bold">浮动式 (floating)</strong> 窗口管理器。窗口可以自由移动、调整大小并相互重叠。</p>
+                        <p>然而，尤其是在 Linux 世界中，存在多种窗口管理器类型。其中一种流行的替代方案是<strong class="font-bold">平铺式 (tiling)</strong> 窗口管理器。</p>
+                        
+                        <div class="mt-6 bg-slate-700 p-6 rounded-xl shadow-lg">
+                             <h4 class="font-sans-cn text-xl font-semibold text-moon-white mb-3 flex items-center"><i class="fas fa-th-large mr-2 text-indigo-highlight"></i>平铺式窗口管理器</h4>
+                             <ul class="list-disc list-inside space-y-2 text-slate-300 text-sm pl-4">
+                                <li>窗口<strong class="font-bold">从不重叠</strong>，而是像瓷砖一样自动排列填满屏幕。</li>
+                                <li>打开新窗口时，现有窗口会自动调整大小以腾出空间。</li>
+                                <li>通常高度<strong class="font-bold">键盘驱动</strong>，允许你使用快捷键在窗口间导航、调整布局、移动窗口等，极大减少对鼠标的依赖。</li>
+                                <li><strong class="font-bold">优点:</strong> 高效利用屏幕空间，高度可定制，适合键盘流用户和开发者。</li>
+                             </ul>
+                        </div>
+
+                         <h4 class="font-sans-cn text-xl font-semibold text-indigo-highlight/80 mt-8 mb-3">流行的平铺式窗口管理器/工具</h4>
+                          <div class="mt-4 grid grid-cols-1 md:grid-cols-3 gap-4">
+                            <div class="bg-slate-700 p-4 rounded-xl shadow-lg">
+                                <h5 class="font-semibold text-emerald-300 mb-1">Linux</h5>
+                                <ul class="list-disc list-inside space-y-1 text-slate-300 text-xs pl-4">
+                                    <li>i3wm / Sway (Wayland)</li>
+                                    <li>AwesomeWM (Lua 配置)</li>
+                                    <li>dwm (极简, C 配置)</li>
+                                    <li>xmonad (Haskell 配置)</li>
+                                    <li>Hyprland (Wayland, 动画)</li>
+                                </ul>
+                            </div>
+                             <div class="bg-slate-700 p-4 rounded-xl shadow-lg">
+                                <h5 class="font-semibold text-sky-300 mb-1">macOS</h5>
+                                 <ul class="list-disc list-inside space-y-1 text-slate-300 text-xs pl-4">
+                                    <li>Yabai (需要部分禁用 SIP)</li>
+                                    <li>Amethyst</li>
+                                    <li>Rectangle / Magnet (更偏向窗口管理辅助)</li>
+                                </ul>
+                            </div>
+                             <div class="bg-slate-700 p-4 rounded-xl shadow-lg">
+                                <h5 class="font-semibold text-blue-300 mb-1">Windows</h5>
+                                 <ul class="list-disc list-inside space-y-1 text-slate-300 text-xs pl-4">
+                                    <li>FancyZones (PowerToys)</li>
+                                    <li>bug.n</li>
+                                    <li>workspacer</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                 </div>
+            </div>
+            <!-- VPN Card -->
+            <div class="bg-slate-800 shadow-2xl rounded-xl overflow-hidden">
+                 <div class="p-6 md:p-8">
+                    <h2 class="font-sans-cn text-3xl font-bold text-indigo-highlight mb-6 text-center">VPN (虚拟专用网络)</h2>
+                    <div class="space-y-4 text-slate-300 text-base leading-relaxed">
+                        <p>虚拟专用网络 (VPN) 在近年来变得非常流行，但理解它的实际作用和局限性很重要。</p>
+                        
+                         <h3 class="font-sans-cn text-xl font-semibold text-indigo-highlight/80 mt-6 mb-3">VPN 的作用 (理想情况下)</h3>
+                         <div class="mt-4 bg-slate-700 p-4 rounded-xl shadow-lg">
+                             <ul class="list-disc list-inside space-y-1 text-slate-300 text-sm pl-4">
+                                <li><strong class="font-bold">更改公网 IP 地址和地理位置：</strong> 你的网络流量看起来像是从 VPN 服务器所在地发出的。</li>
+                                <li><strong class="font-bold">加密本地网络流量：</strong> 在你和 VPN 服务器之间的连接是加密的，使得同一本地网络（如公共 Wi-Fi）的其他人无法轻易窥探你的流量内容。</li>
+                             </ul>
+                         </div>
+
+                        <h3 class="font-sans-cn text-xl font-semibold text-indigo-highlight/80 mt-8 mb-3">注意事项与权衡</h3>
+                         <div class="mt-4 bg-slate-700 p-4 rounded-xl shadow-lg">
+                             <ul class="list-disc list-inside space-y-2 text-slate-300 text-sm pl-4">
+                                <li><strong class="font-bold">信任转移：</strong> 你将信任从本地 ISP 转移到了 VPN 提供商。VPN 提供商可以看到你的 ISP 能看到的所有信息（例如你访问了哪些网站）。</li>
+                                <li><strong class="font-bold">HTTPS 的普及：</strong> 大部分敏感网络流量（银行、邮件等）已经通过 HTTPS 加密。VPN 在这种情况下对内容保密的额外作用有限（但仍能隐藏你访问的目标站点，对本地网络而言）。</li>
+                                <li><strong class="font-bold">配置与安全风险：</strong> VPN 提供商可能配置错误，或使用过时/不安全的协议。</li>
+                                <li><strong class="font-bold">隐私风险：</strong> 一些（尤其是免费）VPN 提供商可能会记录并出售用户数据。选择信誉不佳的 VPN 可能比不用更糟。</li>
+                                <li><strong class="font-bold">性能影响：</strong> VPN 通常会增加延迟并可能降低带宽。</li>
+                             </ul>
+                         </div>
+
+                        <h3 class="font-sans-cn text-xl font-semibold text-indigo-highlight/80 mt-8 mb-3">何时使用 VPN 可能有益</h3>
+                        <div class="mt-4 bg-slate-700 p-4 rounded-xl shadow-lg">
+                            <ul class="list-disc list-inside space-y-1 text-slate-300 text-sm pl-4">
+                                <li>连接不安全的公共 Wi-Fi 网络时。</li>
+                                <li>需要访问有地理位置限制的服务时（注意合规性）。</li>
+                                <li>需要远程访问公司或学校内部网络资源时。</li>
+                                <li>希望对本地 ISP 隐藏浏览目标时（信任 VPN 提供商）。</li>
+                            </ul>
+                        </div>
+                         
+                        <h4 class="font-sans-cn text-lg font-semibold text-moon-white mt-6 mb-3"><i class="fas fa-check-circle mr-1 text-indigo-highlight"></i>选择与自建建议</h4>
+                         <ul class="list-disc list-inside space-y-1 text-slate-300 text-sm pl-4">
+                            <li>选择信誉良好、有清晰且经审计的无日志政策的 VPN 提供商。</li>
+                            <li>考虑自建 VPN 以获得最大控制权。</li>
+                            <li><strong class="font-bold">WireGuard</strong> 是目前推荐的现代、快速、安全的 VPN 协议。可以使用 Algo VPN, Outline VPN 等项目简化自建过程。</li>
+                         </ul>
+                    </div>
+                 </div>
+            </div>
+                       <!-- Markdown Card -->
+                       <div class="bg-slate-800 shadow-2xl rounded-xl overflow-hidden">
+                        <div class="p-6 md:p-8">
+                           <h2 class="font-sans-cn text-3xl font-bold text-indigo-highlight mb-6 text-center">Markdown</h2>
+                           <div class="space-y-4 text-slate-300 text-base leading-relaxed">
+                               <p>在你的编程生涯中，除了代码，你还会编写大量的文本文档：README、文档、笔记、博客文章、评论等。对于这些场景，使用 Word 或 LaTeX 这样的重型工具往往过于复杂。<strong class="font-bold">Markdown</strong> 是一种<strong class="font-bold">轻量级标记语言</strong>，它允许你使用易于阅读、易于编写的纯文本格式来添加格式化元素。</p>
+                               <p>Markdown 的核心思想是尽可能地模仿纯文本电子邮件中常见的格式化约定。</p>
+                               
+                               <h3 class="font-sans-cn text-xl font-semibold text-indigo-highlight/80 mt-8 mb-3">基本语法回顾</h3>
+                                <div class="mt-4 bg-slate-700 p-4 rounded-xl shadow-lg">
+                                    <ul class="list-disc list-inside space-y-1 text-slate-300 text-sm pl-4 columns-2 gap-x-8">
+                                       <li><code class="custom-inline-code">*斜体*</code> 或 <code class="custom-inline-code">_斜体_</code></li>
+                                       <li><code class="custom-inline-code">**粗体**</code> 或 <code class="custom-inline-code">__粗体__</code></li>
+                                       <li><code class="custom-inline-code"># 一级标题</code>, <code class="custom-inline-code">## 二级标题</code> ...</li>
+                                       <li><code class="custom-inline-code">- 无序列表项</code> (或用 <code class="custom-inline-code">*</code>, <code class="custom-inline-code">+</code>)</li>
+                                       <li><code class="custom-inline-code">1. 有序列表项</code></li>
+                                       <li><code class="custom-inline-code">`行内代码`</code></li>
+                                       <li>代码块 (缩进或用 ``` 包裹)</li>
+                                       <li><code class="custom-inline-code">[链接文本](URL)</code></li>
+                                       <li><code class="custom-inline-code">![图片描述](URL)</code></li>
+                                       <li><code class="custom-inline-code">&gt; 引用块</code></li>
+                                       <li><code class="custom-inline-code">---</code> 或 <code class="custom-inline-code">***</code> (水平线)</li>
+                                   </ul>
+                                </div>
+                                <p class="text-xs text-slate-400 mt-2">许多平台还支持扩展语法，如 GitHub Flavored Markdown (GFM)，它增加了表格、任务列表 (<code class="custom-inline-code">- [x]</code>)、删除线 (<code class="custom-inline-code">~~文本~~</code>) 等。</p>
+       
+                               <h3 class="font-sans-cn text-xl font-semibold text-indigo-highlight/80 mt-8 mb-3">应用与工具</h3>
+                               <p>Markdown 应用极其广泛：项目 README、文档生成、笔记应用、博客平台、论坛、聊天软件等。本课程的所有讲义也是用 Markdown 编写的。</p>
+                                <div class="mt-4 bg-slate-700 p-4 rounded-xl shadow-lg">
+                                   <ul class="list-disc list-inside space-y-1 text-slate-300 text-sm pl-4">
+                                       <li><strong class="font-bold">编辑器:</strong> VS Code (内置强大支持), Typora, Obsidian, Joplin, Simplenote。</li>
+                                       <li><strong class="font-bold">转换工具:</strong> <code class="custom-inline-code">Pandoc</code> 是一个强大的文档格式转换工具，可以在 Markdown 和 HTML, PDF, LaTeX, Word 等多种格式间转换。</li>
+                                   </ul>
+                               </div>
+                           </div>
+                        </div>
+                   </div>
+            <!-- Booting & Live USB Card -->
+            <div class="bg-slate-800 shadow-2xl rounded-xl overflow-hidden">
+                 <div class="p-6 md:p-8">
+                    <h2 class="font-sans-cn text-3xl font-bold text-indigo-highlight mb-6 text-center">启动与 Live USB</h2>
+                    <div class="space-y-4 text-slate-300 text-base leading-relaxed">
+                        <p>计算机启动时，在加载操作系统之前，会先运行一段固件程序，称为 <strong class="font-bold">BIOS</strong> (基本输入输出系统) 或更现代的 <strong class="font-bold">UEFI</strong> (统一可扩展固件接口)。这个固件负责初始化硬件并加载操作系统的引导程序。</p>
+                        <ul class="list-disc list-inside space-y-1 text-slate-300 text-sm pl-4 mt-2">
+                            <li>你通常可以在开机时按特定按键 (如 <kbd>F2</kbd>, <kbd>F9</kbd>, <kbd>F12</kbd>, <kbd>Del</kbd>，具体按键因主板而异) 进入 BIOS/UEFI 设置界面，可以配置硬件选项、启动顺序等。</li>
+                            <li>启动菜单允许你选择从哪个设备启动，例如硬盘、U 盘或光驱。</li>
+                        </ul>
+                        
+                        <h3 class="font-sans-cn text-xl font-semibold text-indigo-highlight/80 mt-8 mb-3">Live USB (可启动 U 盘)</h3>
+                        <p>Live USB 是指包含一个完整、可运行的操作系统的 U 盘。你可以从 Live USB 启动计算机，而无需修改硬盘上已安装的系统。</p>
+                         <div class="mt-4 bg-slate-700 p-6 rounded-xl shadow-lg">
+                             <h4 class="font-sans-cn text-lg font-semibold text-moon-white mb-3 flex items-center"><i class="fas fa-usb mr-2 text-indigo-highlight"></i>创建与使用</h4>
+                            <ol class="list-decimal list-inside space-y-1 text-slate-300 text-sm pl-4">
+                                <li>下载你想要使用的操作系统的 <code class="custom-inline-code">.iso</code> 镜像文件 (例如 Ubuntu, Fedora, Arch Linux 等发行版)。</li>
+                                <li>使用专门的工具将 <code class="custom-inline-code">.iso</code> 文件"烧录"到 U 盘上。这不仅仅是复制文件。
+                                    <ul class="list-disc list-inside space-y-1 text-slate-300 text-xs pl-5 mt-1">
+                                         <li>推荐工具: <strong class="font-bold">Ventoy</strong> (可启动多个 ISO), balenaEtcher, Rufus (Windows)。</li>
+                                         <li>命令行: <code class="custom-inline-code">dd</code> (Linux/macOS, 需谨慎)。</li>
+                                    </ul>
+                                </li>
+                                <li>重启计算机，进入启动菜单，选择从 U 盘启动。</li>
+                            </ol>
+                         </div>
+                         <div class="mt-6 bg-slate-700 p-4 rounded-xl shadow-lg">
+                             <h4 class="font-sans-cn text-lg font-semibold text-moon-white mb-3 flex items-center"><i class="fas fa-question-circle mr-2 text-indigo-highlight"></i>用途</h4>
+                            <ul class="list-disc list-inside space-y-1 text-slate-300 text-sm pl-4">
+                                <li><strong class="font-bold">系统救援与恢复:</strong> 当主系统无法启动时，用于访问文件、修复引导或重装系统。</li>
+                                <li><strong class="font-bold">试用操作系统:</strong> 无需安装即可体验 Linux 发行版或其他系统。</li>
+                                <li><strong class="font-bold">硬件诊断:</strong> 运行内存测试 (memtest86+) 或其他硬件检测工具。</li>
+                                <li><strong class="font-bold">安全与隐私:</strong> 运行专注于安全或隐私的发行版，如 Kali Linux (渗透测试) 或 Tails (匿名)。</li>
+                             </ul>
+                         </div>
+                    </div>
+                 </div>
+            </div>
+            <!-- Virtualization & Cloud Card -->
+            <div class="bg-slate-800 shadow-2xl rounded-xl overflow-hidden">
+                 <div class="p-6 md:p-8">
+                    <h2 class="font-sans-cn text-3xl font-bold text-indigo-highlight mb-6 text-center">虚拟化与云计算</h2>
+                    <div class="space-y-4 text-slate-300 text-base leading-relaxed">
+                        <p>虚拟机 (VMs)、容器 (Containers) 以及云计算是现代软件开发和部署中不可或缺的技术，它们提供了强大的环境隔离、可复现性和资源弹性。</p>
+                        
+                        <div class="mt-6 grid grid-cols-1 lg:grid-cols-2 gap-6">
+                            <!-- Virtualization Column -->
+                            <div class="space-y-6">
+                                <div class="bg-slate-700 p-4 rounded-xl shadow-lg">
+                                     <h4 class="font-sans-cn text-xl font-semibold text-moon-white mb-3 flex items-center"><i class="fas fa-desktop mr-2 text-indigo-highlight"></i>虚拟机 (VMs)</h4>
+                                     <ul class="list-disc list-inside space-y-1 text-slate-300 text-sm pl-4">
+                                        <li>模拟完整的硬件系统，运行独立的操作系统内核。</li>
+                                        <li><strong class="font-bold">Hypervisors:</strong> VirtualBox, VMware Workstation/Fusion, Parallels, Hyper-V, KVM。</li>
+                                        <li><strong class="font-bold">优点:</strong> 强隔离性，可运行不同操作系统。</li>
+                                        <li><strong class="font-bold">缺点:</strong> 资源开销较大。</li>
+                                    </ul>
+                                </div>
+                                 <div class="bg-slate-700 p-4 rounded-xl shadow-lg">
+                                     <h4 class="font-sans-cn text-xl font-semibold text-moon-white mb-3 flex items-center"><i class="fas fa-box mr-2 text-indigo-highlight"></i>Vagrant</h4>
+                                     <ul class="list-disc list-inside space-y-1 text-slate-300 text-sm pl-4">
+                                         <li>用于构建和管理<strong class="font-bold">虚拟开发环境</strong>的工具。</li>
+                                         <li>通过 <code class="custom-inline-code">Vagrantfile</code> 定义机器配置。</li>
+                                         <li>使用 <code class="custom-inline-code">vagrant up</code> 快速创建和配置 VM。</li>
+                                         <li><strong class="font-bold">优点:</strong> 标准化、可复现的开发环境。</li>
+                                     </ul>
+                                </div>
+                                <div class="bg-slate-700 p-4 rounded-xl shadow-lg">
+                                     <h4 class="font-sans-cn text-xl font-semibold text-moon-white mb-3 flex items-center"><i class="fab fa-docker mr-2 text-indigo-highlight"></i>容器 (Containers - Docker)</h4>
+                                      <ul class="list-disc list-inside space-y-1 text-slate-300 text-sm pl-4">
+                                        <li>在操作系统层面虚拟化，<strong class="font-bold">共享宿主机内核</strong>，但有隔离的文件系统、进程、网络。</li>
+                                        <li><strong class="font-bold">优点:</strong> 轻量、快速启动、资源占用少。</li>
+                                        <li><strong class="font-bold">Docker 核心:</strong> 镜像 (Images), 容器 (Containers), Dockerfile, 仓库 (Registry), docker-compose。</li>
+                                        <li><strong class="font-bold">应用:</strong> 微服务、CI/CD、环境一致性。</li>
+                                        <li><strong class="font-bold">编排:</strong> Kubernetes (K8s) 是主流的容器编排平台。</li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <!-- Cloud Column -->
+                            <div class="space-y-6">
+                                 <div class="bg-slate-700 p-4 rounded-xl shadow-lg">
+                                     <h4 class="font-sans-cn text-xl font-semibold text-moon-white mb-3 flex items-center"><i class="fas fa-cloud mr-2 text-indigo-highlight"></i>云计算 (Cloud Computing)</h4>
+                                     <ul class="list-disc list-inside space-y-1 text-slate-300 text-sm pl-4">
+                                        <li>通过互联网按需租用计算资源。</li>
+                                        <li><strong class="font-bold">主要提供商:</strong> AWS, Azure, GCP, DigitalOcean 等。</li>
+                                         <li><strong class="font-bold">优点:</strong> 弹性伸缩、按需付费、访问全球资源。</li>
+                                         <li><strong class="font-bold">服务模型:</strong> IaaS, PaaS, SaaS, FaaS (Serverless)。</li>
+                                     </ul>
+                                </div>
+                                 <div class="bg-slate-700 p-4 rounded-xl shadow-lg">
+                                      <h4 class="font-sans-cn text-xl font-semibold text-moon-white mb-3 flex items-center"><i class="fas fa-server mr-2 text-indigo-highlight"></i>OpenStack</h4>
+                                      <ul class="list-disc list-inside space-y-1 text-slate-300 text-sm pl-4">
+                                        <li>开源的云计算平台软件。</li>
+                                        <li>允许组织构建自己的私有云或公有云。</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                 </div>
+            </div>
+            <!-- Notebook Programming Card -->
+            <div class="bg-slate-800 shadow-2xl rounded-xl overflow-hidden">
+                 <div class="p-6 md:p-8">
+                    <h2 class="font-sans-cn text-3xl font-bold text-indigo-highlight mb-6 text-center">Notebook 编程</h2>
+                    <div class="space-y-4 text-slate-300 text-base leading-relaxed">
+                        <p>Notebook 编程环境提供了一种交互式的计算方式，特别适合数据探索、可视化、教学演示和快速原型设计。它允许你在一个文档中混合代码、文本、数学公式和可视化结果。</p>
+                        
+                        <div class="mt-6 bg-slate-700 p-6 rounded-xl shadow-lg">
+                             <h4 class="font-sans-cn text-xl font-semibold text-moon-white mb-3 flex items-center"><i class="fas fa-book-open mr-2 text-indigo-highlight"></i>Project Jupyter</h4>
+                             <p class="text-xs mb-2">目前最流行的 Notebook 环境生态。</p>
+                             <ul class="list-disc list-inside space-y-2 text-slate-300 text-sm pl-4">
+                                <li><strong class="font-bold">Jupyter Notebook:</strong> 经典的基于 Web 的界面。</li>
+                                <li><strong class="font-bold">JupyterLab:</strong> 下一代界面，提供更集成和灵活的开发环境。</li>
+                                <li><strong class="font-bold">Kernels:</strong> 支持多种编程语言（Python 是核心，但也支持 R, Julia, Scala 等）。</li>
+                                <li><strong class="font-bold">Google Colaboratory (Colab):</strong> 免费的云端 Jupyter 环境，提供 GPU/TPU 访问，特别适合机器学习。</li>
+                                 <li><strong class="font-bold">VS Code 集成:</strong> VS Code 提供了优秀的内置 Jupyter Notebook 支持。</li>
+                             </ul>
+                         </div>
+
+                         <div class="mt-8 bg-slate-700 p-4 rounded-xl shadow-lg">
+                             <h4 class="font-sans-cn text-xl font-semibold text-moon-white mb-3">其他 Notebook 环境</h4>
+                              <ul class="list-disc list-inside space-y-1 text-slate-300 text-sm pl-4">
+                                <li>Wolfram Mathematica: 强大的符号计算和可视化环境。</li>
+                                <li>Apache Zeppelin: 主要面向大数据生态。</li>
+                                <li>Observable: 专注于 JavaScript 数据可视化。</li>
+                             </ul>
+                         </div>
+
+                          <div class="mt-8 bg-slate-700 p-4 rounded-xl shadow-lg">
+                             <h4 class="font-sans-cn text-xl font-semibold text-moon-white mb-3"><i class="fas fa-chart-pie mr-2 text-indigo-highlight"></i>应用场景</h4>
+                              <ul class="list-disc list-inside space-y-1 text-slate-300 text-sm pl-4">
+                                <li>数据科学与分析</li>
+                                <li>机器学习模型开发与实验</li>
+                                <li>教学与演示</li>
+                                <li>快速原型验证</li>
+                                <li>科学计算</li>
+                             </ul>
+                         </div>
+                    </div>
+                 </div>
+            </div>
+            <!-- Hammerspoon Card -->
+            <div class="bg-slate-800 shadow-2xl rounded-xl overflow-hidden">
+                <div class="p-6 md:p-8">
+                   <h2 class="font-sans-cn text-3xl font-bold text-indigo-highlight mb-6 text-center">Hammerspoon (macOS 桌面自动化)</h2>
+                   <div class="space-y-4 text-slate-300 text-base leading-relaxed">
+                       <p><a href="https://www.hammerspoon.org/" target="_blank" class="text-indigo-highlight hover:underline">Hammerspoon</a> 是一个强大的 macOS 桌面自动化框架。它允许你使用 Lua 脚本与操作系统底层 API 进行交互，从而实现对键盘、鼠标、窗口、文件系统、音频、网络等几乎所有方面的控制和自动化。</p>
+                       
+                       <h3 class="font-sans-cn text-xl font-semibold text-indigo-highlight/80 mt-6 mb-3">Hammerspoon 能做什么？</h3>
+                        <div class="mt-4 bg-slate-700 p-4 rounded-xl shadow-lg">
+                            <ul class="list-disc list-inside space-y-1 text-slate-300 text-sm pl-4">
+                               <li>绑定全局快捷键，快速将窗口移动到屏幕特定位置或不同显示器。</li>
+                               <li>创建自定义菜单栏图标，点击后执行特定脚本（如按预设布局排列窗口）。</li>
+                               <li>根据 Wi-Fi 网络自动切换音频输出或执行其他操作。</li>
+                               <li>当特定 USB 设备连接或断开时触发动作。</li>
+                               <li>(几乎)任何你能想到的与系统交互相关的自动化任务。</li>
+                           </ul>
+                        </div>
+
+                       <h4 class="font-sans-cn text-lg font-semibold text-moon-white mt-6 mb-3"><i class="fas fa-book-open mr-1 text-indigo-highlight"></i>学习与资源</h4>
+                        <ul class="list-disc list-inside space-y-1 text-slate-300 text-sm pl-4">
+                            <li><a href="https://www.hammerspoon.org/go/" target="_blank" class="text-indigo-highlight hover:underline">官方入门指南</a></li>
+                            <li><a href="https://github.com/Hammerspoon/hammerspoon/wiki/Sample-Configurations" target="_blank" class="text-indigo-highlight hover:underline">示例配置</a></li>
+                            <li>搜索 GitHub 查看其他用户的 Hammerspoon 配置 (dotfiles)。</li>
+                            <li>讲师 Anish 的 <a href="https://github.com/anishathalye/dotfiles/tree/master/hammerspoon" target="_blank" class="text-indigo-highlight hover:underline">Hammerspoon 配置</a>。</li>
+                        </ul>
+
+                       <h4 class="font-sans-cn text-lg font-semibold text-moon-white mt-6 mb-3"><i class="fas fa-desktop mr-1 text-indigo-highlight"></i>其他平台替代方案</h4>
+                        <ul class="list-disc list-inside space-y-1 text-slate-300 text-sm pl-4">
+                           <li><strong class="font-bold">Linux:</strong> <code class="custom-inline-code">AutoKey</code>, <code class="custom-inline-code">xdotool</code>, <code class="custom-inline-code">ydotool</code> (Wayland), Python 脚本 (<code class="custom-inline-code">pynput</code>, <code class="custom-inline-code">pyautogui</code>) 等。</li>
+                           <li><strong class="font-bold">Windows:</strong> <code class="custom-inline-code">AutoHotkey</code> (非常强大)。</li>
+                       </ul>
+                   </div>
+                </div>
+           </div>
+            <!-- GitHub Card -->
+            <div class="bg-slate-800 shadow-2xl rounded-xl overflow-hidden">
+                 <div class="p-6 md:p-8">
+                    <h2 class="font-sans-cn text-3xl font-bold text-indigo-highlight mb-6 text-center">GitHub 与开源贡献</h2>
+                    <div class="space-y-4 text-slate-300 text-base leading-relaxed">
+                        <p><a href="https://github.com" target="_blank" class="text-indigo-highlight hover:underline">GitHub</a> 是目前最流行的代码托管和开源协作平台之一。本课程中提到的许多工具都托管在 GitHub 上。参与开源项目是学习、提升技能、建立联系并回馈社区的绝佳方式。</p>
+                        
+                        <h3 class="font-sans-cn text-xl font-semibold text-indigo-highlight/80 mt-6 mb-3">参与开源的两种主要方式</h3>
+                         <div class="mt-4 grid grid-cols-1 md:grid-cols-2 gap-6">
+                             <!-- Issues -->
+                             <div class="bg-slate-700 p-4 rounded-xl shadow-lg">
+                                 <h4 class="font-semibold text-moon-white mb-2"><i class="far fa-comment-dots mr-1 text-indigo-highlight"></i>创建 Issue (问题)</h4>
+                                 <ul class="list-disc list-inside space-y-1 text-slate-300 text-xs pl-4">
+                                     <li>报告 Bug (提供清晰复现步骤、环境信息)。</li>
+                                     <li>请求新功能 (Feature Request)。</li>
+                                     <li>提问或参与讨论。</li>
+                                     <li>通常不需要编写代码，参与门槛较低。</li>
+                                     <li>关注标签如 <code class="custom-inline-code bg-green-700/50">good first issue</code>, <code class="custom-inline-code bg-blue-700/50">help wanted</code>。</li>
+                                 </ul>
+                             </div>
+                             <!-- Pull Requests -->
+                             <div class="bg-slate-700 p-4 rounded-xl shadow-lg">
+                                  <h4 class="font-semibold text-moon-white mb-2"><i class="fas fa-code-branch mr-1 text-indigo-highlight"></i>贡献代码 (Pull Request - PR)</h4>
+                                 <p class="text-xs mb-2">通常涉及代码编写和修改。基本流程 (Fork & PR):</p>
+                                  <ol class="list-decimal list-inside space-y-1 text-slate-300 text-xs pl-4">
+                                     <li><strong class="font-bold">Fork</strong> 目标仓库到你的账户。</li>
+                                     <li><strong class="font-bold">Clone</strong> 你的 Fork 到本地。</li>
+                                     <li>创建新的<strong class="font-bold">分支</strong>进行修改。</li>
+                                     <li><strong class="font-bold">Commit & Push</strong> 修改到你的 Fork。</li>
+                                     <li>在 GitHub 上创建 <strong class="font-bold">Pull Request</strong>，将你的分支提交到原始仓库。</li>
+                                 </ol>
+                                 <p class="text-xs text-slate-400 mt-1">之后会进行代码审查 (Code Review)。</p>
+                             </div>
+                        </div>
+
+                        <h4 class="font-sans-cn text-lg font-semibold text-moon-white mt-6 mb-3"><i class="fas fa-book mr-1 text-indigo-highlight"></i>贡献前注意</h4>
+                        <ul class="list-disc list-inside space-y-1 text-slate-300 text-sm pl-4">
+                           <li>阅读项目的 <code class="custom-inline-code">CONTRIBUTING.md</code> (贡献指南)。</li>
+                           <li>遵守项目的代码风格和规范。</li>
+                           <li>确保你的提交包含测试（如果适用）。</li>
+                        </ul>
+
+                        <h4 class="font-sans-cn text-lg font-semibold text-moon-white mt-6 mb-3"><i class="fas fa-server mr-1 text-indigo-highlight"></i>其他代码托管平台</h4>
+                         <ul class="list-disc list-inside space-y-1 text-slate-300 text-sm pl-4">
+                            <li>GitLab</li>
+                            <li>Bitbucket</li>
+                            <li>Gitee (码云)</li>
+                         </ul>
+                    </div>
+                 </div>
+            </div>
+            <!-- Content should be complete now -->
+        </div>
+
+        <!-- 导航 -->
+        <nav class="mt-16 flex justify-between items-center">
+            <a href="lecture-9.html" class="px-6 py-3 text-indigo-highlight hover:bg-indigo-highlight/10 rounded-md font-sans-cn">
+                &larr; 上一单元 (安全与密码学)
+            </a>
+            <a href="lecture-11.html" class="px-6 py-3 text-indigo-highlight hover:bg-indigo-highlight/10 rounded-md font-sans-cn">
+                下一单元 (提问&回答) &rarr;
+            </a>
+        </nav>
+    </main>
+
+    <footer class="mt-20 py-10 bg-slate-800 border-t border-slate-700 text-center">
+        <p class="font-sans-cn text-slate-400">
+            &copy; 2025 Missing Semester 中文版. 基于 MIT 原始课程.
+        </p>
+        <p class="font-sans-en text-slate-500 text-sm mt-2">
+            <a href="https://missing.csail.mit.edu/" target="_blank" class="hover:text-indigo-highlight">原始课程链接</a> | 
+            <a href="#" class="hover:text-indigo-highlight">GitHub 仓库</a>
+        </p>
+        <p class="font-sans-cn text-slate-400 text-sm mt-2">
+            由 <a href="https://huashanjian.github.io/" target="_blank" class="hover:text-indigo-highlight">Junhua Yao</a> 创建和维护
+        </p>
+    </footer>
+    
+    <script src="https://cdn.jsdelivr.net/npm/framer-motion@latest/dist/framer-motion.js"></script>
+    <script>
+        // Placeholder for Framer Motion scripts
+    </script>
+</body>
+</html> 

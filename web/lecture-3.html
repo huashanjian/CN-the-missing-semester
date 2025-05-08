@@ -1,0 +1,868 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>编辑器 (Vim) - 计算机的缺失课程</title>
+    <!-- 保持与 lecture-2.html 一致的样式引入 -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              'moon-white': '#F5F5F5',
+              'sky-blue-tint': '#F0F9FF',
+              'silver-rat-grey': '#E5E7EB',
+              'ink-black': '#111827',
+              'crow-blue': '#1E40AF',
+              'medium-grey': '#6B7280',
+              'indigo-highlight': '#0EA5E9',
+            },
+            fontFamily: {
+              'sans-cn': ['"Source Han Sans SC"', 'PingFang SC', 'sans-serif'],
+              'sans-en': ['Inter', 'Manrope', 'sans-serif'],
+            }
+          }
+        }
+      }
+    </script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&family=Manrope:wght@400;700&family=Noto+Sans+SC:wght@400;700&display=swap" rel="stylesheet">
+    <!-- Add PrismJS for syntax highlighting -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-okaidia.min.css" rel="stylesheet" />
+    <style>
+      body {
+        font-family: theme('fontFamily.sans-cn');
+      }
+      .font-sans-en {
+        font-family: theme('fontFamily.sans-en');
+      }
+      .font-sans-cn {
+        font-family: theme('fontFamily.sans-cn');
+      }
+      pre[class*="language-"], .custom-code-block {
+        background-color: #1E293B;
+        color: #E2E8F0;
+        padding: theme('spacing.6');
+        border-radius: theme('borderRadius.xl');
+        overflow-x: auto;
+        margin-top: theme('spacing.4');
+        margin-bottom: theme('spacing.6');
+      }
+      code:not(pre code), .custom-inline-code {
+        background-color: theme('colors.slate.700');
+        color: theme('colors.slate.200');
+        padding: theme('spacing.1') theme('spacing.2');
+        border-radius: theme('borderRadius.md');
+        font-size: 0.9em;
+      }
+    </style>
+</head>
+<body class="bg-slate-900 text-slate-200"> 
+
+    <header class="py-4 shadow-lg sticky top-0 bg-slate-800/90 backdrop-blur-md z-50 border-b border-slate-700">
+        <nav class="container mx-auto px-6 md:px-8 flex justify-between items-center">
+            <a href="index.html" class="text-2xl font-bold font-sans-cn">
+                <span class="text-moon-white">缺失</span><span class="text-indigo-highlight">环节</span>
+            </a>
+            <div>
+                <a href="index.html#bento-grid" class="font-sans-cn text-slate-300 hover:text-indigo-highlight ml-6">课程列表</a>
+            </div>
+        </nav>
+    </header>
+
+    <main class="container mx-auto p-4 md:p-8">
+        <section class="mb-12 pt-8 text-center">
+            <h1 class="font-sans-cn font-bold text-5xl md:text-7xl text-moon-white mb-2">
+                编辑器 (Vim)
+            </h1>
+            <p class="font-sans-en text-lg md:text-xl text-medium-grey">
+                Editors (Vim)
+            </p>
+        </section>
+
+        <div class="space-y-8 md:space-y-12">
+            <!-- Introduction Card -->
+            <div class="bg-slate-800 shadow-2xl rounded-xl overflow-hidden">
+                <div class="p-6 md:p-8 text-slate-300 text-base leading-relaxed">
+                    <p>编写自然语言和编写代码是非常不同的活动。编程时，你会花费更多时间在切换文件、阅读、导航和编辑代码上，而不是编写长篇大论。因此，针对编写自然语言和代码，存在不同类型的程序是合理的（例如，Microsoft Word 与 Visual Studio Code）。</p>
+                    <p class="mt-4">作为程序员，我们大部分时间都在编辑代码，因此值得投入时间去掌握一个适合你需求的编辑器。以下是你学习新编辑器的方法：</p>
+                    <ol class="list-decimal list-inside space-y-2 text-slate-300 pl-4 mt-4">
+                        <li><strong>从教程开始</strong>（即本讲座，加上我们指出的资源）。</li>
+                        <li><strong>坚持使用该编辑器处理你所有的文本编辑需求</strong>（即使最初会降低你的速度）。</li>
+                        <li><strong>边用边查</strong>：如果你觉得应该有更好的方法来做某事，那很可能真的有。</li>
+                    </ol>
+                    <p class="mt-4">如果你遵循上述方法，完全投入地将新程序用于所有文本编辑目的，学习一个复杂的文本编辑器的时间线大致如下。在一两个小时内，你将学会基本的编辑器功能。当你投入20个小时后，你的速度应该和你使用旧编辑器时一样快。之后，好处就开始显现。现代文本编辑器是精巧而强大的工具，所以学习永无止境。</p>
+                </div>
+            </div>
+
+            <!-- Which Editor Card -->
+            <div class="bg-slate-800 shadow-2xl rounded-xl overflow-hidden">
+                <div class="p-6 md:p-8">
+                    <h2 class="font-sans-cn text-3xl font-bold text-indigo-highlight mb-6 text-center">该学习哪个编辑器？</h2>
+                    <div class="space-y-4 text-slate-300 text-base leading-relaxed">
+                        <p>程序员对他们的文本编辑器有强烈的个人偏好。如今哪些编辑器流行？可以参考 Stack Overflow 的调查。Visual Studio Code (VS Code) 是目前最受欢迎的编辑器。Vim 是最受欢迎的基于命令行的编辑器。</p>
+                        
+                        <!-- 拓展思考与现代编辑器格局 -->
+                        <div class="mt-6 bg-slate-700 p-6 rounded-xl shadow-lg">
+                            <h5 class="font-sans-cn text-lg font-semibold text-moon-white mb-3 flex items-center">
+                                <i class="fas fa-map-signs mr-2 text-indigo-highlight"></i>拓展思考与现代编辑器格局:
+                            </h5>
+                            <ul class="list-disc list-inside space-y-2 text-slate-300 text-sm pl-4">
+                                <li><strong>VS Code:</strong> 出色的开箱体验、丰富的插件生态、内置Git/调试，通过插件提供优秀的Vim模式支持 ([VSCodeVim](https://marketplace.visualstudio.com/items?itemName=vscodevim.vim))。</li>
+                                <li><strong>JetBrains IDEs (IntelliJ, PyCharm等):</strong> 强大的IDE，擅长特定语言/框架，提供Vim仿真插件 (IdeaVim)。</li>
+                                <li><strong>Neovim:</strong> Vim的分支，旨在改进代码库，提供更好的脚本能力(Lua)、异步处理和现代架构。</li>
+                                <li><strong>Emacs:</strong> 历史悠久且强大的编辑器，极高可定制性，提供类似Vim的模式 (Evil Mode)。</li>
+                                <li><strong>轻量级编辑器:</strong> Sublime Text, Atom (已归档) 等，通常也提供Vim模式。</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Vim Introduction & Philosophy Card -->
+            <div class="bg-slate-800 shadow-2xl rounded-xl overflow-hidden">
+                <div class="p-6 md:p-8">
+                    <h2 class="font-sans-cn text-3xl font-bold text-indigo-highlight mb-6 text-center">Vim</h2>
+                    <div class="space-y-4 text-slate-300 text-base leading-relaxed">
+                        <p>本课程的所有讲师都使用 Vim 作为他们的编辑器。Vim 有着丰富的历史；它起源于 Vi 编辑器 (1976年)，并且至今仍在开发中。Vim 背后有一些非常巧妙的思想，因此，许多工具都支持 Vim 仿真模式。即使你最终转向其他文本编辑器，Vim 可能也值得学习。</p>
+                        <p class="mt-4">在50分钟内教授 Vim 的所有功能是不可能的，所以我们将专注于解释 Vim 的哲学，教你基础知识，展示一些更高级的功能，并为你提供掌握该工具的资源。</p>
+                        
+                        <!-- Vim Philosophy Sub-Card -->
+                        <div class="mt-6 bg-slate-700 p-6 rounded-xl shadow-lg">
+                            <h3 class="font-sans-cn text-xl font-semibold text-indigo-highlight mb-4">Vim 的哲学</h3>
+                            <p class="mb-3">编程时，你大部分时间都花在<strong>阅读/编辑</strong>上，而不是书写。因此，Vim 是一个<strong>模态编辑器 (modal editor)</strong>：它有不同的模式用于插入文本和操作文本。</p>
+                            <ul class="list-disc list-inside space-y-2 text-slate-300 text-sm pl-4">
+                                <li>Vim 是<strong>可编程的</strong>（通过 Vimscript 等）。</li>
+                                <li>Vim 的界面本身就是一种<strong>编程语言</strong>：按键（具有助记名称）是命令，这些命令是<strong>可组合的 (composable)</strong>。</li>
+                                <li>Vim 避免使用鼠标和方向键，因为它们太慢了。</li>
+                            </ul>
+                            <p class="mt-3">最终的结果是一个能够匹配你思考速度的编辑器。</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 新增内容：模态编辑 -->
+            <div class="bg-slate-800 shadow-2xl rounded-xl overflow-hidden">
+                <div class="p-6 md:p-8">
+                    <h2 class="font-sans-cn text-3xl font-bold text-indigo-highlight mb-6 text-center">模态编辑 (Modal Editing)</h2>
+                    <div class="space-y-4 text-slate-300 text-base leading-relaxed">
+                        <p>Vim 的设计基于这样一种理念：程序员的大部分时间都花在阅读、导航和进行小范围编辑上，而不是编写长串文本。因此，Vim 有多种操作<strong>模式 (modes)</strong>。</p>
+                        
+                        <!-- 模式列表 -->
+                        <div class="mt-6 bg-slate-700 p-6 rounded-xl shadow-lg">
+                            <h3 class="font-sans-cn text-xl font-semibold text-indigo-highlight mb-4">主要模式</h3>
+                            <ul class="list-disc list-inside space-y-2 text-slate-300 text-sm pl-4">
+                                <li><strong>Normal (普通模式):</strong> 用于在文件中移动和进行编辑。这是 Vim 的默认和核心模式。</li>
+                                <li><strong>Insert (插入模式):</strong> 用于插入文本，类似于传统编辑器。</li>
+                                <li><strong>Replace (替换模式):</strong> 用于替换文本，键入的字符会覆盖现有字符。</li>
+                                <li><strong>Visual (可视化模式 - 包括普通、行、块):</strong> 用于选择文本块。</li>
+                                <li><strong>Command-line (命令行模式):</strong> 用于运行命令（如保存、退出、搜索替换等）。</li>
+                            </ul>
+                            <p class="text-xs text-slate-400 mt-3">按键在不同的操作模式下有不同的含义。</p>
+                        </div>
+                        
+                        <!-- 模式切换 -->
+                        <div class="mt-6 bg-slate-700 p-6 rounded-xl shadow-lg">
+                            <h3 class="font-sans-cn text-xl font-semibold text-indigo-highlight mb-4">模式切换</h3>
+                            <p class="mb-3">按 <kbd class="bg-slate-600 text-slate-100 px-1.5 py-0.5 rounded font-mono text-sm">&lt;ESC&gt;</kbd> (Escape 键) 从任何模式切换回<strong>普通模式</strong>。</p>
+                            <p class="mb-3">从普通模式：</p>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <ul class="list-disc list-inside space-y-2 text-slate-300 text-sm">
+                                    <li>按 <kbd class="bg-slate-600 text-slate-100 px-1.5 py-0.5 rounded font-mono text-sm">i</kbd> 进入<strong>插入模式</strong> (在光标前插入)</li>
+                                    <li>按 <kbd class="bg-slate-600 text-slate-100 px-1.5 py-0.5 rounded font-mono text-sm">I</kbd> 进入<strong>插入模式</strong> (行首非空白处)</li>
+                                    <li>按 <kbd class="bg-slate-600 text-slate-100 px-1.5 py-0.5 rounded font-mono text-sm">a</kbd> 进入<strong>插入模式</strong> (在光标后)</li>
+                                    <li>按 <kbd class="bg-slate-600 text-slate-100 px-1.5 py-0.5 rounded font-mono text-sm">A</kbd> 进入<strong>插入模式</strong> (行尾)</li>
+                                    <li>按 <kbd class="bg-slate-600 text-slate-100 px-1.5 py-0.5 rounded font-mono text-sm">o</kbd> 进入<strong>插入模式</strong> (在下方新行)</li>
+                                    <li>按 <kbd class="bg-slate-600 text-slate-100 px-1.5 py-0.5 rounded font-mono text-sm">O</kbd> 进入<strong>插入模式</strong> (在上方新行)</li>
+                                </ul>
+                                <ul class="list-disc list-inside space-y-2 text-slate-300 text-sm">
+                                    <li>按 <kbd class="bg-slate-600 text-slate-100 px-1.5 py-0.5 rounded font-mono text-sm">R</kbd> 进入<strong>替换模式</strong></li>
+                                    <li>按 <kbd class="bg-slate-600 text-slate-100 px-1.5 py-0.5 rounded font-mono text-sm">v</kbd> 进入<strong>可视化模式</strong> (字符)</li>
+                                    <li>按 <kbd class="bg-slate-600 text-slate-100 px-1.5 py-0.5 rounded font-mono text-sm">V</kbd> 进入<strong>可视化行模式</strong></li>
+                                    <li>按 <kbd class="bg-slate-600 text-slate-100 px-1.5 py-0.5 rounded font-mono text-sm">&lt;C-v&gt;</kbd> 进入<strong>可视化块模式</strong></li>
+                                    <li>按 <kbd class="bg-slate-600 text-slate-100 px-1.5 py-0.5 rounded font-mono text-sm">:</kbd> 进入<strong>命令行模式</strong></li>
+                                </ul>
+                            </div>
+                            <p class="text-xs text-slate-400 mt-4">提示: 考虑将 Caps Lock 键重新映射为 Escape 键，或使用插件设置 <kbd class="bg-slate-600 text-slate-100 px-1.5 py-0.5 rounded font-mono text-sm">jk</kbd> / <kbd class="bg-slate-600 text-slate-100 px-1.5 py-0.5 rounded font-mono text-sm">jj</kbd> 快捷键返回普通模式。</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 新增内容：Vim 基础 -->
+            <div class="bg-slate-800 shadow-2xl rounded-xl overflow-hidden">
+                <div class="p-6 md:p-8">
+                    <h2 class="font-sans-cn text-3xl font-bold text-indigo-highlight mb-6 text-center">基础 (Basics)</h2>
+                    
+                    <!-- 插入文本 -->
+                    <div class="bg-slate-700 p-6 rounded-xl shadow-lg mb-6">
+                        <h3 class="font-sans-cn text-xl font-semibold text-indigo-highlight mb-4">插入文本 (Inserting text)</h3>
+                        <p class="text-slate-300 text-base leading-relaxed">从普通模式按 <kbd class="bg-slate-600 text-slate-100 px-1.5 py-0.5 rounded font-mono text-sm">i</kbd> 进入插入模式。此时 Vim 的行为类似普通文本编辑器，直到你按 <kbd class="bg-slate-600 text-slate-100 px-1.5 py-0.5 rounded font-mono text-sm">&lt;ESC&gt;</kbd> 返回普通模式。仅此一项足以开始使用 Vim 编辑文件。</p>
+                    </div>
+
+                    <!-- 缓冲区、标签页、窗口 -->
+                    <div class="bg-slate-700 p-6 rounded-xl shadow-lg mb-6">
+                        <h3 class="font-sans-cn text-xl font-semibold text-indigo-highlight mb-4">缓冲区、标签页和窗口 (Buffers, Tabs, Windows)</h3>
+                        <div class="space-y-4 text-slate-300 text-base leading-relaxed">
+                            <p>Vim 维护一组打开的文件，称为"<strong>缓冲区 (buffers)</strong>"。一个 Vim 会话可以有多个标签页 (tabs)，每个标签页可以有多个窗口 (windows)（分割的窗格）。每个窗口显示一个缓冲区。</p>
+                            <p>窗口仅仅是<strong>视图 (views)</strong>。一个缓冲区可以在多个窗口中打开，即使在同一个标签页内也可以，方便查看文件的不同部分。</p>
+                        </div>
+                        <!-- 拓展技巧 -->
+                        <div class="mt-6 border-t border-slate-600 pt-4">
+                            <h5 class="font-sans-cn text-lg font-semibold text-moon-white mb-3 flex items-center">
+                                <i class="fas fa-window-maximize mr-2 text-indigo-highlight"></i>缓冲区、窗口、标签页管理技巧:
+                            </h5>
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                <div>
+                                    <p class="text-slate-300 text-sm font-semibold mb-2">缓冲区:</p>
+                                    <ul class="list-disc list-inside space-y-1 text-slate-300 text-xs pl-4">
+                                        <li><code class="custom-inline-code">:ls</code> / <code class="custom-inline-code">:buffers</code> 列出</li>
+                                        <li><code class="custom-inline-code">:b &lt;N&gt;</code> / <code class="custom-inline-code">:b &lt;name&gt;</code> 切换</li>
+                                        <li><code class="custom-inline-code">:bn</code> / <code class="custom-inline-code">:bp</code> 下一个/上一个</li>
+                                        <li><code class="custom-inline-code">:bd</code> 关闭</li>
+                                    </ul>
+                                </div>
+                                <div>
+                                    <p class="text-slate-300 text-sm font-semibold mb-2">窗口 (分割):</p>
+                                    <ul class="list-disc list-inside space-y-1 text-slate-300 text-xs pl-4">
+                                        <li><code class="custom-inline-code">:sp &lt;file&gt;</code> / <code class="custom-inline-code">Ctrl-w s</code> 水平分割</li>
+                                        <li><code class="custom-inline-code">:vsp &lt;file&gt;</code> / <code class="custom-inline-code">Ctrl-w v</code> 垂直分割</li>
+                                        <li><code class="custom-inline-code">Ctrl-w w</code> / <code class="custom-inline-code">Ctrl-w hjkl</code> 切换</li>
+                                        <li><code class="custom-inline-code">Ctrl-w q</code> / <code class="custom-inline-code">:q</code> 关闭</li>
+                                        <li><code class="custom-inline-code">Ctrl-w =</code> / <code class="custom-inline-code">_</code> / <code class="custom-inline-code">|</code> 调整大小</li>
+                                    </ul>
+                                </div>
+                                <div>
+                                    <p class="text-slate-300 text-sm font-semibold mb-2">标签页:</p>
+                                    <ul class="list-disc list-inside space-y-1 text-slate-300 text-xs pl-4">
+                                        <li><code class="custom-inline-code">:tabnew &lt;file&gt;</code> / <code class="custom-inline-code">:tabe &lt;file&gt;</code> 新建</li>
+                                        <li><code class="custom-inline-code">gt</code> / <code class="custom-inline-code">gT</code> 下一个/上一个</li>
+                                        <li><code class="custom-inline-code">Ngt</code> 跳转到第N个</li>
+                                        <li><code class="custom-inline-code">:tabc</code> 关闭</li>
+                                        <li><code class="custom-inline-code">:tabs</code> 列出</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 命令行模式 -->
+                    <div class="bg-slate-700 p-6 rounded-xl shadow-lg">
+                        <h3 class="font-sans-cn text-xl font-semibold text-indigo-highlight mb-4">命令行模式 (Command-line)</h3>
+                        <p class="mb-3 text-slate-300 text-base leading-relaxed">在普通模式下键入 <kbd class="bg-slate-600 text-slate-100 px-1.5 py-0.5 rounded font-mono text-sm">:</kbd> 可以进入命令行模式。光标会跳转到屏幕底部的命令行。此模式用于执行许多命令：</p>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+                             <ul class="list-disc list-inside space-y-2 text-slate-300 text-sm">
+                                <li><code class="custom-inline-code">:q</code>: 退出 (关闭窗口)</li>
+                                <li><code class="custom-inline-code">:q!</code>: 强制退出 (丢弃更改)</li>
+                                <li><code class="custom-inline-code">:w</code>: 保存 (写入)</li>
+                                <li><code class="custom-inline-code">:wq</code> / <code class="custom-inline-code">:x</code>: 保存并退出</li>
+                                <li><code class="custom-inline-code">:wq!</code>: 强制保存并退出</li>
+                            </ul>
+                             <ul class="list-disc list-inside space-y-2 text-slate-300 text-sm">
+                                <li><code class="custom-inline-code">:e {文件名}</code>: 打开文件</li>
+                                <li><code class="custom-inline-code">:e!</code>: 重新加载当前文件</li>
+                                <li><code class="custom-inline-code">:ls</code>: 显示打开的缓冲区</li>
+                                <li><code class="custom-inline-code">:help {主题}</code>: 打开帮助</li>
+                                <li><code class="custom-inline-code">:helpgrep &lt;pattern&gt;</code>: 搜索帮助</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 新增内容：Vim 编程语言 -->
+            <div class="bg-slate-800 shadow-2xl rounded-xl overflow-hidden">
+                <div class="p-6 md:p-8">
+                    <h2 class="font-sans-cn text-3xl font-bold text-indigo-highlight mb-6 text-center">Vim 的界面是一种编程语言</h2>
+                    <div class="space-y-4 text-slate-300 text-base leading-relaxed">
+                        <p>Vim 中最重要的思想是，Vim 的界面本身就是一种<strong>编程语言</strong>。普通模式下的按键（通常具有助记名称）是命令，这些命令是<strong>可组合的 (composable)</strong>。这使得移动和编辑非常高效，尤其是当这些命令成为肌肉记忆后。</p>
+                        <p>我们将编辑操作分解为<strong>动词 (verbs)</strong>，将移动操作或文本区域称为<strong>名词 (nouns)</strong> 或 <strong>文本对象 (text objects)</strong>。许多命令遵循 `[动词][名词/对象]` 的结构。</p>
+                    </div>
+
+                    <!-- 移动 (Nouns) -->
+                    <div class="mt-8 border-t border-slate-700 pt-6">
+                        <h3 class="font-sans-cn text-2xl font-semibold text-indigo-highlight mb-4">移动 (Nouns / Movement)</h3>
+                        <p class="mb-4 text-slate-300 text-base leading-relaxed">你应该大部分时间都待在普通模式，使用移动命令来导航缓冲区。这些命令本身可以看作是指定操作范围的"名词"。</p>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                            <!-- Basic Movement -->
+                            <div class="bg-slate-700 p-4 rounded-xl shadow-lg">
+                                <h5 class="font-sans-cn text-lg font-semibold text-moon-white mb-3">基本移动</h5>
+                                <ul class="list-disc list-inside space-y-1 text-slate-300 text-xs pl-4">
+                                    <li><kbd>h</kbd> 左</li>
+                                    <li><kbd>j</kbd> 下</li>
+                                    <li><kbd>k</kbd> 上</li>
+                                    <li><kbd>l</kbd> 右</li>
+                                </ul>
+                            </div>
+                            <!-- Word Movement -->
+                            <div class="bg-slate-700 p-4 rounded-xl shadow-lg">
+                                <h5 class="font-sans-cn text-lg font-semibold text-moon-white mb-3">单词移动</h5>
+                                <ul class="list-disc list-inside space-y-1 text-slate-300 text-xs pl-4">
+                                    <li><kbd>w</kbd> / <kbd>W</kbd> 下一个单词/大写单词开头</li>
+                                    <li><kbd>b</kbd> / <kbd>B</kbd> 上一个单词/大写单词开头</li>
+                                    <li><kbd>e</kbd> / <kbd>E</kbd> 当前/下一个单词/大写单词结尾</li>
+                                </ul>
+                            </div>
+                            <!-- Line Movement -->
+                            <div class="bg-slate-700 p-4 rounded-xl shadow-lg">
+                                <h5 class="font-sans-cn text-lg font-semibold text-moon-white mb-3">行内移动</h5>
+                                <ul class="list-disc list-inside space-y-1 text-slate-300 text-xs pl-4">
+                                    <li><kbd>0</kbd> 行首 (第一列)</li>
+                                    <li><kbd>^</kbd> 行首 (第一个非空白)</li>
+                                    <li><kbd>$</kbd> 行尾</li>
+                                    <li><kbd>g_</kbd> 行尾 (最后一个非空白)</li>
+                                    <li><kbd>+</kbd> / <kbd>Enter</kbd> 下一行首非空白</li>
+                                    <li><kbd>-</kbd> 上一行首非空白</li>
+                                </ul>
+                            </div>
+                            <!-- Screen Movement -->
+                            <div class="bg-slate-700 p-4 rounded-xl shadow-lg">
+                                <h5 class="font-sans-cn text-lg font-semibold text-moon-white mb-3">屏幕移动</h5>
+                                <ul class="list-disc list-inside space-y-1 text-slate-300 text-xs pl-4">
+                                    <li><kbd>H</kbd> 屏幕顶部行</li>
+                                    <li><kbd>M</kbd> 屏幕中间行</li>
+                                    <li><kbd>L</kbd> 屏幕底部行</li>
+                                </ul>
+                            </div>
+                            <!-- Scrolling -->
+                            <div class="bg-slate-700 p-4 rounded-xl shadow-lg">
+                                <h5 class="font-sans-cn text-lg font-semibold text-moon-white mb-3">滚动</h5>
+                                <ul class="list-disc list-inside space-y-1 text-slate-300 text-xs pl-4">
+                                    <li><kbd>Ctrl-u</kbd> / <kbd>Ctrl-d</kbd> 上/下滚动半屏</li>
+                                    <li><kbd>Ctrl-f</kbd> / <kbd>Ctrl-b</kbd> 上/下滚动整屏</li>
+                                    <li><kbd>zt</kbd> / <kbd>zz</kbd> / <kbd>zb</kbd> 当前行滚动到顶/中/底</li>
+                                </ul>
+                            </div>
+                             <!-- File Movement -->
+                            <div class="bg-slate-700 p-4 rounded-xl shadow-lg">
+                                <h5 class="font-sans-cn text-lg font-semibold text-moon-white mb-3">文件跳转</h5>
+                                <ul class="list-disc list-inside space-y-1 text-slate-300 text-xs pl-4">
+                                    <li><kbd>gg</kbd> 文件首行</li>
+                                    <li><kbd>G</kbd> 文件末行</li>
+                                    <li><kbd>{行号}G</kbd> 或 <kbd>:{行号}</kbd> 跳转指定行</li>
+                                    <li><kbd>Ctrl-g</kbd> 显示文件信息</li>
+                                    <li><kbd>%</kbd> 跳转到匹配括号/注释等</li>
+                                </ul>
+                            </div>
+                            <!-- Find -->
+                             <div class="bg-slate-700 p-4 rounded-xl shadow-lg">
+                                <h5 class="font-sans-cn text-lg font-semibold text-moon-white mb-3">行内查找 (Find)</h5>
+                                <ul class="list-disc list-inside space-y-1 text-slate-300 text-xs pl-4">
+                                    <li><kbd>f{char}</kbd> / <kbd>F{char}</kbd> 向前/后查找字符</li>
+                                    <li><kbd>t{char}</kbd> / <kbd>T{char}</kbd> 向前/后查找到字符前/后</li>
+                                    <li><kbd>;</kbd> / <kbd>,</kbd> 重复/反向重复查找</li>
+                                </ul>
+                            </div>
+                           <!-- Search -->
+                           <div class="bg-slate-700 p-4 rounded-xl shadow-lg">
+                               <h5 class="font-sans-cn text-lg font-semibold text-moon-white mb-3">文件搜索 (Search)</h5>
+                               <ul class="list-disc list-inside space-y-1 text-slate-300 text-xs pl-4">
+                                   <li><kbd>/{regex}</kbd> / <kbd>?{regex}</kbd> 向下/上搜索</li>
+                                   <li><kbd>n</kbd> / <kbd>N</kbd> 下一个/上一个匹配</li>
+                                   <li><kbd>*</kbd> / <kbd>#</kbd> 向下/上搜索光标处单词</li>
+                                   <li><code class="custom-inline-code">:set hlsearch</code> 高亮匹配</li>
+                                   <li><code class="custom-inline-code">:nohlsearch</code> 取消高亮</li>
+                               </ul>
+                           </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 选择 (Selection) -->
+                     <div class="mt-8 border-t border-slate-700 pt-6">
+                        <h3 class="font-sans-cn text-2xl font-semibold text-indigo-highlight mb-4">选择 (Selection / Visual Modes)</h3>
+                        <p class="mb-4 text-slate-300 text-base leading-relaxed">用于选取文本块，以便进行后续操作。</p>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                            <div class="bg-slate-700 p-4 rounded-xl shadow-lg">
+                                <h5 class="font-sans-cn text-lg font-semibold text-moon-white mb-3">可视化模式 (Visual)</h5>
+                                <p class="text-slate-300 text-xs">按 <kbd>v</kbd> 进入，按字符选择。</p>
+                            </div>
+                            <div class="bg-slate-700 p-4 rounded-xl shadow-lg">
+                                <h5 class="font-sans-cn text-lg font-semibold text-moon-white mb-3">可视化行模式 (Visual Line)</h5>
+                                <p class="text-slate-300 text-xs">按 <kbd>V</kbd> 进入，选择整行。</p>
+                            </div>
+                            <div class="bg-slate-700 p-4 rounded-xl shadow-lg">
+                                <h5 class="font-sans-cn text-lg font-semibold text-moon-white mb-3">可视化块模式 (Visual Block)</h5>
+                                <p class="text-slate-300 text-xs">按 <kbd>Ctrl-v</kbd> 进入，选择矩形块。</p>
+                            </div>
+                        </div>
+                         <p class="text-sm text-slate-400 mt-4">在任何可视化模式下，都可以使用移动键来扩展选择范围。</p>
+                    </div>
+
+                    <!-- 编辑 (Edits) -->
+                    <div class="mt-8 border-t border-slate-700 pt-6">
+                        <h3 class="font-sans-cn text-2xl font-semibold text-indigo-highlight mb-4">编辑 (Verbs / Edits)</h3>
+                        <p class="mb-4 text-slate-300 text-base leading-relaxed">编辑命令（动词）与移动命令（名词）组合使用，实现高效编辑。</p>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                            <!-- Deletion/Change -->
+                            <div class="bg-slate-700 p-4 rounded-xl shadow-lg">
+                                <h5 class="font-sans-cn text-lg font-semibold text-moon-white mb-3">删除/更改</h5>
+                                <ul class="list-disc list-inside space-y-1 text-slate-300 text-xs pl-4">
+                                    <li><kbd>d{motion}</kbd> 删除 (例: <kbd>dw</kbd>, <kbd>d$</kbd>, <kbd>dd</kbd>)</li>
+                                    <li><kbd>c{motion}</kbd> 更改 (删除并插入) (例: <kbd>cw</kbd>, <kbd>c$</kbd>, <kbd>cc</kbd>)</li>
+                                    <li><kbd>x</kbd> 删除光标处字符</li>
+                                    <li><kbd>X</kbd> 删除光标前字符</li>
+                                    <li><kbd>s</kbd> 替换光标处字符并插入</li>
+                                    <li><kbd>S</kbd> 删除当前行并插入</li>
+                                </ul>
+                            </div>
+                            <!-- Yank/Put -->
+                            <div class="bg-slate-700 p-4 rounded-xl shadow-lg">
+                                <h5 class="font-sans-cn text-lg font-semibold text-moon-white mb-3">复制/粘贴</h5>
+                                <ul class="list-disc list-inside space-y-1 text-slate-300 text-xs pl-4">
+                                    <li><kbd>y{motion}</kbd> 复制/Yank (例: <kbd>yw</kbd>, <kbd>yy</kbd>)</li>
+                                    <li><kbd>p</kbd> / <kbd>P</kbd> 在光标后/前粘贴</li>
+                                    <li>可视化模式下 <kbd>y</kbd> 复制选中</li>
+                                    <li>可视化模式下 <kbd>d</kbd> / <kbd>c</kbd> 剪切选中</li>
+                                </ul>
+                            </div>
+                            <!-- Misc Edits -->
+                            <div class="bg-slate-700 p-4 rounded-xl shadow-lg">
+                                <h5 class="font-sans-cn text-lg font-semibold text-moon-white mb-3">其他编辑</h5>
+                                <ul class="list-disc list-inside space-y-1 text-slate-300 text-xs pl-4">
+                                    <li><kbd>o</kbd> / <kbd>O</kbd> 下/上插入新行</li>
+                                    <li><kbd>u</kbd> 撤销</li>
+                                    <li><kbd>Ctrl-r</kbd> 重做</li>
+                                    <li><kbd>.</kbd> 重复上次更改</li>
+                                    <li><kbd>~</kbd> 翻转大小写</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                     <!-- 计数 (Counts) -->
+                     <div class="mt-8 border-t border-slate-700 pt-6">
+                        <h3 class="font-sans-cn text-2xl font-semibold text-indigo-highlight mb-4">计数 (Counts)</h3>
+                        <p class="mb-4 text-slate-300 text-base leading-relaxed">可以将数字（计数）与动词和名词组合，重复执行操作。</p>
+                         <div class="bg-slate-700 p-4 rounded-xl shadow-lg">
+                             <ul class="list-disc list-inside space-y-2 text-slate-300 text-sm pl-4">
+                                 <li><kbd>3w</kbd> - 向前移动3个单词。</li>
+                                 <li><kbd>5j</kbd> - 向下移动5行。</li>
+                                 <li><kbd>d3w</kbd> 或 <kbd>3dw</kbd> - 删除3个单词。</li>
+                                 <li><kbd>3dd</kbd> - 删除3行。</li>
+                                 <li><kbd>c5w</kbd> - 修改5个单词。</li>
+                            </ul>
+                         </div>
+                    </div>
+                    
+                    <!-- 文本对象 (Text Objects) -->
+                     <div class="mt-8 border-t border-slate-700 pt-6">
+                        <h3 class="font-sans-cn text-2xl font-semibold text-indigo-highlight mb-4">文本对象 (Text Objects / Modifiers)</h3>
+                        <p class="mb-4 text-slate-300 text-base leading-relaxed">文本对象允许更精确地指定操作范围，通常由 <kbd>i</kbd> (inner) 或 <kbd>a</kbd> (around) 后跟一个边界字符组成。</p>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                             <div class="bg-slate-700 p-4 rounded-xl shadow-lg">
+                                 <h5 class="font-sans-cn text-lg font-semibold text-moon-white mb-3">括号/引号</h5>
+                                 <ul class="list-disc list-inside space-y-1 text-slate-300 text-xs pl-4">
+                                     <li><kbd>ci(</kbd> / <kbd>ca(</kbd>: 更改 () 内部/周围</li>
+                                     <li><kbd>di[</kbd> / <kbd>da[</kbd>: 删除 [] 内部/周围</li>
+                                     <li><kbd>yi{</kbd> / <kbd>ya{</kbd>: 复制 {} 内部/周围</li>
+                                     <li><kbd>ci"</kbd> / <kbd>ca"</kbd>: 更改 "" 内部/周围</li>
+                                     <li><kbd>di'</kbd> / <kbd>da'</kbd>: 删除 '' 内部/周围</li>
+                                 </ul>
+                             </div>
+                             <div class="bg-slate-700 p-4 rounded-xl shadow-lg">
+                                 <h5 class="font-sans-cn text-lg font-semibold text-moon-white mb-3">词/句/段</h5>
+                                 <ul class="list-disc list-inside space-y-1 text-slate-300 text-xs pl-4">
+                                     <li><kbd>ciw</kbd> / <kbd>caw</kbd>: 更改 内部/周围 单词</li>
+                                     <li><kbd>cis</kbd> / <kbd>cas</kbd>: 更改 内部/周围 句子</li>
+                                     <li><kbd>cip</kbd> / <kbd>cap</kbd>: 更改 内部/周围 段落</li>
+                                 </ul>
+                             </div>
+                              <div class="bg-slate-700 p-4 rounded-xl shadow-lg">
+                                 <h5 class="font-sans-cn text-lg font-semibold text-moon-white mb-3">标签 (Tag)</h5>
+                                 <ul class="list-disc list-inside space-y-1 text-slate-300 text-xs pl-4">
+                                     <li><kbd>cit</kbd>: 更改标签内部</li>
+                                     <li><kbd>dat</kbd>: 删除标签及内容</li>
+                                 </ul>
+                             </div>
+                        </div>
+                         <p class="text-sm text-slate-400 mt-4">示例：<kbd>dap</kbd> (删除整个段落), <kbd>yit</kbd> (复制标签内文本), <kbd>v2as</kbd> (选择两个句子)。</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 新增内容：演示 (Demo) -->
+            <div class="bg-slate-800 shadow-2xl rounded-xl overflow-hidden">
+                <div class="p-6 md:p-8">
+                    <h2 class="font-sans-cn text-3xl font-bold text-indigo-highlight mb-6 text-center">演示 (Demo)</h2>
+                    <div class="space-y-4 text-slate-300 text-base leading-relaxed">
+                        <p>以下是一个有问题的 fizz buzz 实现：</p>
+                        <pre class="custom-code-block"><code class="language-python">def fizz_buzz(limit):
+    for i in range(limit): # 应该从1开始，而不是0
+        if i % 3 == 0:
+            print('fizz')
+        if i % 5 == 0: # 这里应该是 elif
+            print('fizz') # 这里应该是 'buzz'
+        if i % 3 and i % 5: # 这里应该是 elif i % 3 != 0 and i % 5 != 0: or else:
+            print(i)
+
+def main():
+    fizz_buzz(10) # 应该从命令行参数获取
+
+# main() 没有被调用</code></pre>
+                        <p>我们将修复以下问题：</p>
+                        <ol class="list-decimal list-inside space-y-1 text-slate-300 text-sm pl-4 mt-2 mb-4">
+                            <li><code class="custom-inline-code">main</code> 没有被调用。</li>
+                            <li>循环从0开始而不是1。</li>
+                            <li>对于15的倍数，在不同行打印 "fizz" 和 "buzz"。</li>
+                            <li>对于5的倍数，错误地打印 "fizz" 而不是 "buzz"。</li>
+                            <li>使用硬编码的参数10而不是从命令行获取参数。</li>
+                        </ol>
+                        <p>请观看讲座视频中的演示。比较使用 Vim 进行上述更改与你可能使用其他程序进行相同编辑的方式。注意 Vim 需要的按键次数非常少，让你能够以思考的速度进行编辑。</p>
+                        
+                        <!-- 演示步骤提示 -->
+                        <details class="mt-6 bg-slate-700 p-4 rounded-xl shadow-lg">
+                            <summary class="cursor-pointer text-indigo-highlight hover:text-indigo-300 font-semibold">查看自行练习的步骤提示</summary>
+                            <div class="pt-4 text-slate-300 text-sm space-y-3">
+                                <p><strong>1. 调用 main:</strong> 到文件末尾 <kbd>G</kbd>，换行 <kbd>o</kbd>，输入 <code class="custom-inline-code">main()</code>，<kbd>Esc</kbd>。</p>
+                                <p><strong>2. range(1, limit+1):</strong> 搜索 <code class="custom-inline-code">range</code> (<kbd>/range&lt;CR&gt;</kbd>)，移动到 <code class="custom-inline-code">limit</code> (<kbd>e</kbd> 或 <kbd>w</kbd>)，进入插入模式 <kbd>i</kbd>，输入 <code class="custom-inline-code">1, </code>，<kbd>Esc</kbd>，移动到 <code class="custom-inline-code">limit</code> 后，<kbd>a</kbd>，输入 <code class="custom-inline-code">+1</code>，<kbd>Esc</kbd>。</p>
+                                <p><strong>3. 处理15的倍数:</strong> 找到第一个 <code class="custom-inline-code">if i % 3 == 0:</code>，在其后添加 <code class="custom-inline-code">if i % 15 == 0: print('fizzbuzz')</code>，并将原 <code class="custom-inline-code">if i % 3 == 0:</code> 改为 <code class="custom-inline-code">elif i % 3 == 0:</code> (例如: <kbd>oif i % 15 == 0:&lt;CR&gt;print('fizzbuzz')&lt;ESC&gt;</kbd>, <kbd>j</kbd> 到下一行 <kbd>if</kbd>, <kbd>Ielif &lt;ESC&gt;</kbd>)。</p>
+                                <p><strong>4. 修复 'fizz' for 5:</strong> 找到 <code class="custom-inline-code">if i % 5 == 0:</code>，将其改为 <code class="custom-inline-code">elif i % 5 == 0:</code>。找到它下面的 <code class="custom-inline-code">print('fizz')</code>，用 <kbd>ci'</kbd> 改为 <code class="custom-inline-code">'buzz'</code> (例如: <kbd>j</kbd> 到 <code class="custom-inline-code">if</code>, <kbd>Ielif &lt;ESC&gt;</kbd>, <kbd>j</kbd> 到 <code class="custom-inline-code">print</code>, 光标在 <code class="custom-inline-code">fizz</code> 上, <kbd>ci'buzz&lt;ESC&gt;</kbd>)。</p>
+                                <p><strong>5. 处理非3或5的倍数:</strong> 找到 <code class="custom-inline-code">if i % 3 and i % 5:</code>，用 <kbd>C</kbd> (删除到行尾并插入) 改为 <code class="custom-inline-code">else:</code> (<kbd>Celse:&lt;ESC&gt;</kbd>)。</p>
+                                <p><strong>6. 命令行参数:</strong> 导入 <code class="custom-inline-code">sys</code> (<kbd>ggOimport sys&lt;ESC&gt;</kbd>)。修改 <code class="custom-inline-code">fizz_buzz(10)</code> (<kbd>/fizz_buzz(10)&lt;CR&gt;</kbd>, <kbd>ci(int(sys.argv[1]))&lt;ESC&gt;</kbd>)。</p>
+                            </div>
+                        </details>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 新增内容：自定义 Vim -->
+            <div class="bg-slate-800 shadow-2xl rounded-xl overflow-hidden">
+                <div class="p-6 md:p-8">
+                    <h2 class="font-sans-cn text-3xl font-bold text-indigo-highlight mb-6 text-center">自定义 Vim (~/.vimrc)</h2>
+                    <div class="space-y-4 text-slate-300 text-base leading-relaxed">
+                        <p>Vim 通过一个位于 <code class="custom-inline-code">~/.vimrc</code> 的纯文本配置文件（包含 Vimscript 命令）进行高度自定义。你可能希望开启许多基本设置来改善默认行为。</p>
+                        <p>我们提供了一个<a href="https://missing.csail.mit.edu/2020/files/vimrc" target="_blank" class="text-indigo-highlight hover:underline">文档齐全的基本配置</a>，你可以将其用作起点。建议下载并将其保存到 <code class="custom-inline-code">~/.vimrc</code>。</p>
+                        
+                        <!-- 拓展 .vimrc 配置建议 -->
+                        <details class="mt-6 bg-slate-700 p-4 rounded-xl shadow-lg">
+                            <summary class="cursor-pointer text-indigo-highlight hover:text-indigo-300 font-semibold">查看拓展 .vimrc 基础配置建议</summary>
+                            <div class="pt-4 text-slate-300 text-sm">
+                                <pre class="custom-code-block text-xs whitespace-pre-wrap"><code class="language-vimscript">" ~/.vimrc
+
+" --- 基本设置 ---
+set nocompatible        " 必须。禁用与 Vi 的兼容性
+filetype plugin indent on " 根据文件类型加载插件和缩进规则
+syntax enable             " 启用语法高亮
+
+set encoding=utf-8      " 设置默认编码
+set number              " 显示行号
+set relativenumber      " 显示相对行号
+set cursorline          " 高亮当前行
+" set cursorcolumn        " 高亮当前列 (可选)
+
+set wrap                " 自动换行 (视觉)
+set linebreak           " 在单词边界处断行
+set showbreak=↪         " 换行时显示的字符
+
+set showcmd             " 在右下角显示部分命令
+set wildmenu            " 启用更强大的 Tab 补全菜单
+set wildmode=longest:full,full " Tab 补全的行为
+set laststatus=2        " 总是显示状态栏
+
+set scrolloff=5         " 光标上下保留5行上下文
+set sidescrolloff=10    " 光标左右保留10列上下文
+
+set incsearch           " 即时搜索
+set hlsearch            " 高亮搜索匹配
+set ignorecase          " 搜索时忽略大小写
+set smartcase           " 包含大写字母时不忽略大小写
+
+set autoindent          " 自动缩进新行
+set smartindent         " 更智能的自动缩进
+
+set tabstop=4           " Tab 宽度
+set shiftwidth=4        " 自动缩进宽度
+set softtabstop=4       " 按 Tab 插入的空格数
+set expandtab           " Tab 转空格
+
+set backspace=indent,eol,start " 允许退格删除更多内容
+
+" set mouse=a             " 启用鼠标 (可选)
+
+" --- 按键映射 (示例) ---
+" inoremap jk <Esc>       " 插入模式 jk -> Esc
+" let mapleader = ","     " 设置 Leader 键
+" nnoremap <leader>w :w<CR> " 普通模式 ,w 保存
+
+" --- 插件管理 (Vim 8+) ---
+" 插件放置于 ~/.vim/pack/{任意名称}/start/
+
+" --- 外观 ---
+" colorscheme desert     " 设置配色方案
+
+" --- 其他实用设置 ---
+set hidden              " 允许切换缓冲区而不保存
+set history=1000        " 增加历史记录
+set undofile            " 启用持久化撤销
+set undodir=~/.vim/undodir " 设置撤销文件目录 (需手动创建)
+if !isdirectory(&undodir)
+    call mkdir(&undodir, "p", 0700)
+endif
+set shortmess+=A        " 改进 swap 文件提示
+set ttyfast             " 更快更新屏幕
+set wrapscan            " 搜索回绕</code></pre>
+                            </div>
+                        </details>
+                         <p class="mt-4">Vim 可高度自定义，值得花时间探索。你可以查看别人的 dotfiles（例如讲师的：Anish, Jon (Neovim), Jose）获取灵感，但要理解后再使用。</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 新增内容：扩展 Vim -->
+            <div class="bg-slate-800 shadow-2xl rounded-xl overflow-hidden">
+                <div class="p-6 md:p-8">
+                    <h2 class="font-sans-cn text-3xl font-bold text-indigo-highlight mb-6 text-center">扩展 Vim (Plugins)</h2>
+                    <div class="space-y-4 text-slate-300 text-base leading-relaxed">
+                        <p>有大量的插件可以扩展 Vim。从 Vim 8.0 开始，推荐使用内置的<strong>包管理系统 (package management system)</strong>，而不是第三方插件管理器。</p>
+                        <p>只需创建目录 <code class="custom-inline-code">~/.vim/pack/vendor/start/</code> (或类似名称)，然后将插件放在那里（例如通过 <code class="custom-inline-code">git clone</code>）。</p>
+                        
+                        <!-- 推荐插件 -->
+                        <div class="mt-6 bg-slate-700 p-6 rounded-xl shadow-lg">
+                            <h3 class="font-sans-cn text-xl font-semibold text-indigo-highlight mb-4">推荐插件示例</h3>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div>
+                                    <ul class="list-disc list-inside space-y-2 text-slate-300 text-sm">
+                                        <li><strong>[ctrlp.vim](https://github.com/ctrlpvim/ctrlp.vim):</strong> 模糊文件查找器</li>
+                                        <li><strong>ack.vim / ag.vim / [vim-ripgrep](https://github.com/jremmen/vim-ripgrep):</strong> 代码搜索</li>
+                                        <li><strong>[NERDTree](https://github.com/preservim/nerdtree):</strong> 文件浏览器</li>
+                                        <li><strong>[vim-easymotion](https://github.com/easymotion/vim-easymotion):</strong> "魔法"快速跳转</li>
+                                    </ul>
+                                </div>
+                                <div>
+                                     <ul class="list-disc list-inside space-y-2 text-slate-300 text-sm">
+                                        <li><strong>[vim-surround](https://github.com/tpope/vim-surround):</strong> 操作包围符号</li>
+                                        <li><strong>[vim-commentary](https://github.com/tpope/vim-commentary):</strong> 快速注释</li>
+                                        <li><strong>[vim-fugitive](https://github.com/tpope/vim-fugitive):</strong> Git 封装</li>
+                                        <li><strong>LSP 客户端 (如 [coc.nvim](https://github.com/neoclide/coc.nvim), vim-lsp, Neovim内置LSP):</strong> 提供IDE特性</li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <p class="text-xs text-slate-400 mt-4">访问 [Vim Awesome](https://vimawesome.com/) 或搜索博客查找更多插件。</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 新增内容：其他程序中的 Vim 模式 -->
+            <div class="bg-slate-800 shadow-2xl rounded-xl overflow-hidden">
+                <div class="p-6 md:p-8">
+                    <h2 class="font-sans-cn text-3xl font-bold text-indigo-highlight mb-6 text-center">其他程序中的 Vim 模式</h2>
+                    <div class="space-y-4 text-slate-300 text-base leading-relaxed">
+                        <p>许多工具支持 Vim 仿真模式，质量各异，但多数能覆盖基础功能。</p>
+                        <!-- Shells -->
+                        <div class="mt-6 bg-slate-700 p-6 rounded-xl shadow-lg">
+                            <h3 class="font-sans-cn text-xl font-semibold text-indigo-highlight mb-4">Shells</h3>
+                            <ul class="list-disc list-inside space-y-2 text-slate-300 text-sm pl-4">
+                                <li><strong>Bash:</strong> <code class="custom-inline-code">set -o vi</code></li>
+                                <li><strong>Zsh:</strong> <code class="custom-inline-code">bindkey -v</code></li>
+                                <li><strong>Fish:</strong> <code class="custom-inline-code">fish_vi_key_bindings</code></li>
+                                <li>设置环境变量: <code class="custom-inline-code">export EDITOR=vim</code> (或 <code class="custom-inline-code">nvim</code>)，影响如 <code class="custom-inline-code">git</code> 等程序调用的编辑器。</li>
+                            </ul>
+                        </div>
+                        <!-- Readline -->
+                        <div class="mt-6 bg-slate-700 p-6 rounded-xl shadow-lg">
+                            <h3 class="font-sans-cn text-xl font-semibold text-indigo-highlight mb-4">Readline</h3>
+                            <p class="mb-3">许多程序使用 GNU Readline 库。通过在 <code class="custom-inline-code">~/.inputrc</code> 中添加以下内容启用 Vim 模式：</p>
+                            <pre class="custom-code-block text-sm"><code class="language-bash">set editing-mode vi</code></pre>
+                            <p class="mt-2 text-xs text-slate-400">这会使例如 Python REPL 支持 Vim 绑定。</p>
+                        </div>
+                        <!-- 其他 (浏览器等) -->
+                        <div class="mt-6 bg-slate-700 p-6 rounded-xl shadow-lg">
+                            <h3 class="font-sans-cn text-xl font-semibold text-indigo-highlight mb-4">其他</h3>
+                            <ul class="list-disc list-inside space-y-2 text-slate-300 text-sm pl-4">
+                                <li><strong>Web 浏览器:</strong> Chrome 的 [Vimium](https://chrome.google.com/webstore/detail/vimium/dbepggeogbaibhgnhhndojpepiihcmeb) 或 [cVim](https://chrome.google.com/webstore/detail/cvim/ihlenndgcmojhcghmfjfneahoeklbjjh)，Firefox 的 [Tridactyl](https://addons.mozilla.org/en-US/firefox/addon/tridactyl-vim/)。</li>
+                                <li><strong>Jupyter Notebooks</strong> 也支持 Vim 绑定。</li>
+                                <li>更多列表见 <a href="https://vim.fandom.com/wiki/Software_that_uses_vi_key_bindings" target="_blank" class="text-indigo-highlight hover:underline">Vim Wiki</a>。</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 新增内容：高级 Vim -->
+            <div class="bg-slate-800 shadow-2xl rounded-xl overflow-hidden">
+                <div class="p-6 md:p-8">
+                    <h2 class="font-sans-cn text-3xl font-bold text-indigo-highlight mb-6 text-center">高级 Vim</h2>
+                    <div class="space-y-4 text-slate-300 text-base leading-relaxed">
+                        <p>以下是一些例子，展示编辑器的强大功能。每当感觉"一定有更好的方法"时，上网查一下。</p>
+                        
+                        <!-- 搜索与替换 -->
+                        <div class="mt-6 bg-slate-700 p-6 rounded-xl shadow-lg">
+                            <h3 class="font-sans-cn text-xl font-semibold text-indigo-highlight mb-4">搜索和替换</h3>
+                            <p class="mb-3"><code class="custom-inline-code">:s</code> (substitute) 命令用于执行复杂的查找和替换操作。详情可查阅 <a href="https://vimdoc.sourceforge.net/htmldoc/change.html#:%73" target="_blank" class="text-indigo-highlight hover:underline">Vim文档</a>。</p>
+                            <pre class="custom-code-block"><code class="language-vimscript">" 全局替换 foo 为 bar (区分大小写，每行所有匹配)
+:%s/foo/bar/g
+
+" %: 代表整个文件 (1,$)
+" s: substitute 命令
+" /foo/: 查找模式
+" /bar/: 替换文本
+" /g: global标志, 替换行内所有匹配 (否则只替换第一个)
+" 其他标志: i (忽略大小写), I (区分大小写), c (确认替换)
+
+" Markdown链接转为纯URL: [text](url) -> url
+:%s/\[.*\](\(.*\))/\1/g</code></pre>
+                        </div>
+
+                        <!-- 多窗口 -->
+                        <div class="mt-6 bg-slate-700 p-6 rounded-xl shadow-lg">
+                            <h3 class="font-sans-cn text-xl font-semibold text-indigo-highlight mb-4">多窗口</h3>
+                            <p class="mb-3">使用 <code class="custom-inline-code">:sp</code> (水平分割) 和 <code class="custom-inline-code">:vsp</code> (垂直分割) 可以同时查看和编辑多个文件或同一文件的不同部分。这对于比较文件 (例如使用 <code class="custom-inline-code">:diffthis</code>) 非常有用。</p>
+                        </div>
+                        
+                        <!-- 宏 -->
+                        <div class="mt-6 bg-slate-700 p-6 rounded-xl shadow-lg">
+                            <h3 class="font-sans-cn text-xl font-semibold text-indigo-highlight mb-4">宏 (Macros)</h3>
+                            <p class="mb-3">宏是录制和回放一系列按键操作的强大方式，用于自动化重复性编辑任务。</p>
+                            <ul class="list-disc list-inside space-y-2 text-slate-300 text-sm pl-4 mb-4">
+                                <li><kbd>q{char}</kbd>: 开始在寄存器 <code class="custom-inline-code">{char}</code> (a-z) 中录制宏。</li>
+                                <li><kbd>q</kbd>: 停止录制。</li>
+                                <li><kbd>@{char}</kbd>: 回放寄存器 <code class="custom-inline-code">{char}</code> 中的宏。</li>
+                                <li><kbd>{num}@{char}</kbd>: 执行宏 <code class="custom-inline-code">{num}</code> 次。</li>
+                                <li>宏可以是递归的 (在录制时调用自身)。</li>
+                            </ul>
+                            <p class="mb-2 font-semibold">示例：将 XML 转换为 JSON</p>
+                            <p class="text-xs text-slate-400 mb-2">将以下XML：</p>
+                            <pre class="custom-code-block text-xs"><code class="language-xml">&lt;people&gt;
+  &lt;person&gt;
+    &lt;name&gt;Alice&lt;/name&gt;
+    &lt;email&gt;alice@example.com&lt;/email&gt;
+  &lt;/person&gt;
+  &lt;!-- ... more people ... --&gt;
+&lt;/people&gt;</code></pre>
+                            <p class="text-xs text-slate-400 mb-2">转换为JSON数组。具体步骤涉及多个宏的组合。以下是详细的操作提示：</p>
+                            <details class="mt-3 bg-slate-800 p-3 rounded-lg">
+                                <summary class="cursor-pointer text-indigo-highlight/80 hover:text-indigo-highlight text-xs font-semibold">查看详细宏操作步骤</summary>
+                                <div class="pt-3 text-slate-300 text-xs space-y-2">
+                                    <p>1. <strong>删除首尾行:</strong> <kbd>Gdd</kbd>, <kbd>ggdd</kbd> (删除 `&lt;/people&gt;` 和 `&lt;people&gt;`)</p>
+                                    <p>2. <strong>格式化单个元素宏 (存入寄存器 <code class="custom-inline-code">e</code>):</strong><br>
+                                        (光标移到含 `&lt;name&gt;` 的行)
+                                        <ul class="list-disc list-inside pl-4 space-y-1 mt-1">
+                                            <li><kbd>qe</kbd> (开始录制到e)</li>
+                                            <li><kbd>^</kbd> (到行首) <kbd>r"</kbd> (将 `&lt;` 替换为 `"`)</li>
+                                            <li><kbd>f&gt;</kbd> (找到第一个 `&gt;`) <kbd>s": "</kbd> (将 `&gt;` 替换为 `": "`)</li>
+                                            <li><kbd>Esc</kbd> (返回普通模式)</li>
+                                            <li><kbd>f&lt;</kbd> (找到下一个 `&lt;`) <kbd>C",</kbd> (将 `&lt;` 及之后到行尾改为 `",`)</li>
+                                            <li><kbd>Esc</kbd> (返回普通模式)</li>
+                                            <li><kbd>q</kbd> (停止录制)</li>
+                                        </ul>
+                                    </p>
+                                    <p>3. <strong>格式化一个 `&lt;person&gt;` 块的宏 (存入寄存器 <code class="custom-inline-code">p</code>):</strong><br>
+                                        (光标移到含 `&lt;person&gt;` 的行)
+                                        <ul class="list-disc list-inside pl-4 space-y-1 mt-1">
+                                            <li><kbd>qp</kbd> (开始录制到p)</li>
+                                            <li><kbd>S{</kbd> (删除当前行并插入 `{`)</li>
+                                            <li><kbd>Esc</kbd> <kbd>j</kbd> <kbd>@e</kbd> (应用元素宏到name行)</li>
+                                            <li><kbd>A,</kbd> <kbd>Esc</kbd> <kbd>j</kbd> <kbd>@e</kbd> (在name行尾加逗号, 应用元素宏到email行)</li>
+                                            <li><kbd>j</kbd> (到 `&lt;/person&gt;` 行) <kbd>S},</kbd> (删除当前行并插入 `},`)</li>
+                                            <li><kbd>Esc</kbd></li>
+                                            <li><kbd>q</kbd> (停止录制)</li>
+                                        </ul>
+                                    </p>
+                                    <p>4. <strong>格式化并移动到下一个 `&lt;person&gt;` 的递归宏 (存入寄存器 <code class="custom-inline-code">q</code>):</strong>
+                                        <ul class="list-disc list-inside pl-4 space-y-1 mt-1">
+                                            <li>清空q寄存器: <kbd>qqq</kbd></li>
+                                            <li>(光标移到第一个 `&lt;person&gt;` 行)</li>
+                                            <li><kbd>qq</kbd> (开始录制到q)</li>
+                                            <li><kbd>@p</kbd> (应用处理person的宏)</li>
+                                            <li><kbd>j</kbd> (向下移动，准备找下一个 `&lt;person&gt;`)</li>
+                                            <li><kbd>@q</kbd> (递归调用)</li>
+                                            <li><kbd>q</kbd> (停止录制)</li>
+                                        </ul>
+                                    </p>
+                                    <p>5. <strong>执行宏:</strong> <kbd>@q</kbd> (或 <kbd>999@q</kbd>)。</p>
+                                    <p>6. <strong>手动清理:</strong> 删除最后一个对象的逗号，文件首尾添加 `[` 和 `]`。</p>
+                                </div>
+                            </details>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 新增内容：资源 -->
+            <div class="bg-slate-800 shadow-2xl rounded-xl overflow-hidden">
+                <div class="p-6 md:p-8">
+                    <h2 class="font-sans-cn text-3xl font-bold text-indigo-highlight mb-6 text-center">资源 (Resources)</h2>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-4 text-slate-300 text-sm">
+                        <ul class="list-disc list-inside space-y-2 pl-4">
+                            <li><strong><code class="custom-inline-code">vimtutor</code></strong>: Vim 自带教程 (Shell中运行)。<strong>强烈推荐初学者完成!</strong></li>
+                            <li><a href="https://vim-adventures.com/" target="_blank" class="text-indigo-highlight hover:underline">Vim Adventures</a>: 学习 Vim 的游戏。</li>
+                            <li><a href="https://vim.fandom.com/wiki/Vim_Tips_Wiki" target="_blank" class="text-indigo-highlight hover:underline">Vim Tips Wiki</a></li>
+                            <li><a href="https://vimways.org/" target="_blank" class="text-indigo-highlight hover:underline">Vimways (Vim Advent Calendar)</a></li>
+                        </ul>
+                        <ul class="list-disc list-inside space-y-2 pl-4">
+                            <li><a href="https://www.vimgolf.com/" target="_blank" class="text-indigo-highlight hover:underline">Vim Golf</a></li>
+                            <li><a href="https://vi.stackexchange.com/" target="_blank" class="text-indigo-highlight hover:underline">Vi/Vim Stack Exchange</a></li>
+                            <li><a href="http://vimcasts.org/" target="_blank" class="text-indigo-highlight hover:underline">Vim Screencasts</a></li>
+                            <li>书籍: <strong>《Practical Vim》</strong> (Drew Neil), <strong>《Learning the vi and Vim Editors》</strong> (O'Reilly)</li>
+                             <li>Derek Wyatt's Vim videos on Vimeo</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 新增内容：练习 -->
+            <div class="bg-slate-800 shadow-2xl rounded-xl overflow-hidden">
+                <div class="p-6 md:p-8">
+                    <h2 class="font-sans-cn text-3xl font-bold text-indigo-highlight mb-6 text-center">练习 (Exercises)</h2>
+                    <ol class="list-decimal list-inside space-y-4 text-slate-300 text-sm pl-4">
+                        <li>完成 <code class="custom-inline-code">vimtutor</code> (建议在 80x24 终端窗口中)。</li>
+                        <li>下载课程提供的<a href="https://missing.csail.mit.edu/2020/files/vimrc" target="_blank" class="text-indigo-highlight hover:underline">基本 vimrc</a> 并保存到 <code class="custom-inline-code">~/.vimrc</code>。通读并观察 Vim 的变化。</li>
+                        <li>安装并配置一个插件：<code class="custom-inline-code">ctrlp.vim</code>。
+                            <ul class="list-disc list-inside space-y-1 text-xs pl-6 mt-1">
+                                <li>创建目录: <code class="custom-inline-code">mkdir -p ~/.vim/pack/vendor/start</code></li>
+                                <li>下载插件: <code class="custom-inline-code">cd ~/.vim/pack/vendor/start; git clone https://github.com/ctrlpvim/ctrlp.vim</code></li>
+                                <li>阅读文档，尝试使用 <code class="custom-inline-code">:CtrlP</code>，并配置快捷键 <kbd>Ctrl-P</kbd>。</li>
+                            </ul>
+                        </li>
+                        <li>为了练习，在你自己的机器上重做讲座中的演示。</li>
+                        <li>在接下来的一个月里，使用 Vim 进行所有文本编辑。遇到效率低或疑惑时，积极搜索解决方案。</li>
+                        <li>配置你的其他工具以使用 Vim 绑定。</li>
+                        <li>进一步自定义你的 <code class="custom-inline-code">~/.vimrc</code> 并安装更多插件。</li>
+                        <li><strong>(高级)</strong> 使用 Vim 宏将 <a href="https://missing.csail.mit.edu/2020/files/example-data.xml" target="_blank" class="text-indigo-highlight hover:underline">XML 转换为 JSON</a>。</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+
+        <!-- 导航 -->
+        <nav class="mt-16 flex justify-between items-center">
+            <a href="lecture-2.html" class="px-6 py-3 text-indigo-highlight hover:bg-indigo-highlight/10 rounded-md font-sans-cn">
+                &larr; 上一单元 (Shell 工具与脚本)
+            </a>
+            <a href="lecture-4.html" class="px-6 py-3 text-indigo-highlight hover:bg-indigo-highlight/10 rounded-md font-sans-cn">
+                下一单元 (数据整理) &rarr; 
+            </a>
+        </nav>
+    </main>
+
+    <footer class="mt-20 py-10 bg-slate-800 border-t border-slate-700 text-center">
+        <p class="font-sans-cn text-slate-400">
+            &copy; 2025 Missing Semester 中文版. 基于 MIT 原始课程.
+        </p>
+        <p class="font-sans-en text-slate-500 text-sm mt-2">
+            <a href="https://missing.csail.mit.edu/" target="_blank" class="hover:text-indigo-highlight">原始课程链接</a> | 
+            <a href="#" class="hover:text-indigo-highlight">GitHub 仓库</a>
+        </p>
+        <p class="font-sans-cn text-slate-400 text-sm mt-2">
+            由 <a href="https://huashanjian.github.io/" target="_blank" class="hover:text-indigo-highlight">Junhua Yao</a> 创建和维护
+        </p>
+    </footer>
+    
+    <script src="https://cdn.jsdelivr.net/npm/framer-motion@latest/dist/framer-motion.js"></script>
+    <script>
+        // Placeholder for Framer Motion scripts
+    </script>
+    <!-- Add PrismJS script (needs to be after content) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+</body>
+</html> 

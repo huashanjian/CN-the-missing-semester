@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>课程单元标题 - 计算机的缺失课程</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              'moon-white': '#F5F5F5',
+              'sky-blue-tint': '#F0F9FF',
+              'silver-rat-grey': '#E5E7EB',
+              'ink-black': '#111827',
+              'crow-blue': '#1E40AF',
+              'medium-grey': '#6B7280',
+              'indigo-highlight': '#0EA5E9',
+            },
+            fontFamily: {
+              'sans-cn': ['"Source Han Sans SC"', 'PingFang SC', 'sans-serif'],
+              'sans-en': ['Inter', 'Manrope', 'sans-serif'],
+            }
+          }
+        }
+      }
+    </script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&family=Manrope:wght@400;700&family=Noto+Sans+SC:wght@400;700&display=swap" rel="stylesheet">
+    <!-- Add MathJax script for formula rendering (if needed) -->
+    <script>
+    MathJax = {
+      tex: {
+        inlineMath: [['\\\\(', '\\\\)']],
+        displayMath: [['\\\\[', '\\\\]']]
+      },
+      svg: {
+        fontCache: 'global'
+      }
+    };
+    </script>
+    <script type="text/javascript" id="MathJax-script" async
+        src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js">
+    </script>
+    <!-- Add PrismJS for syntax highlighting -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-okaidia.min.css" rel="stylesheet" />
+    <style>
+      body {
+        font-family: theme('fontFamily.sans-cn');
+      }
+      .font-sans-en {
+        font-family: theme('fontFamily.sans-en');
+      }
+      .font-sans-cn {
+        font-family: theme('fontFamily.sans-cn');
+      }
+      .prose h2 {
+        font-family: theme('fontFamily.sans-cn');
+        /* color: theme('colors.indigo-highlight'); */ /* Color will be applied via class in HTML */
+        font-size: theme('fontSize.4xl');
+        border-bottom-width: 2px;
+        border-color: theme('colors.indigo-highlight'); /* Keep border color */
+        padding-bottom: theme('spacing.2');
+        margin-top: theme('spacing.12');
+        margin-bottom: theme('spacing.8');
+      }
+      .prose h3 {
+        font-family: theme('fontFamily.sans-cn');
+        /* color: theme('colors.indigo-highlight'); */ /* Color will be applied via class in HTML */
+        font-size: theme('fontSize.3xl');
+        font-weight: theme('fontWeight.bold');
+        margin-top: theme('spacing.16');
+        margin-bottom: theme('spacing.6');
+      }
+      .prose pre {
+        background-color: #1E293B; /* Tailwind slate-800 */
+        color: #E2E8F0;      /* Tailwind slate-200 for text */
+        padding: theme('spacing.4');
+        border-radius: theme('borderRadius.lg');
+        overflow-x: auto;
+      }
+      .prose code:not(pre code) { /* Inline code */
+        background-color: theme('colors.slate.200');
+        color: theme('colors.slate.800');
+        padding: theme('spacing.1') theme('spacing.2');
+        border-radius: theme('borderRadius.md');
+        font-size: 0.9em;
+      }
+      .prose blockquote {
+        border-left-color: theme('colors.sky-blue-tint');
+      }
+      .prose p,
+      .prose ul,
+      .prose ol {
+        line-height: 1.75;
+        margin-bottom: theme('spacing.10'); 
+      }
+      .prose ul ul, .prose ul ol, .prose ol ul, .prose ol ol {
+        margin-bottom: theme('spacing.4');
+      }
+      .prose li > p {
+        margin-bottom: theme('spacing.2'); 
+      }
+      .prose strong {
+        color: theme('colors.ink-black');
+      }
+    </style>
+</head>
+<body class="bg-gray-50 text-ink-black">
+    <!-- 页眉 (Header) 将在这里添加 (与首页共享或单独设计) -->
+    <header class="py-4 shadow-sm sticky top-0 bg-moon-white/80 backdrop-blur-md z-50">
+        <nav class="container mx-auto px-8 flex justify-between items-center">
+            <a href="index.html" class="text-2xl font-bold font-sans-cn text-ink-black">
+                缺失<span class="text-indigo-highlight">环节</span>
+            </a>
+            <div>
+                <a href="index.html#bento-grid" class="font-sans-cn text-crow-blue hover:text-indigo-highlight ml-6">课程列表</a>
+                <!-- 其他导航链接 -->
+            </div>
+        </nav>
+    </header>
+
+    <main class="container mx-auto p-8">
+        <!-- 页面头部: 单元标题 -->
+        <section class="mb-12 pt-8">
+            <h1 class="font-sans-cn font-bold text-5xl md:text-7xl text-ink-black mb-2">
+                <!-- 单元中文标题将在这里填充 -->
+                [单元中文标题]
+            </h1>
+            <p class="font-sans-en text-lg md:text-xl text-medium-grey">
+                <!-- 单元英文标题将在这里填充 -->
+                [Unit English Title]
+            </p>
+        </section>
+
+        <!-- 内容区域 -->
+        <article class="prose prose-lg lg:prose-xl max-w-none font-sans-cn text-ink-black">
+            <!-- Markdown 内容将在这里填充 -->
+            <p class="lead">这里是课程内容的起始段落...</p>
+            
+            <h2 class="font-sans-cn text-crow-blue border-b-2 border-indigo-highlight pb-2">段落标题示例</h2>
+            <p>这是正文内容。<strong>版本控制</strong> (<code class="font-sans-en text-sm bg-slate-200 p-1 rounded">Version Control</code>) 是现代软件开发的基石。</p>
+
+            <blockquote class="border-l-4 border-sky-blue-tint bg-sky-blue-tint/30 p-4 my-6">
+                <p class="font-sans-cn">这是一个引用或提示块，使用天青色背景和边框。</p>
+            </blockquote>
+
+            <pre><code class="language-bash"># 这是一个代码块示例
+# solution.md 中建议使用深色背景，这里使用亮色示例，可调整
+echo "Hello, World!"</code></pre>
+
+            <div class="bg-silver-rat-grey p-6 rounded-lg my-8">
+                <h3 class="font-sans-cn text-2xl font-bold text-ink-black mb-3">动手练习 (Exercises)</h3>
+                <p>这里是练习题描述...</p>
+            </div>
+
+        </article>
+
+        <!-- 底部导航: 上一单元 / 下一单元 -->
+        <nav class="mt-16 flex justify-between items-center">
+            <a href="#" class="px-6 py-3 text-indigo-highlight hover:bg-indigo-highlight/10 rounded-md font-sans-cn">
+                &larr; 上一单元
+            </a>
+            <a href="#" class="px-6 py-3 text-indigo-highlight hover:bg-indigo-highlight/10 rounded-md font-sans-cn">
+                下一单元 &rarr;
+            </a>
+        </nav>
+    </main>
+
+    <!-- 页脚 (Footer) 将在这里添加 (与首页共享或单独设计) -->
+    <footer class="mt-20 py-10 bg-silver-rat-grey text-center">
+        <p class="font-sans-cn text-medium-grey">
+            &copy; 2024 Missing Semester 中文版. 基于 MIT 原始课程.
+        </p>
+        <p class="font-sans-en text-medium-grey text-sm mt-2">
+            <a href="https://missing.csail.mit.edu/" target="_blank" class="hover:text-indigo-highlight">原始课程链接</a> | 
+            <a href="#" class="hover:text-indigo-highlight">GitHub 仓库</a>
+        </p>
+    </footer>
+
+    <!-- Placeholder for Framer Motion scripts -->
+    <script>
+    </script>
+    <!-- Add PrismJS script (needs to be after content) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+</body>
+</html> 

@@ -1,0 +1,608 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>数据整理 - 计算机的缺失课程</title>
+    <!-- Styles same as lecture-3.html -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              'moon-white': '#F5F5F5',
+              'sky-blue-tint': '#F0F9FF',
+              'silver-rat-grey': '#E5E7EB',
+              'ink-black': '#111827',
+              'crow-blue': '#1E40AF',
+              'medium-grey': '#6B7280',
+              'indigo-highlight': '#0EA5E9',
+            },
+            fontFamily: {
+              'sans-cn': ['"Source Han Sans SC"', 'PingFang SC', 'sans-serif'],
+              'sans-en': ['Inter', 'Manrope', 'sans-serif'],
+            }
+          }
+        }
+      }
+    </script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&family=Manrope:wght@400;700&family=Noto+Sans+SC:wght@400;700&display=swap" rel="stylesheet">
+    <!-- Add PrismJS for syntax highlighting -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-okaidia.min.css" rel="stylesheet" />
+    <style>
+      body { font-family: theme('fontFamily.sans-cn'); }
+      .font-sans-en { font-family: theme('fontFamily.sans-en'); }
+      .font-sans-cn { font-family: theme('fontFamily.sans-cn'); }
+      pre[class*="language-"], .custom-code-block { background-color: #1E293B; color: #E2E8F0; padding: theme('spacing.6'); border-radius: theme('borderRadius.xl'); overflow-x: auto; margin-top: theme('spacing.4'); margin-bottom: theme('spacing.6'); }
+      code:not(pre code), .custom-inline-code { background-color: theme('colors.slate.700'); color: theme('colors.slate.200'); padding: theme('spacing.1') theme('spacing.2'); border-radius: theme('borderRadius.md'); font-size: 0.9em; }
+      kbd { background-color: theme('colors.slate.600'); color: theme('colors.slate.100'); padding: theme('spacing.px') theme('spacing.1'); border-radius: theme('borderRadius.md'); font-family: theme('fontFamily.mono'); font-size: 0.85em; border: 1px solid theme('colors.slate.500'); box-shadow: 1px 1px 1px theme('colors.slate.900'); }
+    </style>
+</head>
+<body class="bg-slate-900 text-slate-200"> 
+
+    <header class="py-4 shadow-lg sticky top-0 bg-slate-800/90 backdrop-blur-md z-50 border-b border-slate-700">
+        <nav class="container mx-auto px-6 md:px-8 flex justify-between items-center">
+            <a href="index.html" class="text-2xl font-bold font-sans-cn">
+                <span class="text-moon-white">缺失</span><span class="text-indigo-highlight">环节</span>
+            </a>
+            <div>
+                <a href="index.html#bento-grid" class="font-sans-cn text-slate-300 hover:text-indigo-highlight ml-6">课程列表</a>
+            </div>
+        </nav>
+    </header>
+
+    <main class="container mx-auto p-4 md:p-8">
+        <section class="mb-12 pt-8 text-center">
+            <h1 class="font-sans-cn font-bold text-5xl md:text-7xl text-moon-white mb-2">
+                数据整理 
+            </h1>
+            <p class="font-sans-en text-lg md:text-xl text-medium-grey">
+                 Data Wrangling
+            </p>
+        </section>
+
+        <div class="space-y-8 md:space-y-12">
+            <!-- Introduction Card -->
+            <div class="bg-slate-800 shadow-2xl rounded-xl overflow-hidden">
+                <div class="p-6 md:p-8 text-slate-300 text-base leading-relaxed">
+                    <p>你是否曾经想过将一种格式的数据转换为另一种格式？当然想过！从非常概括的层面来说，这就是本讲座的<strong>全部内容</strong>。具体来说，就是处理数据（无论是文本还是二进制格式），直到你得到你想要的东西。</p>
+                    <p class="mt-4">我们在过去的讲座中已经看到了一些基本的数据整理。几乎任何时候你使用 <code class="custom-inline-code">|</code> 操作符，你都在进行某种数据整理。例如，<code class="custom-inline-code">journalctl | grep -i intel</code> 会查找所有提及 Intel 的系统日志条目。</p>
+                    <p class="mt-4">大多数数据整理的关键在于了解你有哪些可用的工具，以及如何组合它们。</p>
+                </div>
+            </div>
+
+            <!-- Log Wrangling Example Card -->
+            <div class="bg-slate-800 shadow-2xl rounded-xl overflow-hidden">
+                <div class="p-6 md:p-8">
+                    <h2 class="font-sans-cn text-3xl font-bold text-indigo-highlight mb-6 text-center">日志整理示例：查找 SSH 登录尝试</h2>
+                    <div class="space-y-4 text-slate-300 text-base leading-relaxed">
+                        <p>日志通常是一个很好的数据整理用例。让我们通过查看服务器日志找出谁在尝试登录：</p>
+                        <pre class="custom-code-block"><code class="language-bash"># 获取所有日志，内容太多
+ssh myserver journalctl
+
+# 限制在 sshd 相关内容
+ssh myserver journalctl | grep sshd
+
+# 进一步筛选 "Disconnected from" 并使用 less 分页
+# 注意：内部命令在远程执行，less 在本地执行
+ssh myserver 'journalctl | grep sshd | grep "Disconnected from"' | less
+
+# 将过滤后的日志保存到本地文件，方便调试
+ssh myserver 'journalctl | grep sshd | grep "Disconnected from"' > ssh.log
+less ssh.log</code></pre>
+                        <p>日志中仍然有很多噪音。我们需要更强大的工具，比如 <code class="custom-inline-code">sed</code>。</p>
+                    </div>
+                    <!-- 拓展技巧 -->
+                     <div class="mt-6 bg-slate-700 p-6 rounded-xl shadow-lg">
+                        <h5 class="font-sans-cn text-lg font-semibold text-moon-white mb-3 flex items-center">
+                            <i class="fas fa-network-wired mr-2 text-indigo-highlight"></i>拓展技巧: 命令执行顺序与引号
+                        </h5>
+                        <ul class="list-disc list-inside space-y-2 text-slate-300 text-sm pl-4">
+                            <li>单引号 <code class="custom-inline-code">'...'</code> 内的命令在 <strong>远程主机</strong> 上执行。</li>
+                            <li>管道 <code class="custom-inline-code">| less</code> 等后续命令在 <strong>本地计算机</strong> 上执行。</li>
+                            <li>理解这一点有助于优化命令，减少网络传输。尽可能在数据源头（远程）进行过滤。</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- sed Introduction Card -->
+            <div class="bg-slate-800 shadow-2xl rounded-xl overflow-hidden">
+                <div class="p-6 md:p-8">
+                    <h2 class="font-sans-cn text-3xl font-bold text-indigo-highlight mb-6 text-center"><code class="custom-inline-code bg-indigo-highlight/20">sed</code>：流编辑器</h2>
+                    <div class="space-y-4 text-slate-300 text-base leading-relaxed">
+                        <p><code class="custom-inline-code">sed</code> 是一个"流编辑器 (stream editor)"，用于对输入流（或文件）执行基于文本的转换。你通过简短的命令指示如何修改文本。</p>
+                        <p>最常用的命令之一是 <code class="custom-inline-code">s</code>：<strong>替换 (substitution)</strong>。其基本格式为 <code class="custom-inline-code">s/REGEX/SUBSTITUTION/FLAGS</code>。</p>
+                        <pre class="custom-code-block"><code class="language-bash"># 使用 sed 去掉 "Disconnected from " 前缀
+# ... (前面的命令) ... \
+ | sed 's/.*Disconnected from //' # REGEX: .*Disconnected from , SUBSTITUTION: (空), FLAGS: (无)
+</code></pre>
+                        <p class="mt-2">我们刚刚写的是一个简单的<strong>正则表达式 (regular expression)</strong>；一个强大的结构，允许你根据模式匹配文本。</p>
+                        <p class="mt-2">我们使用了正则表达式 <code class="custom-inline-code">.*Disconnected from </code> 来匹配行首到 "Disconnected from " 的所有内容，并将其替换为空，从而删除了这部分前缀。</p>
+                        <p class="text-xs text-slate-400 mt-3">Vim 的搜索替换语法与 `sed` 类似，学习一个工具有助于掌握其他工具。</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 正则表达式 Card -->
+            <div class="bg-slate-800 shadow-2xl rounded-xl overflow-hidden">
+                <div class="p-6 md:p-8">
+                    <h2 class="font-sans-cn text-3xl font-bold text-indigo-highlight mb-6 text-center">正则表达式 (Regular Expressions)</h2>
+                    <div class="space-y-4 text-slate-300 text-base leading-relaxed">
+                        <p>正则表达式（Regex）是处理文本的强大工具，允许你根据模式匹配文本。理解其工作原理对数据整理至关重要。</p>
+                        <p>回顾之前的 <code class="custom-inline-code">sed</code> 示例中的 <code class="custom-inline-code">/.*Disconnected from /</code>，它匹配以任意数量字符开头，后跟字面字符串 "Disconnected from " 的文本。</p>
+                        <p class="mt-4">大多数 ASCII 字符只具有它们的正常含义，但某些字符具有"特殊"的匹配行为。具体哪些字符起什么作用在不同的正则表达式实现之间略有不同，这是一个巨大的困扰来源。非常常见的模式有：</p>
+
+                        <!-- Regex Special Characters -->
+                        <div class="mt-6 bg-slate-700 p-6 rounded-xl shadow-lg">
+                            <h3 class="font-sans-cn text-xl font-semibold text-indigo-highlight mb-4">常用特殊字符与语法</h3>
+                            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                                <ul class="list-disc list-inside space-y-1 text-slate-300 text-sm">
+                                    <li><code class="custom-inline-code">.</code> 匹配除换行符外的<strong>任意单个字符</strong></li>
+                                    <li><code class="custom-inline-code">*</code> 匹配前一个元素<strong>零次或多个</strong></li>
+                                    <li><code class="custom-inline-code">+</code> 匹配前一个元素<strong>一次或多个</strong></li>
+                                    <li><code class="custom-inline-code">?</code> 匹配前一个元素<strong>零次或一次</strong> (也用于非贪婪)</li>
+                                    <li><code class="custom-inline-code">\d</code> 数字 (等同 <code class="custom-inline-code">[0-9]</code>)</li>
+                                    <li><code class="custom-inline-code">\w</code> 单词字符 (字母/数字/下划线)</li>
+                                    <li><code class="custom-inline-code">\s</code> 空白字符</li>
+                                </ul>
+                                <ul class="list-disc list-inside space-y-1 text-slate-300 text-sm">
+                                    <li><code class="custom-inline-code">[abc]</code> 匹配 a, b, 或 c 中的<strong>任何一个字符</strong></li>
+                                    <li><code class="custom-inline-code">[a-z]</code> 匹配小写字母范围</li>
+                                    <li><code class="custom-inline-code">[^abc]</code> 匹配非 a, b, c 的字符</li>
+                                    <li><code class="custom-inline-code">^</code> 匹配行的<strong>开头</strong></li>
+                                    <li><code class="custom-inline-code">$</code> 匹配行的<strong>结尾</strong></li>
+                                    <li><code class="custom-inline-code">(RX1|RX2)</code> 匹配 RX1 <strong>或</strong> RX2</li>
+                                </ul>
+                                 <ul class="list-disc list-inside space-y-1 text-slate-300 text-sm">
+                                    <li><code class="custom-inline-code">{n}</code> 匹配 n 次</li>
+                                    <li><code class="custom-inline-code">{n,}</code> 匹配至少 n 次</li>
+                                    <li><code class="custom-inline-code">{n,m}</code> 匹配 n 到 m 次</li>
+                                    <li><code class="custom-inline-code">\</code> 用于转义特殊字符 (如 <code class="custom-inline-code">\.</code> 匹配点)</li>
+                                </ul>
+                            </div>
+                            <p class="text-xs text-slate-400 mt-3">注意：具体语法和特殊字符支持因不同实现（如 <code class="custom-inline-code">sed</code> BRE/ERE, Perl, Python）而异。</p>
+                        </div>
+
+                         <!-- BRE vs ERE & Escaping -->
+                        <div class="mt-6 bg-slate-700 p-6 rounded-xl shadow-lg">
+                             <h3 class="font-sans-cn text-xl font-semibold text-indigo-highlight mb-4">sed 中的正则：BRE vs ERE</h3>
+                             <p class="mb-3">默认情况下，<code class="custom-inline-code">sed</code> 使用基础正则表达式 (BRE)，许多特殊字符 (如 <code class="custom-inline-code">+</code>, <code class="custom-inline-code">?</code>, <code class="custom-inline-code">()</code>, <code class="custom-inline-code">{}</code>, <code class="custom-inline-code">|</code>) 需要前置反斜杠 <code class="custom-inline-code">\</code> 才能获得特殊含义 (例如 <code class="custom-inline-code">\+</code>, <code class="custom-inline-code">\(</code>)。</p>
+                             <p>使用 <code class="custom-inline-code">-E</code> (或某些版本中的 <code class="custom-inline-code">-r</code>) 选项可以切换到<strong>扩展正则表达式 (ERE)</strong>，语法更接近现代正则表达式，减少反斜杠的使用。</p>
+                        </div>
+
+                        <!-- Greedy vs Non-Greedy -->
+                        <div class="mt-6 bg-slate-700 p-6 rounded-xl shadow-lg">
+                            <h3 class="font-sans-cn text-xl font-semibold text-indigo-highlight mb-4">贪婪与非贪婪匹配</h3>
+                            <p class="mb-3">默认情况下，量词 <code class="custom-inline-code">*</code> 和 <code class="custom-inline-code">+</code> 是 <strong class="font-bold">贪婪的 (greedy)</strong>，它们会尽可能多地匹配文本。例如，对于日志行：</p>
+                            <pre class="custom-code-block text-sm"><code>Jan 17 ... sshd: Disconnected from invalid user Disconnected from 46.97...</code></pre>
+                            <p class="mb-2">使用贪婪的 <code class="custom-inline-code">sed 's/.*Disconnected from //'</code> 会匹配到第二个 "Disconnected from"，留下：</p>
+                             <pre class="custom-code-block text-sm"><code>46.97.239.16 port 55920 [preauth]</code></pre>
+                            <p class="mt-3">在支持的正则表达式引擎（如 Perl, Python, PCRE）中，可以在量词后添加 <code class="custom-inline-code">?</code> 使其变为 <strong class="font-bold">非贪婪 (non-greedy)</strong> (例如 <code class="custom-inline-code">.*?</code> 或 <code class="custom-inline-code">.+?</code>)。<code class="custom-inline-code">sed</code> 通常不直接支持此功能，可能需要更复杂的模式或切换到如 <code class="custom-inline-code">perl -pe</code> 这样的工具。</p>
+                            <p class="mt-3">我们可以通过更精确的模式来解决这个问题，例如确保匹配到 "user" 关键字之后的部分：</p>
+                             <pre class="custom-code-block"><code class="language-bash"># 匹配直到用户名后的空格
+sed -E 's/.*Disconnected from (invalid |authenticating )?user .* ([^ ]+) port.*/.../'</code></pre>
+                        </div>
+
+                        <!-- Capture Groups -->
+                        <div class="mt-6 bg-slate-700 p-6 rounded-xl shadow-lg">
+                            <h3 class="font-sans-cn text-xl font-semibold text-indigo-highlight mb-4">捕获组 (Capture Groups)</h3>
+                            <p class="mb-3">使用括号 <code class="custom-inline-code">()</code> 包围正则表达式的一部分可以创建<strong>捕获组 (capture groups)</strong>。匹配到的文本会存储在编号的组中，可以在替换部分通过 <code class="custom-inline-code">\1</code>, <code class="custom-inline-code">\2</code> 等引用。</p>
+                            <p>例如，要提取用户名：</p>
+                             <pre class="custom-code-block"><code class="language-bash"># (.*) 是第二个捕获组，捕获用户名
+sed -E 's/.*Disconnected from (invalid |authenticating )?user (.*) [^ ]+ port [0-9]+( \[preauth\])?$/\2/'
+# 替换部分 \2 只输出第二个捕获组的内容 (即用户名)</code></pre>
+                        </div>
+                        
+                        <!-- Regex Complexity & Resources -->
+                        <div class="mt-6 bg-slate-700 p-6 rounded-xl shadow-lg">
+                             <h3 class="font-sans-cn text-xl font-semibold text-indigo-highlight mb-4">正则表达式的复杂性与资源</h3>
+                             <p class="mb-3">正则表达式功能强大但可能变得非常复杂（例如匹配电子邮件地址或判断素数）。编写正确的正则表达式需要练习和测试。</p>
+                             <h5 class="font-sans-cn text-lg font-semibold text-moon-white mb-3 mt-4">拓展正则表达式资源和工具:</h5>
+                             <ul class="list-disc list-inside space-y-2 text-slate-300 text-sm pl-4">
+                                <li><strong><a href="https://regex101.com/" target="_blank" class="text-indigo-highlight hover:underline">Regex101</a>:</strong> 强大的在线测试、调试和解释工具 (强烈推荐!)</li>
+                                <li><strong><a href="https://regexr.com/" target="_blank" class="text-indigo-highlight hover:underline">RegExr</a>:</strong> 另一个流行的在线工具。</li>
+                                <li><strong>交互式教程:</strong> 如 <a href="https://regexone.com/" target="_blank" class="text-indigo-highlight hover:underline">RegexOne</a> (练习中已包含)。</li>
+                                <li><strong><code class="custom-inline-code">grep</code> 中的正则:</strong> 使用 <code class="custom-inline-code">grep -E</code> (ERE) 或 <code class="custom-inline-code">grep -P</code> (PCRE, 如果支持)。</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 回到数据整理 Card -->
+            <div class="bg-slate-800 shadow-2xl rounded-xl overflow-hidden">
+                <div class="p-6 md:p-8">
+                    <h2 class="font-sans-cn text-3xl font-bold text-indigo-highlight mb-6 text-center">回到数据整理 (Back to Data Wrangling)</h2>
+                    <div class="space-y-4 text-slate-300 text-base leading-relaxed">
+                        <p>通过之前的 <code class="custom-inline-code">sed</code> 命令，我们已经成功提取出了尝试登录的用户名列表。但这还不够，我们通常需要进一步处理这些数据。</p>
+                        <pre class="custom-code-block"><code class="language-bash"># 上一步提取出的用户名列表 (每行一个)
+ssh myserver journalctl \
+ | grep sshd \
+ | grep "Disconnected from" \
+ | sed -E 's/.*Disconnected from (invalid |authenticating )?user (.*) [^ ]+ port [0-9]+( \[preauth\])?$/\2/'
+
+# 查找常见的用户名：排序并统计重复次数
+# ... (上面的命令) ... \
+ | sort | uniq -c</code></pre>
+                        <ul class="list-disc list-inside space-y-2 text-slate-300 text-sm pl-4 mt-4">
+                            <li><code class="custom-inline-code">sort</code>: 对其输入行进行排序（默认按字典序）。</li>
+                            <li><code class="custom-inline-code">uniq -c</code>: 将连续相同的行折叠为一行，并在行首加上出现次数的前缀。<strong>注意：<code class="custom-inline-code">uniq</code> 只能处理已排序数据中的连续重复行。</strong>/li>
+                        </ul>
+
+                        <p class="mt-4">我们可能还想按出现次数排序，并只保留最常见的用户名：</p>
+                        <pre class="custom-code-block"><code class="language-bash"># ... (获取用户名列表的命令) ... \
+ | sort | uniq -c \
+ | sort -nk1,1 | tail -n10</code></pre>
+                        <ul class="list-disc list-inside space-y-2 text-slate-300 text-sm pl-4 mt-4">
+                            <li><code class="custom-inline-code">sort -n</code>: 按<strong>数字顺序</strong>（而不是字典顺序）排序。</li>
+                            <li><code class="custom-inline-code">-k1,1</code>: 表示仅根据第一个字段进行排序（从第一个字段开始，到第一个字段结束）。</li>
+                            <li><code class="custom-inline-code">tail -n10</code>: 只显示最后10行（即排序后计数最高的10个）。</li>
+                            <li>要获取最不常见的，可以使用 <code class="custom-inline-code">head -n10</code>。</li>
+                            <li><code class="custom-inline-code">sort -r</code>: 反向排序。</li>
+                        </ul>
+                         <!-- 拓展 sort 和 uniq -->
+                        <div class="mt-6 bg-slate-700 p-4 rounded-xl shadow-lg">
+                            <h5 class="font-sans-cn text-lg font-semibold text-moon-white mb-3 flex items-center">
+                                <i class="fas fa-sort-amount-down mr-2 text-indigo-highlight"></i>拓展 <code class="custom-inline-code">sort</code> 与 <code class="custom-inline-code">uniq</code>:
+                            </h5>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div>
+                                    <p class="text-slate-300 text-sm font-semibold mb-2">sort:</p>
+                                    <ul class="list-disc list-inside space-y-1 text-slate-300 text-xs pl-4">
+                                        <li><code class="custom-inline-code">-u</code>: 排序并去重 (等同 `sort | uniq`)。</li>
+                                        <li><code class="custom-inline-code">-t&lt;char&gt;</code>: 指定字段分隔符。</li>
+                                        <li><code class="custom-inline-code">-k&lt;N&gt;[,&lt;M&gt;]</code>: 按第N到M个字段排序。</li>
+                                    </ul>
+                                </div>
+                                <div>
+                                    <p class="text-slate-300 text-sm font-semibold mb-2">uniq:</p>
+                                     <ul class="list-disc list-inside space-y-1 text-slate-300 text-xs pl-4">
+                                        <li><code class="custom-inline-code">-d</code>: 只显示重复行。</li>
+                                        <li><code class="custom-inline-code">-u</code>: 只显示唯一行。</li>
+                                        <li>必须作用于已排序数据！</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+
+                        <p class="mt-4">如果我们想将这些最常见的用户名提取为逗号分隔的列表呢？</p>
+                        <pre class="custom-code-block"><code class="language-bash"># ... (获取并排序计数的命令) ... \
+ | sort -nk1,1 | tail -n10 \
+ | awk '{print $2}' | paste -sd,</code></pre>
+                        <ul class="list-disc list-inside space-y-2 text-slate-300 text-sm pl-4 mt-4">
+                             <li><code class="custom-inline-code">awk '{print $2}'</code>: 提取每行的第二个字段（即用户名）。</li>
+                             <li><code class="custom-inline-code">paste -sd,</code>: 将所有输入行合并为单行 (<code class="custom-inline-code">-s</code>)，并使用逗号 (<code class="custom-inline-code">-d,</code>) 作为分隔符。</li>
+                        </ul>
+                         <p class="text-xs text-slate-400 mt-2">注意：macOS 上的 BSD `paste` 可能与 GNU `paste` 行为不同。</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- awk Card -->
+            <div class="bg-slate-800 shadow-2xl rounded-xl overflow-hidden">
+                <div class="p-6 md:p-8">
+                    <h2 class="font-sans-cn text-3xl font-bold text-indigo-highlight mb-6 text-center"><code class="custom-inline-code bg-indigo-highlight/20">awk</code>：另一个强大的编辑器/语言</h2>
+                     <div class="space-y-4 text-slate-300 text-base leading-relaxed">
+                        <p><code class="custom-inline-code">awk</code> 是一种面向文本处理的编程语言。它的基本结构是 <code class="custom-inline-code">pattern { action }</code>。</p>
+                        
+                        <!-- awk 基础 -->
+                        <div class="mt-6 bg-slate-700 p-6 rounded-xl shadow-lg">
+                             <h3 class="font-sans-cn text-xl font-semibold text-indigo-highlight mb-4">AWK 基础</h3>
+                            <ul class="list-disc list-inside space-y-2 text-slate-300 text-sm pl-4">
+                                <li><strong class="font-bold">模式 (Pattern):</strong> 如果省略，则对每一行执行动作。可以是正则表达式 (<code class="custom-inline-code">/regex/</code>)、条件表达式 (<code class="custom-inline-code">$1 > 10</code>)、范围 (<code class="custom-inline-code">NR==5,NR==10</code>) 或特殊模式 <code class="custom-inline-code">BEGIN</code> / <code class="custom-inline-code">END</code>。</li>
+                                <li><strong class="font-bold">动作 (Action):</strong> 在 <code class="custom-inline-code">{}</code> 中执行的代码块，默认动作为 <code class="custom-inline-code">{ print $0 }</code> (打印整行)。</li>
+                                <li><strong class="font-bold">字段变量:</strong> <code class="custom-inline-code">$0</code> (整行), <code class="custom-inline-code">$1</code>, <code class="custom-inline-code">$2</code>... 第N个字段 (默认按空白分隔)。<code class="custom-inline-code">NF</code> 是当前行的字段数。</li>
+                                <li><strong class="font-bold">字段分隔符 (FS):</strong> 可用 <code class="custom-inline-code">-F&lt;char&gt;</code> 或在 <code class="custom-inline-code">BEGIN</code> 块设置 <code class="custom-inline-code">FS</code>。</li>
+                                <li><strong class="font-bold">记录分隔符 (RS):</strong> 默认为换行符。</li>
+                                <li><strong class="font-bold"><code class="custom-inline-code">BEGIN</code> 块:</strong> 在处理任何输入行之前执行一次。</li>
+                                <li><strong class="font-bold"><code class="custom-inline-code">END</code> 块:</strong> 在处理完所有输入行之后执行一次。</li>
+                                <li><strong class="font-bold">内置变量:</strong> <code class="custom-inline-code">NR</code> (记录数), <code class="custom-inline-code">FNR</code> (文件记录数), <code class="custom-inline-code">FILENAME</code>。</li>
+                                <li>支持条件、循环、关联数组等编程结构。</li>
+                            </ul>
+                        </div>
+
+                        <p class="mt-4">示例：计算以 <code class="custom-inline-code">c</code> 开头并以 <code class="custom-inline-code">e</code> 结尾的单次使用用户名的数量：</p>
+                        <pre class="custom-code-block"><code class="language-bash"># ... (获取用户名及计数的命令) ... \
+ | awk '$1 == 1 && $2 ~ /^c[^ ]*e$/ { print $2 }' | wc -l
+
+# 或者完全在 awk 中完成计数:
+# ... | awk 'BEGIN { rows = 0 } $1 == 1 && $2 ~ /^c[^ ]*e$/ { rows++ } END { print rows }'</code></pre>
+                        <p><code class="custom-inline-code">awk</code> 甚至可以替代部分 <code class="custom-inline-code">grep</code> 和 <code class="custom-inline-code">sed</code> 的工作，但这会增加脚本复杂度。通常建议结合使用各种工具，发挥各自专长。</p>
+                         <!-- awk 替代 grep/sed 示例思路 -->
+                         <details class="mt-6 bg-slate-700 p-4 rounded-xl shadow-lg">
+                            <summary class="cursor-pointer text-indigo-highlight hover:text-indigo-300 font-semibold text-sm">查看用 awk 替代 grep/sed 的示例思路</summary>
+                            <div class="pt-4 text-slate-300 text-sm">
+                                <pre class="custom-code-block text-xs whitespace-pre-wrap"><code class="language-bash">ssh myserver journalctl \
+ | awk \
+    '/sshd/ && /Disconnected from/ {
+        # 使用 match() 或 gensub() 或直接 sub() 和 gsub() 来提取用户名
+        # 例如，更健壮的提取：
+        if (match($0, /Disconnected from (invalid |authenticating )?user ([^ ]+) /, arr)) {
+            user = arr[2]; # 捕获组在数组arr中
+            users[user]++;
+        } else if (match($0, /Disconnected from ([^ ]+) /, arr)) { # 另一种可能格式
+             user = arr[1];
+             users[user]++;
+        }
+    }
+    END {
+        for (user in users) {
+            print users[user], user;
+        }
+    }
+   ' \
+ | sort -nk1,1 | tail -n10 \
+ | awk '{print $2}' | paste -sd,</code></pre>
+                                <p class="text-xs text-slate-400 mt-2">这个示例更复杂，旨在展示 awk 的能力，实际应用中可能选择更简单的组合。</p>
+                            </div>
+                        </details>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 分析数据 Card -->
+            <div class="bg-slate-800 shadow-2xl rounded-xl overflow-hidden">
+                <div class="p-6 md:p-8">
+                    <h2 class="font-sans-cn text-3xl font-bold text-indigo-highlight mb-6 text-center">分析数据 (Analyzing Data)</h2>
+                    <div class="space-y-4 text-slate-300 text-base leading-relaxed">
+                        <p>除了提取和格式化数据，命令行工具也能进行简单的分析和计算。</p>
+
+                        <!-- bc: Basic Calculator -->
+                        <div class="mt-6 bg-slate-700 p-6 rounded-xl shadow-lg">
+                            <h3 class="font-sans-cn text-xl font-semibold text-indigo-highlight mb-4"><code class="custom-inline-code bg-indigo-highlight/20">bc</code>：命令行计算器</h3>
+                            <p class="mb-3"><code class="custom-inline-code">bc</code> 是一个任意精度计算器，可以从标准输入读取数学表达式并计算结果。</p>
+                            <pre class="custom-code-block"><code class="language-bash"># 将数字列表通过管道传给 paste 构造表达式，再传给 bc 计算
+echo -e "1\n2\n3\n4" | paste -sd+ | bc
+# 输出: 10
+
+# 计算更复杂的表达式 (-l 加载数学库，支持浮点数)
+data="1\n2\n3"
+echo "2*($(echo -e "$data" | paste -sd+))" | bc -l
+# 输出: 12</code></pre>
+                        </div>
+
+                        <!-- R: Statistics & Plotting -->
+                        <div class="mt-6 bg-slate-700 p-6 rounded-xl shadow-lg">
+                            <h3 class="font-sans-cn text-xl font-semibold text-indigo-highlight mb-4"><code class="custom-inline-code bg-indigo-highlight/20">R</code>：统计分析与绘图</h3>
+                            <p class="mb-3">R 是一种强大的统计编程语言，可以方便地从命令行调用，对通过管道传入的数据进行分析。</p>
+                            <pre class="custom-code-block"><code class="language-bash"># ... (获取用户名计数的命令) ... \
+ | awk '{print $1}' \ # 提取计数
+ | R --no-echo -e 'x <- scan(file="stdin", quiet=TRUE); summary(x); print(paste("StdDev:", sd(x)))'
+# --no-echo: 不回显命令
+# -e '...': 执行 R 表达式
+# scan(...): 从标准输入读取数据到向量 x
+# summary(x): 打印摘要统计信息
+# sd(x): 计算标准差</code></pre>
+                        </div>
+
+                         <!-- gnuplot: Plotting -->
+                        <div class="mt-6 bg-slate-700 p-6 rounded-xl shadow-lg">
+                            <h3 class="font-sans-cn text-xl font-semibold text-indigo-highlight mb-4"><code class="custom-inline-code bg-indigo-highlight/20">gnuplot</code>：绘图工具</h3>
+                            <p class="mb-3">gnuplot 是一个经典的命令行绘图工具，可以直接从标准输入读取数据并生成图表。</p>
+                            <pre class="custom-code-block"><code class="language-bash"># ... (获取排序后的Top 10用户名及计数的命令) ... \
+ | gnuplot -p -e 'set boxwidth 0.5; plot "-" using 1:xtic(2) with boxes title "Login Attempts"'
+# -p: 持久显示绘图窗口
+# plot "-": 从标准输入读取数据
+# using 1:xtic(2): 使用第1列作Y值, 第2列作X轴刻度标签
+# with boxes: 使用箱形图绘制</code></pre>
+                        </div>
+                        
+                        <!-- 拓展数据分析工具 -->
+                        <div class="mt-6 bg-slate-700 p-6 rounded-xl shadow-lg">
+                             <h3 class="font-sans-cn text-xl font-semibold text-indigo-highlight mb-4">拓展数据分析工具</h3>
+                             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                 <div>
+                                    <ul class="list-disc list-inside space-y-2 text-slate-300 text-sm">
+                                        <li><strong><code class="custom-inline-code">datamash</code>:</strong> 命令行统计操作 (求和, 平均值, 分组等)。<br><code class="custom-inline-code text-xs">... | datamash -s -g 1 mean 2</code></li>
+                                        <li><strong><code class="custom-inline-code">jq</code>:</strong> 处理 JSON 数据的命令行瑞士军刀。</li>
+                                    </ul>
+                                 </div>
+                                 <div>
+                                     <ul class="list-disc list-inside space-y-2 text-slate-300 text-sm">
+                                        <li><strong>Python + <code class="custom-inline-code">pandas</code>/<code class="custom-inline-code">numpy</code>:</strong> 用于更复杂的数据分析和处理。</li>
+                                        <li><strong><code class="custom-inline-code">pup</code>:</strong> 解析和提取 HTML 数据。</li>
+                                    </ul>
+                                 </div>
+                             </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+             <!-- 数据整理生成参数 Card -->
+            <div class="bg-slate-800 shadow-2xl rounded-xl overflow-hidden">
+                <div class="p-6 md:p-8">
+                    <h2 class="font-sans-cn text-3xl font-bold text-indigo-highlight mb-6 text-center">数据整理以生成参数</h2>
+                    <div class="space-y-4 text-slate-300 text-base leading-relaxed">
+                        <p>数据整理的另一个常见用途是生成传递给其他命令的参数列表。这通常通过结合 <code class="custom-inline-code">xargs</code> 来实现。</p>
+                        <p class="mt-4">例如，卸载旧的 Rust nightly 构建版本：</p>
+                        <pre class="custom-code-block"><code class="language-bash"># 提取旧的构建名称，并通过 xargs 传递给卸载命令
+rustup toolchain list | grep nightly | grep -vE "nightly-x86_64-unknown-linux-gnu default" \
+| sed 's/\s*(default|override \S\+)//' | xargs -r rustup toolchain uninstall
+
+# -vE: 排除匹配扩展正则的行
+# sed: 移除可能的 (default) 或 (override ...) 后缀
+# xargs -r: 如果没有输入，则不运行命令 (GNU xargs)</code></pre>
+                        <!-- 拓展 xargs -->
+                        <div class="mt-6 bg-slate-700 p-4 rounded-xl shadow-lg">
+                            <h5 class="font-sans-cn text-lg font-semibold text-moon-white mb-3 flex items-center">
+                                <i class="fas fa-cogs mr-2 text-indigo-highlight"></i>拓展 <code class="custom-inline-code">xargs</code>:
+                            </h5>
+                             <ul class="list-disc list-inside space-y-1 text-slate-300 text-sm pl-4">
+                                <li><code class="custom-inline-code">-I {} command {} ...</code>: 为每个输入项执行命令, <code class="custom-inline-code">{}</code> 被替换。</li>
+                                <li><code class="custom-inline-code">-P &lt;num_procs&gt;</code>: 并行执行命令。</li>
+                                <li><code class="custom-inline-code">-0</code>: 与 <code class="custom-inline-code">find -print0</code> 配合处理特殊字符。</li>
+                                <li><code class="custom-inline-code">-d &lt;delim&gt;</code>: 使用指定分隔符 (GNU xargs)。</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+             <!-- 整理二进制数据 Card -->
+            <div class="bg-slate-800 shadow-2xl rounded-xl overflow-hidden">
+                <div class="p-6 md:p-8">
+                    <h2 class="font-sans-cn text-3xl font-bold text-indigo-highlight mb-6 text-center">整理二进制数据</h2>
+                    <div class="space-y-4 text-slate-300 text-base leading-relaxed">
+                        <p>管道不仅限于文本数据，对于二进制数据同样有用。例如，我们可以通过管道处理图像数据：</p>
+                        <pre class="custom-code-block"><code class="language-bash"># 从摄像头捕获图像 -> 转灰度 -> 压缩 -> 通过SSH发送 -> 解压 -> 保存副本并显示
+ffmpeg -loglevel panic -i /dev/video0 -frames 1 -f image2pipe -vcodec png - \
+ | convert - -colorspace gray - \
+ | gzip \
+ | ssh mymachine 'gzip -d | tee copy.jpg | feh --quiet -\'
+
+# -f image2pipe -vcodec png: ffmpeg输出PNG到管道
+# convert - : ImageMagick从标准输入读取
+# tee copy.jpg: 保存副本到文件，同时传递给后续命令
+# feh --quiet -: 图像查看器从标准输入读取</code></pre>
+                         <p class="text-xs text-slate-400 mt-2">确保远程机器上安装了必要的工具（如 <code class="custom-inline-code">gzip</code>, <code class="custom-inline-code">feh</code>）。</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 练习 Card -->
+            <div class="bg-slate-800 shadow-2xl rounded-xl overflow-hidden">
+                <div class="p-6 md:p-8">
+                    <h2 class="font-sans-cn text-3xl font-bold text-indigo-highlight mb-6 text-center">练习 (Exercises)</h2>
+                    <ol class="list-decimal list-inside space-y-6 text-slate-300 text-sm pl-4">
+                        <li class="pt-4 border-t border-slate-700">
+                            <p>完成这个简短的<a href="https://regexone.com/" target="_blank" class="text-indigo-highlight hover:underline">交互式正则表达式教程</a>。</p>
+                        </li>
+                        <li class="pt-4 border-t border-slate-700">
+                            <p>找出 <code class="custom-inline-code">/usr/share/dict/words</code> 中至少包含三个 <code class="custom-inline-code">a</code> 且不以 <code class="custom-inline-code">'s</code> 结尾的单词数量。这些单词中最常见的最后两个字母是什么？有多少种这样的两个字母组合？挑战：哪些组合没有出现？</p>
+                             <details class="mt-3 bg-slate-700 p-3 rounded-lg">
+                                <summary class="cursor-pointer text-indigo-highlight/80 hover:text-indigo-highlight text-xs font-semibold">查看解答提示</summary>
+                                <div class="pt-3 text-slate-300 text-xs space-y-2">
+                                     <pre class="custom-code-block text-xs whitespace-pre-wrap"><code class="language-bash"># 1. 查找单词并计数
+awk 'tolower($0) ~ /a.*a.*a/ && tolower($0) !~ /\'s$/ {print}' /usr/share/dict/words > temp_words.txt
+echo "Number of words: $(wc -l < temp_words.txt)"
+
+# 2. 最常见的最后两个字母 (前3名)
+sed 's/.*\(..\)$/\1/' temp_words.txt | tr '[:upper:]' '[:lower:]' | sort | uniq -c | sort -nr | head -n 3
+
+# 3. 组合种类数
+sed 's/.*\(..\)$/\1/' temp_words.txt | tr '[:upper:]' '[:lower:]' | sort -u | wc -l
+
+# 4. 未出现的组合 (较慢的方法)
+found_combinations=$(sed 's/.*\(..\)$/\1/' temp_words.txt | tr '[:upper:]' '[:lower:]' | sort -u)
+for c1 in {a..z}; do for c2 in {a..z}; do combo="$c1$c2"; if ! echo "$found_combinations" | grep -qxF "$combo"; then echo "$combo did not occur"; fi; done; done</code></pre>
+                                </div>
+                            </details>
+                        </li>
+                         <li class="pt-4 border-t border-slate-700">
+                            <p>原地替换命令 <code class="custom-inline-code">sed 's/REGEX/SUB/' input > input</code> 为何是坏主意？如何正确地用 <code class="custom-inline-code">sed</code> 实现原地替换？</p>
+                             <details class="mt-3 bg-slate-700 p-3 rounded-lg">
+                                <summary class="cursor-pointer text-indigo-highlight/80 hover:text-indigo-highlight text-xs font-semibold">查看解答提示</summary>
+                                <div class="pt-3 text-slate-300 text-xs space-y-2">
+                                    <p><strong>坏主意原因:</strong> Shell 在执行 <code class="custom-inline-code">sed</code> 前处理重定向 <code class="custom-inline-code">&gt; input</code>，可能导致 <code class="custom-inline-code">input</code> 文件被截断为空，从而丢失数据。</p>
+                                    <p><strong>正确方法:</strong> 使用 <code class="custom-inline-code">sed -i 's/REGEX/SUB/' input</code> (GNU sed)。<code class="custom-inline-code">-i.bak</code> 可以创建备份。</p>
+                                </div>
+                            </details>
+                        </li>
+                         <li class="pt-4 border-t border-slate-700">
+                            <p>找出你过去十次系统启动的平均、中位数和最大系统启动时间。（Linux: <code class="custom-inline-code">journalctl</code>, macOS: <code class="custom-inline-code">log show</code>）</p>
+                            <details class="mt-3 bg-slate-700 p-3 rounded-lg">
+                                <summary class="cursor-pointer text-indigo-highlight/80 hover:text-indigo-highlight text-xs font-semibold">查看解答提示 (Linux示例)</summary>
+                                <div class="pt-3 text-slate-300 text-xs space-y-2">
+                                    <p>需要解析 `journalctl` 输出中类似 "Logs begin at ..." 和 "Startup finished in ..." 的时间信息。一种可能的方法是提取每次启动完成的时长：</p>
+                                    <pre class="custom-code-block text-xs whitespace-pre-wrap"><code class="language-bash"># 尝试提取最近10次启动的时长 (秒)
+journalctl -r --no-pager | grep -m 10 -oP 'Startup finished in \K[0-9.]+' > boot_times.txt
+# 或者解析时间戳计算差值 (更复杂，见Markdown原文)
+
+# 使用 datamash 计算统计值
+cat boot_times.txt | datamash mean 1 median 1 max 1
+
+# 或者使用 R
+cat boot_times.txt | R --no-echo -e 'x=scan("stdin",quiet=T); print(paste("Mean:",mean(x))); print(paste("Median:",median(x))); print(paste("Max:",max(x)))'</code></pre>
+                                    <p>macOS 需要使用 <code class="custom-inline-code">log show</code> 并采用不同的解析策略。</p>
+                                </div>
+                            </details>
+                        </li>
+                         <li class="pt-4 border-t border-slate-700">
+                            <p>找出在你过去三次重新启动之间不共享的启动消息。分解步骤：获取日志 -> 清理时间戳等 -> 排序去重计数 -> 筛选计数小于3的消息。</p>
+                             <details class="mt-3 bg-slate-700 p-3 rounded-lg">
+                                <summary class="cursor-pointer text-indigo-highlight/80 hover:text-indigo-highlight text-xs font-semibold">查看解答提示 (Linux示例)</summary>
+                                <div class="pt-3 text-slate-300 text-xs space-y-2">
+                                    <pre class="custom-code-block text-xs whitespace-pre-wrap"><code class="language-bash"># 1. 获取并清理三次启动日志 (sed命令需要根据实际日志调整)
+for i in 0 1 2; do journalctl -b -$i --no-pager | sed -E 's/^[A-Za-z]{3} [0-9]{1,2} [0-9]{2}:[0-9]{2}:[0-9]{2} [^ ]+ [^:]+: //; s/\[[0-9]+\]: //; s/\(.*?\) //g'; done > three_boots.log
+
+# 2. 排序、计数、筛选并打印不共享的消息
+cat three_boots.log | sort | uniq -c | awk '$1 < 3 { $1=""; print substr($0,2) }'</code></pre>
+                                </div>
+                            </details>
+                        </li>
+                         <li class="pt-4 border-t border-slate-700">
+                            <p>找一个在线数据集（如板球、机场数据或从 awesome-public-datasets 获取）。用 <code class="custom-inline-code">curl</code> 获取，提取两列数值数据（HTML用 <code class="custom-inline-code">pup</code>，JSON用 <code class="custom-inline-code">jq</code>）。找出一列的 min/max，并计算两列总和的差值。</p>
+                             <details class="mt-3 bg-slate-700 p-3 rounded-lg">
+                                <summary class="cursor-pointer text-indigo-highlight/80 hover:text-indigo-highlight text-xs font-semibold">查看解答提示 (CSV示例)</summary>
+                                <div class="pt-3 text-slate-300 text-xs space-y-2">
+                                     <pre class="custom-code-block text-xs whitespace-pre-wrap"><code class="language-bash"># 假设获取了 data.csv，数值在第3和第5列
+curl "URL_TO_CSV" > data.csv
+
+# 提取数据 (跳过表头)
+awk -F, 'NR > 1 {print $3 "," $5}' data.csv > extracted.csv
+
+# 计算第一列 (原第3列) 的 min/max
+awk -F, '{print $1}' extracted.csv | datamash min 1 max 1
+
+# 计算两列总和的差值
+sum1=$(awk -F, '{print $1}' extracted.csv | datamash sum 1)
+sum2=$(awk -F, '{print $2}' extracted.csv | datamash sum 1)
+diff=$(bc <<< "$sum1 - $sum2")
+echo "Sum1: $sum1, Sum2: $sum2, Difference: $diff"
+
+# 如果是 JSON (示例)
+# curl "URL_TO_JSON" | jq '[.[] | .field1] | min, max'
+# curl "URL_TO_JSON" | jq '([.[] | .field1] | add) - ([.[] | .field2] | add)'
+
+# 如果是 HTML (示例)
+# curl "URL_TO_HTML" | pup 'table#tableId tr td:nth-child(3) text{}' > col1.txt
+# (pup 和 jq 的具体命令依赖于数据结构)</code></pre>
+                                </div>
+                            </details>
+                        </li>
+                    </ol>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- 导航 -->
+        <nav class="mt-16 flex justify-between items-center">
+            <a href="lecture-3.html" class="px-6 py-3 text-indigo-highlight hover:bg-indigo-highlight/10 rounded-md font-sans-cn">
+                &larr; 上一单元 (编辑器 Vim)
+            </a>
+            <a href="lecture-5.html" class="px-6 py-3 text-indigo-highlight hover:bg-indigo-highlight/10 rounded-md font-sans-cn">
+                下一单元 (命令行环境) &rarr; 
+            </a>
+        </nav>
+    </main>
+
+    <footer class="mt-20 py-10 bg-slate-800 border-t border-slate-700 text-center">
+        <p class="font-sans-cn text-slate-400">
+            &copy; 2025 Missing Semester 中文版. 基于 MIT 原始课程.
+        </p>
+        <p class="font-sans-en text-slate-500 text-sm mt-2">
+            <a href="https://missing.csail.mit.edu/" target="_blank" class="hover:text-indigo-highlight">原始课程链接</a> | 
+            <a href="#" class="hover:text-indigo-highlight">GitHub 仓库</a>
+        </p>
+        <p class="font-sans-cn text-slate-400 text-sm mt-2">
+            由 <a href="https://huashanjian.github.io/" target="_blank" class="hover:text-indigo-highlight">Junhua Yao</a> 创建和维护
+        </p>
+    </footer>
+    
+    <script src="https://cdn.jsdelivr.net/npm/framer-motion@latest/dist/framer-motion.js"></script>
+    <script>
+        // Placeholder for Framer Motion scripts
+    </script>
+    <!-- Add PrismJS script (needs to be after content) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+    
+</body>
+</html> 

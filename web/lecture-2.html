@@ -1,0 +1,1006 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shell 工具与脚本编程 - 计算机的缺失课程</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              'moon-white': '#F5F5F5',
+              'sky-blue-tint': '#F0F9FF',
+              'silver-rat-grey': '#E5E7EB',
+              'ink-black': '#111827',
+              'crow-blue': '#1E40AF',
+              'medium-grey': '#6B7280',
+              'indigo-highlight': '#0EA5E9',
+            },
+            fontFamily: {
+              'sans-cn': ['"Source Han Sans SC"', 'PingFang SC', 'sans-serif'],
+              'sans-en': ['Inter', 'Manrope', 'sans-serif'],
+            }
+          }
+        }
+      }
+    </script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&family=Manrope:wght@400;700&family=Noto+Sans+SC:wght@400;700&display=swap" rel="stylesheet">
+    <!-- Add PrismJS for syntax highlighting -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-okaidia.min.css" rel="stylesheet" />
+    <style>
+      body {
+        font-family: theme('fontFamily.sans-cn');
+      }
+      .font-sans-en {
+        font-family: theme('fontFamily.sans-en');
+      }
+      .font-sans-cn {
+        font-family: theme('fontFamily.sans-cn');
+      }
+      pre[class*="language-"], .custom-code-block {
+        background-color: #1E293B;
+        color: #E2E8F0;
+        padding: theme('spacing.6');
+        border-radius: theme('borderRadius.xl');
+        overflow-x: auto;
+        margin-top: theme('spacing.4');
+        margin-bottom: theme('spacing.6');
+      }
+      code:not(pre code), .custom-inline-code {
+        background-color: theme('colors.slate.700');
+        color: theme('colors.slate.200');
+        padding: theme('spacing.1') theme('spacing.2');
+        border-radius: theme('borderRadius.md');
+        font-size: 0.9em;
+      }
+    </style>
+</head>
+<body class="bg-slate-900 text-slate-200"> 
+
+    <header class="py-4 shadow-lg sticky top-0 bg-slate-800/90 backdrop-blur-md z-50 border-b border-slate-700">
+        <nav class="container mx-auto px-6 md:px-8 flex justify-between items-center">
+            <a href="index.html" class="text-2xl font-bold font-sans-cn">
+                <span class="text-moon-white">缺失</span><span class="text-indigo-highlight">环节</span>
+            </a>
+            <div>
+                <a href="index.html#bento-grid" class="font-sans-cn text-slate-300 hover:text-indigo-highlight ml-6">课程列表</a>
+            </div>
+        </nav>
+    </header>
+
+    <main class="container mx-auto p-4 md:p-8">
+        <section class="mb-12 pt-8 text-center">
+            <h1 class="font-sans-cn font-bold text-5xl md:text-7xl text-moon-white mb-2">
+                Shell 工具与脚本编程
+            </h1>
+            <p class="font-sans-en text-lg md:text-xl text-medium-grey">
+                Shell Tools and Scripting
+            </p>
+        </section>
+
+        <div class="space-y-8 md:space-y-12">
+                       <!-- Introduction Card -->
+                       <div class="bg-slate-800 shadow-2xl rounded-xl overflow-hidden">
+                        <div class="p-6 md:p-8 text-slate-300 text-base leading-relaxed">
+                            <p>在上一讲中，我们熟悉了 Shell 的基本操作。本讲我们将介绍使用 bash 作为脚本语言的一些基础知识，以及一系列涵盖了你在命令行中会经常执行的常见任务的 Shell 工具。</p>
+                        </div>
+                    </div>
+        
+                    <!-- Card for "Shell 脚本 (Shell Scripting)" -->
+                    <div class="bg-slate-800 shadow-2xl rounded-xl overflow-hidden">
+                        <div class="p-6 md:p-8">
+                            <h2 class="font-sans-cn text-3xl font-bold text-indigo-highlight mb-6 text-center">Shell 脚本 (Shell Scripting)</h2>
+                            <div class="space-y-4 text-slate-300 text-base leading-relaxed">
+                                <p>到目前为止，我们已经了解了如何在 Shell 中执行命令并将它们通过管道连接起来。然而，在许多情况下，你会希望执行一系列命令，并使用像条件或循环这样的控制流表达式。</p>
+                                <p>Shell 脚本是复杂性的下一个阶段。大多数 Shell 都有自己的脚本语言，包含变量、控制流和其特有的语法。Shell 脚本与其他脚本编程语言的不同之处在于，它专门为执行与 Shell 相关的任务进行了优化。因此，创建命令管道、将结果保存到文件以及从标准输入读取数据在 Shell 脚本中都是原生操作，这使得它比通用脚本语言更容易使用。在本节中，我们将重点介绍 bash 脚本，因为它是最常见的。</p>
+                                
+                                <h3 class="font-sans-cn text-2xl font-semibold text-moon-white mb-3 mt-8 text-indigo-highlight">变量赋值与字符串</h3> <!-- Added text-indigo-highlight here -->
+                                <p>要在 bash 中<strong class="font-bold">分配变量</strong>，使用 <code class="custom-inline-code">foo=bar</code>，并通过 <code class="custom-inline-code">$foo</code> 或 <code class="custom-inline-code">${foo}</code> 来访问变量的值。注意，<code class="custom-inline-code">foo = bar</code> 将无法工作，因为它会被解释为调用 `foo` 程序并带有参数 `=` 和 `bar`。通常，在 Shell 脚本中，空格字符会执行参数分割。这种行为一开始可能会令人困惑，所以务必注意。</p>
+                            </div>
+                        </div>
+        
+                        <!-- Nested Card Grid for "拓展技巧与现代方法 (变量)" -->
+                        <div class="p-6 md:p-8 border-t border-slate-700">
+                            <h4 class="font-sans-cn text-xl font-semibold text-indigo-highlight mb-6 flex items-center">
+                                <i class="fas fa-cogs mr-3 text-lg"></i>拓展技巧与现代方法 (变量):
+                            </h4>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4">
+                                <div class="bg-slate-700 p-6 rounded-xl shadow-lg flex flex-col">
+                                    <h5 class="font-sans-cn text-lg font-semibold text-moon-white mb-3 flex items-center"><i class="fas fa-pen-alt mr-2 text-indigo-highlight"></i>变量赋值与访问</h5>
+                                    <ul class="list-disc list-inside space-y-2 text-slate-300 text-sm">
+                                        <li>最佳实践: <code class="custom-inline-code">echo "Path is ${PATH}something"</code></li>
+                                        <li>只读变量: <code class="custom-inline-code">readonly my_var="value"</code></li>
+                                        <li>局部变量 (函数内): <code class="custom-inline-code">local my_var="value"</code></li>
+                                    </ul>
+                                </div>
+                                <div class="bg-slate-700 p-6 rounded-xl shadow-lg flex flex-col">
+                                    <h5 class="font-sans-cn text-lg font-semibold text-moon-white mb-3 flex items-center"><i class="fas fa-eye mr-2 text-indigo-highlight"></i>查看已定义变量</h5>
+                                    <ul class="list-disc list-inside space-y-2 text-slate-300 text-sm">
+                                        <li><code class="custom-inline-code">declare -p &lt;varname&gt;</code>: 显示变量属性和值</li>
+                                        <li><code class="custom-inline-code">env</code>: 显示所有已导出的环境变量</li>
+                                        <li><code class="custom-inline-code">set</code>: 显示所有Shell变量和函数 (输出多)</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="p-6 md:p-8 border-t border-slate-700">
+                            <div class="space-y-4 text-slate-300 text-base leading-relaxed">
+                                <p>Bash 中的<strong class="font-bold">字符串</strong>可以用 <code class="custom-inline-code">'</code> 和 <code class="custom-inline-code">"</code> 分隔符定义，但它们并不等价。用 <code class="custom-inline-code">'</code> 分隔的字符串是字面字符串，不会替换变量值；而用 <code class="custom-inline-code">"</code> 分隔的字符串则会进行变量替换和命令替换。</p>
+                                <pre class="custom-code-block"><code class="language-bash">foo=bar
+        echo "$foo"  # 输出 bar
+        echo '$foo'  # 输出 $foo
+        
+        # 命令替换也会在双引号中执行
+        echo "Today is $(date)" # 输出 Today is Wed May  7 11:00:00 UTC 2025 (示例日期)
+        echo 'Today is $(date)' # 输出 Today is $(date)</code></pre>
+                            </div>
+                        </div>
+                    </div>
+                                    <!-- Continuation of Shell Scripting Card -->
+                <div class="bg-slate-800 shadow-2xl rounded-xl overflow-hidden mt-12">
+                    <div class="p-6 md:p-8">
+                        <h2 class="font-sans-cn text-3xl font-bold text-indigo-highlight mb-6 text-center">控制流与特殊变量</h2>
+                        <div class="space-y-4 text-slate-300 text-base leading-relaxed">
+                            <p>与大多数编程语言一样，bash 支持<strong class="font-bold">控制流</strong>技术，包括 <code class="custom-inline-code">if</code>、<code class="custom-inline-code">case</code>、<code class="custom-inline-code">while</code> 和 <code class="custom-inline-code">for</code>。类似地，bash 有接收参数并能对其进行操作的<strong class="font-bold">函数</strong>。</p>
+                            
+                            <!-- Functions Example -->
+                            <div class="bg-slate-700 p-6 rounded-xl shadow-lg my-6">
+                                <h3 class="font-sans-cn text-xl font-semibold text-indigo-highlight mb-4">函数示例</h3>
+                                <p class="mb-3">下面是一个创建目录并进入该目录的函数示例：</p>
+                                <pre class="custom-code-block"><code class="language-bash">mcd () {
+    # 使用 -p 选项，如果目录已存在则不报错，如果父目录不存在则一并创建
+    mkdir -p "$1"
+    # 切换到新创建的目录
+    cd "$1"
+}</code></pre>
+                            </div>
+                            
+                            <!-- Special Variables -->
+                            <div class="bg-slate-700 p-6 rounded-xl shadow-lg my-6">
+                                <h3 class="font-sans-cn text-xl font-semibold text-indigo-highlight mb-4">特殊变量</h3>
+                                <p class="mb-3">Bash 使用各种特殊变量来引用参数、错误代码和其他相关信息：</p>
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <ul class="list-disc list-inside space-y-2 text-slate-300 text-base">
+                                        <li><code class="custom-inline-code">$0</code>: 脚本名称</li>
+                                        <li><code class="custom-inline-code">$1</code> 至 <code class="custom-inline-code">$9</code>: 参数 (超过9个用 <code class="custom-inline-code">${10}</code>)</li>
+                                        <li><code class="custom-inline-code">$@</code>: 所有参数，每个为独立字符串</li>
+                                        <li><code class="custom-inline-code">$*</code>: 所有参数，视为单个字符串</li>
+                                        <li><code class="custom-inline-code">$#</code>: 参数数量</li>
+                                    </ul>
+                                    <ul class="list-disc list-inside space-y-2 text-slate-300 text-base">
+                                        <li><code class="custom-inline-code">$?</code>: 上一个命令的返回码 (0为成功)</li>
+                                        <li><code class="custom-inline-code">$$</code>: 当前脚本的PID</li>
+                                        <li><code class="custom-inline-code">!!</code>: 上一条完整命令</li>
+                                        <li><code class="custom-inline-code">$_</code>: 上一个命令的最后一个参数</li>
+                                    </ul>
+                                </div>
+                                <p class="text-sm text-slate-400 mt-4">更全面的特殊变量列表可以在 <a href="https://tldp.org/LDP/abs/html/internalvariables.html" target="_blank" class="text-indigo-highlight hover:underline">TLDP</a> 找到。</p>
+                            </div>
+                        </div>
+                        
+                        <!-- 拓展技巧与现代方法 Card -->
+                        <div class="mt-8">
+                            <h4 class="font-sans-cn text-xl font-semibold text-indigo-highlight mb-6 flex items-center">
+                                <i class="fas fa-exclamation-triangle mr-3 text-lg"></i>拓展技巧与现代方法 (特殊变量与错误处理):
+                            </h4>
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                                <!-- Card 1: PIPESTATUS -->
+                                <div class="bg-slate-700 p-6 rounded-xl shadow-lg">
+                                    <h5 class="font-sans-cn text-lg font-semibold text-moon-white mb-3 flex items-center">
+                                        <i class="fas fa-stream mr-2 text-indigo-highlight"></i>PIPESTATUS
+                                    </h5>
+                                    <p class="text-slate-300 text-sm mb-2">数组变量，包含管道中每个命令的退出状态。</p>
+                                    <pre class="custom-code-block text-xs"><code class="language-bash">cmd1 | cmd2 | cmd3
+echo "${PIPESTATUS[0]} ${PIPESTATUS[1]} ${PIPESTATUS[2]}"</code></pre>
+                                </div>
+                                
+                                <!-- Card 2: Script Options -->
+                                <div class="bg-slate-700 p-6 rounded-xl shadow-lg">
+                                    <h5 class="font-sans-cn text-lg font-semibold text-moon-white mb-3 flex items-center">
+                                        <i class="fas fa-shield-alt mr-2 text-indigo-highlight"></i>脚本健壮性设置
+                                    </h5>
+                                    <ul class="list-disc list-inside space-y-1 text-slate-300 text-sm">
+                                        <li><code class="custom-inline-code">set -e</code> (errexit): 命令失败时立即退出</li>
+                                        <li><code class="custom-inline-code">set -u</code> (nounset): 使用未定义变量时报错退出</li>
+                                        <li><code class="custom-inline-code">set -o pipefail</code>: 管道中任一命令失败则整个管道失败</li>
+                                        <li><code class="custom-inline-code">set -x</code> (xtrace): 打印执行的命令 (调试用)</li>
+                                        <li>常用: <code class="custom-inline-code">set -euo pipefail</code></li>
+                                    </ul>
+                                </div>
+                                
+                                <!-- Card 3: Trap Command -->
+                                <div class="bg-slate-700 p-6 rounded-xl shadow-lg">
+                                    <h5 class="font-sans-cn text-lg font-semibold text-moon-white mb-3 flex items-center">
+                                        <i class="fas fa-hand-paper mr-2 text-indigo-highlight"></i><code class="custom-inline-code">trap</code> 命令
+                                    </h5>
+                                    <p class="text-slate-300 text-sm mb-2">捕获信号并执行命令，常用于清理。</p>
+                                    <pre class="custom-code-block text-xs"><code class="language-bash">trap "echo 'Exiting...'; rm -f /tmp/myfile.$$" EXIT INT TERM</code></pre>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Control Flow Examples -->
+                        <div class="mt-8">
+                            <h3 class="font-sans-cn text-xl font-semibold text-indigo-highlight mb-6">控制流示例</h3>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <!-- Example 1: if statements -->
+                                <div class="bg-slate-700 p-6 rounded-xl shadow-lg">
+                                    <h5 class="font-sans-cn text-lg font-semibold text-moon-white mb-3">if 语句</h5>
+                                    <pre class="custom-code-block text-sm"><code class="language-bash"># 基本语法
+if command_that_sets_exit_status; then
+    echo "Command succeeded"
+else
+    echo "Command failed"
+fi
+
+# 使用条件测试
+if [ -z "$string" ]; then
+    echo "String is empty"
+elif [ "$string" = "value" ]; then
+    echo "String equals 'value'"
+else
+    echo "String is not empty and not 'value'"
+fi</code></pre>
+                                </div>
+                                
+                                <!-- Example 2: for loops -->
+                                <div class="bg-slate-700 p-6 rounded-xl shadow-lg">
+                                    <h5 class="font-sans-cn text-lg font-semibold text-moon-white mb-3">for 循环</h5>
+                                    <pre class="custom-code-block text-sm"><code class="language-bash"># 遍历列表
+for item in apple banana cherry; do
+    echo "Fruit: $item"
+done
+
+# C风格循环
+for (( i=0; i<5; i++ )); do
+    echo "Counter: $i"
+done
+
+# 遍历文件
+for file in *.txt; do
+    echo "Processing $file"
+done</code></pre>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+<!-- 新增内容：文件名展开与Shell Globbing -->
+<div class="bg-slate-800 shadow-2xl rounded-xl overflow-hidden mt-12">
+    <div class="p-6 md:p-8">
+        <h2 class="font-sans-cn text-3xl font-bold text-indigo-highlight mb-6 text-center">文件名展开与Shell Globbing</h2>
+        
+        <div class="space-y-4 text-slate-300 text-base leading-relaxed">
+            <p>启动脚本时，你通常会希望提供相似的参数。Bash有简化此操作的方法，通过执行<strong class="font-bold">文件名展开</strong>来展开表达式。这些技术通常被称为<strong class="font-bold">Shell Globbing</strong>。</p>
+            
+            <!-- 通配符部分 -->
+            <div class="bg-slate-700 p-6 rounded-xl shadow-lg my-6">
+                <h3 class="font-sans-cn text-xl font-semibold text-indigo-highlight mb-4">通配符 (Wildcards)</h3>
+                <p class="mb-3">当你想要执行某种通配符匹配时，可以使用：</p>
+                <ul class="list-disc list-inside space-y-2 text-slate-300 pl-4">
+                    <li><code class="custom-inline-code">?</code> 匹配单个字符</li>
+                    <li><code class="custom-inline-code">*</code> 匹配任意数量的字符</li>
+                </ul>
+                <p class="mt-3 mb-3">例如，给定文件 foo、foo1、foo2、foo10 和 bar：</p>
+                <pre class="custom-code-block"><code class="language-bash"># 删除 foo1 和 foo2（匹配单个字符）
+rm foo?
+
+# 删除所有以 foo 开头的文件（除了 bar）
+rm foo*</code></pre>
+            </div>
+            
+            <!-- 花括号展开 -->
+            <div class="bg-slate-700 p-6 rounded-xl shadow-lg my-6">
+                <h3 class="font-sans-cn text-xl font-semibold text-indigo-highlight mb-4">花括号展开 {}</h3>
+                <p class="mb-3">当一系列命令中有共同的子串时，你可以使用花括号让bash自动展开：</p>
+                <pre class="custom-code-block"><code class="language-bash"># 将展开为 convert image.png image.jpg
+convert image.{png,jpg}
+
+# 将展开为三个文件的复制
+cp /path/to/project/{foo,bar,baz}.sh /newpath
+
+# Globbing技术可以组合使用
+mv *.{py,sh} folder
+
+# 序列展开
+# 创建 foo/a, foo/b, ..., foo/h, bar/a, bar/b, ..., bar/h
+mkdir foo bar
+touch {foo,bar}/{a..h}
+
+# 显示两个目录文件的差异
+touch foo/x bar/y
+diff <(ls foo) <(ls bar)</code></pre>
+            </div>
+            
+            <!-- 拓展Globbing -->
+            <div class="bg-slate-700 p-6 rounded-xl shadow-lg my-6">
+                <h3 class="font-sans-cn text-xl font-semibold text-indigo-highlight mb-4">拓展Globbing</h3>
+                <p class="mb-3">这些高级模式需要启用 <code class="custom-inline-code">shopt -s extglob</code>：</p>
+                <ul class="list-disc list-inside space-y-2 text-slate-300 pl-4">
+                    <li><code class="custom-inline-code">!(pattern-list)</code>: 匹配任何不匹配给定模式之一的字符串</li>
+                    <li><code class="custom-inline-code">?(pattern-list)</code>: 匹配模式列表中的零个或一个出现</li>
+                    <li><code class="custom-inline-code">*(pattern-list)</code>: 匹配模式列表中的零个或多个出现</li>
+                    <li><code class="custom-inline-code">+(pattern-list)</code>: 匹配模式列表中的一个或多个出现</li>
+                    <li><code class="custom-inline-code">@(pattern-list)</code>: 精确匹配模式列表中的一个</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 新增内容：命令替换与进程替换 -->
+<div class="bg-slate-800 shadow-2xl rounded-xl overflow-hidden mt-12">
+    <div class="p-6 md:p-8">
+        <h2 class="font-sans-cn text-3xl font-bold text-indigo-highlight mb-6 text-center">命令替换与进程替换</h2>
+        
+        <div class="space-y-4 text-slate-300 text-base leading-relaxed">
+            <p>Shell脚本中常见的需求是将命令的输出作为变量保存或用于其他命令的参数。</p>
+            
+            <!-- 命令替换 -->
+            <div class="bg-slate-700 p-6 rounded-xl shadow-lg my-6">
+                <h3 class="font-sans-cn text-xl font-semibold text-indigo-highlight mb-4">命令替换 (Command Substitution)</h3>
+                <p class="mb-3">使用 <code class="custom-inline-code">$( CMD )</code> 语法将命令的输出捕获并替换：</p>
+                <pre class="custom-code-block"><code class="language-bash"># 捕获日期命令的输出
+current_date=$(date)
+echo "Today is $current_date"
+
+# 在for循环中使用命令输出（虽然不推荐用于文件名）
+for file in $(ls); do
+    echo "Found file: $file"
+done
+
+# 推荐的现代语法是 $(command)
+# 旧语法是反引号 `command`，但嵌套使用困难且有解析问题</code></pre>
+            </div>
+            
+            <!-- 进程替换 -->
+            <div class="bg-slate-700 p-6 rounded-xl shadow-lg my-6">
+                <h3 class="font-sans-cn text-xl font-semibold text-indigo-highlight mb-4">进程替换 (Process Substitution)</h3>
+                <p class="mb-3"><code class="custom-inline-code"><( CMD )</code> 会执行CMD并将其输出放在一个临时文件中，并将命令替换为该文件的名称：</p>
+                <pre class="custom-code-block"><code class="language-bash"># 比较两个目录的内容
+diff <(ls dir1) <(ls dir2)
+
+# 同时处理两个命令的输出
+comm <(sort file1) <(sort file2)
+
+# 将多个输出合并为一个输入
+cat <(grep 'error' logfile) <(grep 'warning' logfile) > filtered_logs.txt</code></pre>
+                <p class="mt-3">这在命令期望通过文件而不是标准输入传递值时非常有用。</p>
+            </div>
+            
+            <!-- 逻辑操作符 -->
+            <div class="bg-slate-700 p-6 rounded-xl shadow-lg my-6">
+                <h3 class="font-sans-cn text-xl font-semibold text-indigo-highlight mb-4">逻辑操作符</h3>
+                <p class="mb-3">退出码可用于条件性执行命令，使用 <code class="custom-inline-code">&&</code> (与操作符) 和 <code class="custom-inline-code">||</code> (或操作符)：</p>
+                <pre class="custom-code-block"><code class="language-bash"># 仅当命令成功时运行后续命令
+mkdir /tmp/test && cd /tmp/test
+
+# 当命令失败时提供后备命令
+grep 'pattern' file.txt || echo "Pattern not found"
+
+# 命令可以用分号分隔，无条件执行
+echo "First"; echo "Second"; echo "Third"
+
+# 实际例子
+false || echo "Oops, fail"  # 输出: Oops, fail
+true || echo "Won't be printed"  # 无输出
+true && echo "Things went well"  # 输出: Things went well
+false && echo "Won't be printed"  # 无输出</code></pre>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 新增内容：Shell函数与脚本区别 -->
+<div class="bg-slate-800 shadow-2xl rounded-xl overflow-hidden mt-12">
+    <div class="p-6 md:p-8">
+        <h2 class="font-sans-cn text-3xl font-bold text-indigo-highlight mb-6 text-center">Shell函数与脚本区别</h2>
+        
+        <div class="space-y-4 text-slate-300 text-base leading-relaxed">
+            <p>虽然Shell函数和Shell脚本都可以执行一系列命令，但它们有一些重要的区别。</p>
+            
+            <!-- Shebang行 -->
+            <div class="bg-slate-700 p-6 rounded-xl shadow-lg my-6">
+                <h3 class="font-sans-cn text-xl font-semibold text-indigo-highlight mb-4">Shebang行 (#!)</h3>
+                <p class="mb-3">脚本不一定非要用bash编写才能从终端调用。例如，这是一个简单的Python脚本：</p>
+                <pre class="custom-code-block"><code class="language-python">#!/usr/local/bin/python
+import sys
+for arg in reversed(sys.argv[1:]):
+    print(arg)</code></pre>
+                <p class="mt-3">内核知道用python解释器而不是Shell命令来执行此脚本，因为脚本顶部包含了Shebang行。</p>
+                <p class="mt-2">最佳实践是使用 <code class="custom-inline-code">env</code> 命令编写Shebang行，以增加脚本的可移植性：</p>
+                <pre class="custom-code-block"><code class="language-bash">#!/usr/bin/env python3</code></pre>
+            </div>
+            
+            <!-- 主要区别 -->
+            <div class="bg-slate-700 p-6 rounded-xl shadow-lg my-6">
+                <h3 class="font-sans-cn text-xl font-semibold text-indigo-highlight mb-4">主要区别</h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <h5 class="font-sans-cn text-lg font-semibold text-moon-white mb-3">语言选择</h5>
+                        <ul class="list-disc list-inside space-y-2 text-slate-300 text-sm">
+                            <li>函数必须与Shell使用相同的语言</li>
+                            <li>脚本可以用任何语言编写</li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h5 class="font-sans-cn text-lg font-semibold text-moon-white mb-3">加载方式</h5>
+                        <ul class="list-disc list-inside space-y-2 text-slate-300 text-sm">
+                            <li>函数在读取定义时加载一次</li>
+                            <li>脚本在每次执行时加载</li>
+                            <li>修改函数后需要重新加载 (通过 <code class="custom-inline-code">source</code>)</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="mt-4">
+                    <h5 class="font-sans-cn text-lg font-semibold text-moon-white mb-3">执行环境</h5>
+                    <ul class="list-disc list-inside space-y-2 text-slate-300 text-sm">
+                        <li><strong class="font-bold">函数在当前Shell环境中执行</strong> - 可以修改当前工作目录、环境变量等</li>
+                        <li><strong class="font-bold">脚本在独立的进程中执行</strong> - 无法直接修改父Shell的环境</li>
+                        <li>脚本会通过值传递继承已导出环境变量的副本</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <!-- 实际示例 -->
+            <div class="bg-slate-700 p-6 rounded-xl shadow-lg my-6">
+                <h3 class="font-sans-cn text-xl font-semibold text-indigo-highlight mb-4">综合实例脚本</h3>
+                <p class="mb-3">这个示例脚本遍历参数，搜索字符串 <code class="custom-inline-code">foobar</code>，如果未找到则作为注释附加到文件：</p>
+                <pre class="custom-code-block"><code class="language-bash">#!/bin/bash
+set -euo pipefail # 好习惯：确保错误被捕获
+
+echo "Starting program at $(date)" # Date将被替换
+
+echo "Running program $0 with $# arguments with pid $$"
+
+for file in "$@"; do # 使用"$@"正确处理特殊文件名
+    # grep -q 找到匹配后立即退出，不产生输出
+    if grep -q "foobar" "$file"; then
+        echo "Pattern 'foobar' found in $file."
+    else
+        # 当模式未找到时，grep -q的退出状态为1
+        if [ $? -eq 1 ]; then # 明确检查退出状态
+            echo "File $file does not have any foobar, adding one"
+            echo "# foobar" >> "$file"
+        else
+            # grep可能因其他原因失败（如文件不可读）
+            echo "Could not search for 'foobar' in $file (grep exit status $?). Last arg: $_"
+        fi
+    fi
+done</code></pre>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 新增内容：[[ ]] 与 [ ] 区别 -->
+<div class="bg-slate-800 shadow-2xl rounded-xl overflow-hidden mt-12">
+    <div class="p-6 md:p-8">
+        <h2 class="font-sans-cn text-3xl font-bold text-indigo-highlight mb-6 text-center">条件测试详解</h2>
+        
+        <div class="space-y-4 text-slate-300 text-base leading-relaxed">
+            <p>在bash脚本中执行条件测试有多种方式，了解它们之间的区别可以帮助你编写更健壮的脚本。</p>
+            
+            <!-- [[ ]] vs [ ] -->
+            <div class="bg-slate-700 p-6 rounded-xl shadow-lg my-6">
+                <h3 class="font-sans-cn text-xl font-semibold text-indigo-highlight mb-4">[[ ]] vs [ ] (test)</h3>
+                <p class="mb-3">强烈推荐在bash中使用 <code class="custom-inline-code">[[ ]]</code> 而不是 <code class="custom-inline-code">[ ]</code>：</p>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4">
+                    <div>
+                        <h5 class="font-sans-cn text-lg font-semibold text-moon-white mb-3">[[ ]] 的优势</h5>
+                        <ul class="list-disc list-inside space-y-2 text-slate-300 text-sm">
+                            <li>不会进行单词分割和路径名展开</li>
+                            <li>支持 <code class="custom-inline-code">&&</code> 和 <code class="custom-inline-code">||</code> 逻辑操作符</li>
+                            <li>支持正则表达式匹配：<code class="custom-inline-code">[[ "$string" =~ $regex ]]</code></li>
+                            <li>更直观的字符串比较：<code class="custom-inline-code">==</code> 和 <code class="custom-inline-code">!=</code></li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h5 class="font-sans-cn text-lg font-semibold text-moon-white mb-3">[ ] 的特点</h5>
+                        <ul class="list-disc list-inside space-y-2 text-slate-300 text-sm">
+                            <li>是 <code class="custom-inline-code">test</code> 命令的别名或内建版本</li>
+                            <li>遵循标准Shell解析规则，变量需小心引用</li>
+                            <li>更可移植到POSIX sh</li>
+                            <li>更容易出错，特别是处理变量和字符串时</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="mt-6">
+                    <h5 class="font-sans-cn text-lg font-semibold text-moon-white mb-3">示例</h5>
+                    <pre class="custom-code-block"><code class="language-bash"># [[ ]] 示例 - 更安全
+[[ -f "$file" && -r "$file" ]] && echo "File exists and is readable"
+
+# [ ] 示例 - 需要小心逻辑组合
+[ -f "$file" ] && [ -r "$file" ] && echo "File exists and is readable"
+
+# 正则表达式匹配
+[[ "$string" =~ ^[0-9]+$ ]] && echo "String contains only digits"</code></pre>
+                </div>
+            </div>
+            
+            <!-- 常用测试条件 -->
+            <div class="bg-slate-700 p-6 rounded-xl shadow-lg my-6">
+                <h3 class="font-sans-cn text-xl font-semibold text-indigo-highlight mb-4">常用测试条件</h3>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-4">
+                    <div>
+                        <h5 class="font-sans-cn text-lg font-semibold text-moon-white mb-3">字符串测试</h5>
+                        <ul class="list-disc list-inside space-y-2 text-slate-300 text-sm">
+                            <li><code class="custom-inline-code">-z string</code>: 字符串为空则为真</li>
+                            <li><code class="custom-inline-code">-n string</code>: 字符串不为空则为真</li>
+                            <li><code class="custom-inline-code">string1 = string2</code>: 字符串相等则为真</li>
+                            <li><code class="custom-inline-code">string1 != string2</code>: 字符串不等则为真</li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h5 class="font-sans-cn text-lg font-semibold text-moon-white mb-3">数值比较</h5>
+                        <ul class="list-disc list-inside space-y-2 text-slate-300 text-sm">
+                            <li><code class="custom-inline-code">int1 -eq int2</code>: 整数相等</li>
+                            <li><code class="custom-inline-code">int1 -ne int2</code>: 整数不等</li>
+                            <li><code class="custom-inline-code">int1 -lt int2</code>: 小于</li>
+                            <li><code class="custom-inline-code">int1 -le int2</code>: 小于等于</li>
+                            <li><code class="custom-inline-code">int1 -gt int2</code>: 大于</li>
+                            <li><code class="custom-inline-code">int1 -ge int2</code>: 大于等于</li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h5 class="font-sans-cn text-lg font-semibold text-moon-white mb-3">文件测试</h5>
+                        <ul class="list-disc list-inside space-y-2 text-slate-300 text-sm">
+                            <li><code class="custom-inline-code">-f file</code>: 文件存在且为普通文件</li>
+                            <li><code class="custom-inline-code">-d file</code>: 文件存在且为目录</li>
+                            <li><code class="custom-inline-code">-e file</code>: 文件存在</li>
+                            <li><code class="custom-inline-code">-r file</code>: 文件可读</li>
+                            <li><code class="custom-inline-code">-w file</code>: 文件可写</li>
+                            <li><code class="custom-inline-code">-x file</code>: 文件可执行</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- case语句 -->
+            <div class="bg-slate-700 p-6 rounded-xl shadow-lg my-6">
+                <h3 class="font-sans-cn text-xl font-semibold text-indigo-highlight mb-4">case语句</h3>
+                <p class="mb-3">处理多个条件分支时，<code class="custom-inline-code">case</code>语句通常比嵌套的<code class="custom-inline-code">if</code>更清晰：</p>
+                <pre class="custom-code-block"><code class="language-bash">read -p "Enter 'yes' or 'no': " answer
+case "$answer" in
+    [Yy][Ee][Ss]) # 匹配 Yes, yes, yEs, YEs, etc.
+        echo "You chose yes."
+        ;;
+    [Nn][Oo])
+        echo "You chose no."
+        ;;
+    *) # 默认情况
+        echo "Invalid input."
+        ;;
+esac</code></pre>
+            </div>
+
+            <!-- 新增 shellcheck 工具介绍 -->
+            <div class="bg-slate-700 p-6 rounded-xl shadow-lg my-6">
+                <h3 class="font-sans-cn text-xl font-semibold text-indigo-highlight mb-4">
+                    <i class="fas fa-check-circle mr-2"></i>Shell脚本静态分析 (<code class="custom-inline-code">shellcheck</code>)
+                </h3>
+                <p class="mb-3">编写bash脚本可能有些棘手和不直观。有些工具如 <code class="custom-inline-code">shellcheck</code> 可以帮助你找到sh/bash脚本中的常见错误、陷阱和不良实践。强烈推荐使用！</p>
+                <ul class="list-disc list-inside space-y-2 text-slate-300 text-sm pl-4">
+                    <li><strong>安装:</strong> 通常可以通过包管理器安装 (例如: <code class="custom-inline-code">sudo apt install shellcheck</code>, <code class="custom-inline-code">brew install shellcheck</code>)。</li>
+                    <li><strong>使用:</strong> <code class="custom-inline-code">shellcheck myscript.sh</code></li>
+                    <li><strong>集成:</strong> 许多文本编辑器和IDE有相关插件 (VS Code, Vim, Emacs等)，可在编写时提供实时反馈，也可集成到CI/CD流程中。</li>
+                </ul>
+            </div>
+
+            <!-- 新增 HISTCONTROL 更多选项 -->
+            <div class="mt-6 bg-slate-700 p-4 rounded-xl shadow-lg">
+                <h5 class="font-sans-cn text-lg font-semibold text-moon-white mb-3 flex items-center">
+                    <i class="fas fa-history mr-2 text-indigo-highlight"></i>修改 Shell 历史行为 (<code class="custom-inline-code">HISTCONTROL</code>):
+                </h5>
+                <ul class="list-disc list-inside space-y-2 text-slate-300 text-sm pl-4">
+                    <li><code class="custom-inline-code">ignorespace</code>: 忽略以空格开头的命令。</li>
+                    <li><code class="custom-inline-code">ignoredups</code>: 不记录重复的命令。</li>
+                    <li><code class="custom-inline-code">ignoreboth</code>: <code class="custom-inline-code">ignorespace</code> 和 <code class="custom-inline-code">ignoredups</code> 的组合。</li>
+                    <li><code class="custom-inline-code">erasedups</code>: 写入历史文件前删除所有先前的重复行。</li>
+                </ul>
+                <p class="text-xs text-slate-400 mt-2">如果忘记添加前导空格，可以手动编辑 <code class="custom-inline-code">.bash_history</code> 或 <code class="custom-inline-code">.zsh_history</code>。</p>
+            </div>
+
+            <!-- 新增基于历史的自动建议 -->
+            <div class="mt-6 bg-slate-700 p-4 rounded-xl shadow-lg">
+                <h5 class="font-sans-cn text-lg font-semibold text-moon-white mb-3 flex items-center">
+                    <i class="fas fa-lightbulb mr-2 text-indigo-highlight"></i>基于历史的自动建议:
+                </h5>
+                <p class="text-slate-300 text-sm mb-2">这是一个提升Shell效率的酷技巧，fish Shell默认提供此功能。它会根据你键入的与历史记录中最近命令共享公共前缀的命令，动态自动完成你当前的Shell命令。</p>
+                <ul class="list-disc list-inside space-y-1 text-slate-300 text-xs pl-4">
+                    <li><strong>Zsh:</strong> 可通过插件如 <code class="custom-inline-code">zsh-autosuggestions</code> 启用。</li>
+                    <li><strong>Bash:</strong> 类似插件如 <code class="custom-inline-code">ble.sh</code>。</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+        </div>
+
+        <!-- Shell 工具部分 -->
+        <div class="bg-slate-800 shadow-2xl rounded-xl overflow-hidden mt-12">
+            <div class="p-6 md:p-8">
+                <h2 class="font-sans-cn text-3xl font-bold text-indigo-highlight mb-6 text-center">Shell 工具 (Shell Tools)</h2>
+                
+                <!-- 查找命令用法 -->
+                <div class="space-y-4 text-slate-300 text-base leading-relaxed border-b border-slate-700 pb-6">
+                    <h3 class="font-sans-cn text-2xl font-semibold text-moon-white mb-3 mt-6 text-indigo-highlight">查找如何使用命令 (Finding how to use commands)</h3>
+                    <p>你可能想知道如何找到像 <code class="custom-inline-code">ls -l</code>、<code class="custom-inline-code">mv -i</code> 和 <code class="custom-inline-code">mkdir -p</code> 这样的命令标志。更一般地说，给定一个命令，你如何找出它的作用及其不同的选项？</p>
+                    <p>查找命令用法的几种方法：</p>
+                    <ul class="list-disc list-inside space-y-2 text-slate-300 pl-4">
+                        <li>使用 <code class="custom-inline-code">-h</code> 或 <code class="custom-inline-code">--help</code> 标志：<code class="custom-inline-code">ls --help</code></li>
+                        <li>使用 <code class="custom-inline-code">man</code> 命令查看手册页：<code class="custom-inline-code">man ls</code></li>
+                        <li><a href="https://tldr.sh/" target="_blank" class="text-indigo-highlight hover:underline">TLDR pages</a> 提供命令的常见用例示例</li>
+                    </ul>
+                    <!-- 新增拓展技巧 -->
+                    <div class="mt-6 bg-slate-700 p-4 rounded-xl shadow-lg">
+                        <h5 class="font-sans-cn text-lg font-semibold text-moon-white mb-3 flex items-center">
+                            <i class="fas fa-puzzle-piece mr-2 text-indigo-highlight"></i>更多获取帮助的技巧:
+                        </h5>
+                        <ul class="list-disc list-inside space-y-2 text-slate-300 text-sm pl-4">
+                            <li><code class="custom-inline-code">apropos &lt;keyword&gt;</code> 或 <code class="custom-inline-code">man -k &lt;keyword&gt;</code>: 搜索与关键字相关的手册页摘要。</li>
+                            <li><code class="custom-inline-code">info &lt;command&gt;</code>: GNU 项目的文档系统，通常更结构化和详细。</li>
+                            <li><code class="custom-inline-code">help &lt;builtin_command&gt;</code>: 查看 Bash 内建命令的帮助 (例如: <code class="custom-inline-code">help cd</code>)。</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- 查找文件 -->
+                <div class="space-y-4 text-slate-300 text-base leading-relaxed border-b border-slate-700 py-6">
+                    <h3 class="font-sans-cn text-2xl font-semibold text-moon-white mb-3 mt-6 text-indigo-highlight">查找文件 (Finding files)</h3>
+                    <p>查找文件是程序员最常见的任务之一。类 UNIX 系统附带 <code class="custom-inline-code">find</code> 命令，一个强大的递归搜索工具。</p>
+                    
+                    <pre class="custom-code-block"><code class="language-bash"># 查找所有名为 src 的目录
+find . -name src -type d
+# 查找路径中包含 test 文件夹的所有 python 文件
+find . -path '*/test/*.py' -type f
+# 查找所有在过去一天内修改过的文件
+find . -mtime -1
+# 查找所有大小在 500k 到 10M 之间的 tar.gz 文件
+find . -size +500k -size -10M -name '*.tar.gz'</code></pre>
+
+                    <p>除了列出文件，<code class="custom-inline-code">find</code> 还可以对匹配的文件执行操作：</p>
+                    
+                    <pre class="custom-code-block"><code class="language-bash"># 删除所有扩展名为 .tmp 的文件
+find . -name '*.tmp' -exec rm {} \;
+# 查找所有 PNG 文件并将它们转换为 JPG
+find . -name '*.png' -exec convert {} {}.jpg \;</code></pre>
+
+                    <!-- 新增 find 拓展技巧 -->
+                    <div class="mt-6 bg-slate-700 p-4 rounded-xl shadow-lg">
+                        <h5 class="font-sans-cn text-lg font-semibold text-moon-white mb-3 flex items-center">
+                            <i class="fas fa-tools mr-2 text-indigo-highlight"></i><code class="custom-inline-code">find</code> 拓展技巧与替代品:
+                        </h5>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <p class="text-slate-300 text-sm font-semibold mb-2">-exec 与 xargs:</p>
+                                <ul class="list-disc list-inside space-y-1 text-slate-300 text-xs pl-4">
+                                    <li><code class="custom-inline-code">-exec command {} \;</code>: 为每个文件执行一次命令 (效率较低)。</li>
+                                    <li><code class="custom-inline-code">-exec command {} +</code>: 传递多个文件给单个命令 (更高效)。</li>
+                                    <li>安全处理特殊文件名: <code class="custom-inline-code">find . -print0 | xargs -0 command</code></li>
+                                </ul>
+                            </div>
+                            <div>
+                                <p class="text-slate-300 text-sm font-semibold mb-2">常用条件:</p>
+                                <ul class="list-disc list-inside space-y-1 text-slate-300 text-xs pl-4">
+                                    <li><code class="custom-inline-code">-iname &lt;pattern&gt;</code>: 忽略大小写匹配。</li>
+                                    <li><code class="custom-inline-code">-user &lt;username&gt;</code>: 按所有者查找。</li>
+                                    <li><code class="custom-inline-code">-group &lt;groupname&gt;</code>: 按所属组查找。</li>
+                                    <li><code class="custom-inline-code">-perm &lt;mode&gt;</code>: 按权限查找。</li>
+                                    <li><code class="custom-inline-code">-empty</code>: 查找空文件/目录。</li>
+                                    <li><code class="custom-inline-code">-maxdepth &lt;n&gt;</code> / <code class="custom-inline-code">-mindepth &lt;n&gt;</code>: 限制搜索深度。</li>
+                                </ul>
+                            </div>
+                        </div>
+                        <p class="text-slate-300 text-sm mt-4">现代替代品如 <code class="custom-inline-code">fd</code> 提供了更直观的语法 (<code class="custom-inline-code">fd PATTERN</code>)，<code class="custom-inline-code">locate</code> 则使用数据库进行快速文件名搜索。</p>
+                    </div>
+                </div>
+
+                <!-- 查找代码 -->
+                <div class="space-y-4 text-slate-300 text-base leading-relaxed border-b border-slate-700 py-6">
+                    <h3 class="font-sans-cn text-2xl font-semibold text-moon-white mb-3 mt-6 text-indigo-highlight">查找代码 (Finding code)</h3>
+                    <p>按内容搜索文件是另一个常见需求。<code class="custom-inline-code">grep</code> (Global Regular Expression Print) 是最常用的文本模式搜索工具：</p>
+                    
+                    <pre class="custom-code-block"><code class="language-bash"># 在所有文件中搜索 "foobar" 并显示上下文
+grep -C 5 "foobar" file.txt
+# 递归搜索目录中所有文件
+grep -r "import requests" .
+# 忽略大小写
+grep -i "error" log.txt</code></pre>
+                    <!-- 新增 grep 更多标志 -->
+                    <div class="mt-6 bg-slate-700 p-4 rounded-xl shadow-lg">
+                        <h5 class="font-sans-cn text-lg font-semibold text-moon-white mb-3 flex items-center">
+                            <i class="fas fa-search mr-2 text-indigo-highlight"></i><code class="custom-inline-code">grep</code> 更多常用标志:
+                        </h5>
+                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2">
+                            <ul class="list-disc list-inside space-y-1 text-slate-300 text-xs pl-4">
+                                <li><code class="custom-inline-code">-C &lt;num&gt;</code>: 上下文</li>
+                                <li><code class="custom-inline-code">-B &lt;num&gt;</code>: 前文</li>
+                                <li><code class="custom-inline-code">-A &lt;num&gt;</code>: 后文</li>
+                                <li><code class="custom-inline-code">-v</code>: 反转匹配</li>
+                            </ul>
+                            <ul class="list-disc list-inside space-y-1 text-slate-300 text-xs pl-4">
+                                <li><code class="custom-inline-code">-l</code>: 打印匹配文件名</li>
+                                <li><code class="custom-inline-code">-L</code>: 打印不匹配文件名</li>
+                                <li><code class="custom-inline-code">-n</code>: 显示行号</li>
+                                <li><code class="custom-inline-code">-o</code>: 只打印匹配部分</li>
+                            </ul>
+                            <ul class="list-disc list-inside space-y-1 text-slate-300 text-xs pl-4">
+                                <li><code class="custom-inline-code">-E</code>: 扩展正则</li>
+                                <li><code class="custom-inline-code">-F</code>: 固定字符串</li>
+                                <li><code class="custom-inline-code">--color=auto</code>: 颜色</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <p class="mt-4">现代替代品如 <code class="custom-inline-code">ripgrep (rg)</code> 提供了更快的性能和更好的默认设置：</p>
+                    
+                    <pre class="custom-code-block"><code class="language-bash"># 查找所有使用了 requests 库的 python 文件
+rg -t py 'import requests'
+# 查找所有没有 shebang 行的文件 (包括隐藏文件)
+rg -u --files-without-match "^#!"</code></pre>
+                </div>
+
+                <!-- 查找 Shell 命令 -->
+                <div class="space-y-4 text-slate-300 text-base leading-relaxed border-b border-slate-700 py-6">
+                    <h3 class="font-sans-cn text-2xl font-semibold text-moon-white mb-3 mt-6 text-indigo-highlight">查找 Shell 命令 (Finding shell commands)</h3>
+                    <p>随着你在 Shell 中花费更多时间，找回之前输入的命令变得很重要：</p>
+                    <ul class="list-disc list-inside space-y-2 text-slate-300 pl-4">
+                        <li>按<strong>向上箭头</strong>键可以浏览之前的命令</li>
+                        <li><code class="custom-inline-code">history</code> 命令显示你的命令历史</li>
+                        <li><code class="custom-inline-code">history | grep find</code> 搜索包含 "find" 的命令</li>
+                        <li><strong>Ctrl+R</strong> 反向搜索命令历史</li>
+                    </ul>
+                    
+                    <p>工具如 <code class="custom-inline-code">fzf</code> 可以增强历史搜索体验，提供模糊匹配功能。</p>
+                    <!-- 新增 HISTCONTROL 更多选项 -->
+                    <div class="mt-6 bg-slate-700 p-4 rounded-xl shadow-lg">
+                        <h5 class="font-sans-cn text-lg font-semibold text-moon-white mb-3 flex items-center">
+                            <i class="fas fa-history mr-2 text-indigo-highlight"></i>修改 Shell 历史行为 (<code class="custom-inline-code">HISTCONTROL</code>):
+                        </h5>
+                        <ul class="list-disc list-inside space-y-2 text-slate-300 text-sm pl-4">
+                            <li><code class="custom-inline-code">ignorespace</code>: 忽略以空格开头的命令。</li>
+                            <li><code class="custom-inline-code">ignoredups</code>: 不记录重复的命令。</li>
+                            <li><code class="custom-inline-code">ignoreboth</code>: <code class="custom-inline-code">ignorespace</code> 和 <code class="custom-inline-code">ignoredups</code> 的组合。</li>
+                            <li><code class="custom-inline-code">erasedups</code>: 写入历史文件前删除所有先前的重复行。</li>
+                        </ul>
+                        <p class="text-xs text-slate-400 mt-2">如果忘记添加前导空格，可以手动编辑 <code class="custom-inline-code">.bash_history</code> 或 <code class="custom-inline-code">.zsh_history</code>。</p>
+                    </div>
+
+                    <!-- 新增基于历史的自动建议 -->
+                    <div class="mt-6 bg-slate-700 p-4 rounded-xl shadow-lg">
+                        <h5 class="font-sans-cn text-lg font-semibold text-moon-white mb-3 flex items-center">
+                            <i class="fas fa-lightbulb mr-2 text-indigo-highlight"></i>基于历史的自动建议:
+                        </h5>
+                        <p class="text-slate-300 text-sm mb-2">这是一个提升Shell效率的酷技巧，fish Shell默认提供此功能。它会根据你键入的与历史记录中最近命令共享公共前缀的命令，动态自动完成你当前的Shell命令。</p>
+                        <ul class="list-disc list-inside space-y-1 text-slate-300 text-xs pl-4">
+                            <li><strong>Zsh:</strong> 可通过插件如 <code class="custom-inline-code">zsh-autosuggestions</code> 启用。</li>
+                            <li><strong>Bash:</strong> 类似插件如 <code class="custom-inline-code">ble.sh</code>。</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- 目录导航 -->
+                <div class="space-y-4 text-slate-300 text-base leading-relaxed py-6">
+                    <h3 class="font-sans-cn text-2xl font-semibold text-moon-white mb-3 mt-6 text-indigo-highlight">目录导航 (Directory Navigation)</h3>
+                    <p>快速在目录间导航是提高效率的关键。除了基本的 <code class="custom-inline-code">cd</code> 命令外，还有更智能的工具：</p>
+                    
+                    <ul class="list-disc list-inside space-y-2 text-slate-300 pl-4">
+                        <li><code class="custom-inline-code">fasd</code> 和 <code class="custom-inline-code">autojump</code> 根据频率和最近访问记录目录</li>
+                        <li>使用 <code class="custom-inline-code">z cool</code> 或 <code class="custom-inline-code">j cool</code> 快速跳转到包含 "cool" 的常用目录</li>
+                        <li><code class="custom-inline-code">tree</code> 显示目录的树状结构</li>
+                        <li>文件管理器如 <code class="custom-inline-code">nnn</code>, <code class="custom-inline-code">ranger</code>, 和 <code class="custom-inline-code">broot</code> 提供交互式导航</li>
+                    </ul>
+                    <!-- 新增 tree 更多选项 -->
+                    <div class="mt-6 bg-slate-700 p-4 rounded-xl shadow-lg">
+                        <h5 class="font-sans-cn text-lg font-semibold text-moon-white mb-3 flex items-center">
+                            <i class="fas fa-stream mr-2 text-indigo-highlight"></i><code class="custom-inline-code">tree</code> 命令常用选项:
+                        </h5>
+                        <ul class="list-disc list-inside space-y-2 text-slate-300 text-sm pl-4">
+                            <li><code class="custom-inline-code">-L &lt;level&gt;</code>: 显示指定层数的目录树 (例如: <code class="custom-inline-code">tree -L 2</code>)。</li>
+                            <li><code class="custom-inline-code">-d</code>: 只显示目录。</li>
+                            <li><code class="custom-inline-code">-a</code>: 显示所有文件，包括隐藏文件。</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 练习部分 -->
+        <div class="bg-slate-800 shadow-2xl rounded-xl overflow-hidden mt-12">
+            <div class="p-6 md:p-8">
+                <h2 class="font-sans-cn text-3xl font-bold text-indigo-highlight mb-6 text-center">练习 (Exercises)</h2>
+                
+                <ol class="list-decimal list-inside space-y-6 text-slate-300 text-base pl-4">
+                    <li class="pt-4">
+                        <p class="font-sans-cn text-xl font-semibold text-moon-white mb-2">编写一个 <code class="custom-inline-code">ls</code> 命令</p>
+                        <p>阅读 <code class="custom-inline-code">man ls</code> 并编写一个命令，按以下方式列出文件：</p>
+                        <ul class="list-disc list-inside space-y-1 text-slate-300 pl-4 mb-3">
+                            <li>包括所有文件，包括隐藏文件</li>
+                            <li>大小以人类可读格式列出 (例如 454M)</li>
+                            <li>文件按最新修改的在前排序</li>
+                            <li>输出着色</li>
+                        </ul>
+                        <details class="mb-4">
+                            <summary class="cursor-pointer text-indigo-highlight hover:text-indigo-300">查看解答提示</summary>
+                            <div class="pl-4 pt-2 text-slate-300">
+                                <pre class="custom-code-block"><code class="language-bash">ls -lath --color=auto 
+# -l 长格式, -a 所有文件, -t 按时间排序, -h 人类可读大小</code></pre>
+                            </div>
+                        </details>
+                    </li>
+                    
+                    <li class="pt-4 border-t border-slate-700">
+                        <p class="font-sans-cn text-xl font-semibold text-moon-white mb-2">编写 <code class="custom-inline-code">marco</code> 和 <code class="custom-inline-code">polo</code> 函数</p>
+                        <p>实现以下功能：<code class="custom-inline-code">marco</code> 保存当前工作目录，<code class="custom-inline-code">polo</code> 导航回之前保存的目录。</p>
+                        <details class="mb-4">
+                            <summary class="cursor-pointer text-indigo-highlight hover:text-indigo-300">查看解答提示</summary>
+                            <div class="pl-4 pt-2 text-slate-300">
+                                <pre class="custom-code-block"><code class="language-bash">#!/bin/bash
+# marco.sh
+MARCO_DIR_FILE="$HOME/.marcodir"
+
+marco() {
+    pwd > "$MARCO_DIR_FILE"
+    echo "Current directory saved: $(cat $MARCO_DIR_FILE)"
+}
+
+polo() {
+    if [ -f "$MARCO_DIR_FILE" ]; then
+        local saved_dir
+        saved_dir=$(cat "$MARCO_DIR_FILE")
+        if [ -d "$saved_dir" ]; then
+            cd "$saved_dir"
+            echo "Returned to: $(pwd)"
+        else
+            echo "Error: Saved directory no longer exists."
+        fi
+    else
+        echo "Error: No directory saved by marco yet."
+    fi
+}</code></pre>
+                                <p class="mt-2">加载和使用:</p>
+                                <pre class="custom-code-block"><code class="language-bash">source marco.sh
+marco
+cd /tmp
+polo</code></pre>
+                            </div>
+                        </details>
+                    </li>
+                    
+                    <li class="pt-4 border-t border-slate-700">
+                        <p class="font-sans-cn text-xl font-semibold text-moon-white mb-2">调试脚本</p>
+                        <p>编写一个 bash 脚本，运行指定脚本直到它失败，并捕获其输出和错误信息。要求显示脚本失败前运行了多少次。</p>
+                        <pre class="custom-code-block"><code class="language-bash"># 被测试的脚本 (faulty_script.sh)
+#!/usr/bin/env bash
+
+n=$(( RANDOM % 100 ))
+
+if [[ n -eq 42 ]]; then
+   echo "Something went wrong"
+   >&2 echo "The error was using magic numbers"
+   exit 1
+fi
+
+echo "Everything went according to plan"</code></pre>
+                        <details class="mb-4">
+                            <summary class="cursor-pointer text-indigo-highlight hover:text-indigo-300">查看解答提示</summary>
+                            <div class="pl-4 pt-2 text-slate-300">
+                                <pre class="custom-code-block"><code class="language-bash">#!/bin/bash
+set -u # 确保变量已定义
+
+attempts=0
+max_attempts=1000 # 防止无限循环
+output_file="output.log"
+error_file="error.log"
+
+# 清理旧的日志文件
+> "$output_file"
+> "$error_file"
+
+while [ $attempts -lt $max_attempts ]; do
+    attempts=$((attempts + 1))
+    echo "Running attempt #$attempts..."
+    if ./faulty_script.sh > "${output_file}.current" 2> "${error_file}.current"; then
+        echo "Attempt #$attempts succeeded."
+    else
+        echo "Script failed on attempt #$attempts!"
+        echo "--- Standard Output from last run ---"
+        cat "${output_file}.current"
+        echo "--- Standard Error from last run ---"
+        cat "${error_file}.current"
+        
+        # 将失败的输出保存到主日志文件
+        cat "${output_file}.current" > "$output_file"
+        cat "${error_file}.current" > "$error_file"
+        
+        echo "Total attempts: $attempts"
+        exit 0
+    fi
+done
+
+echo "Script did not fail after $max_attempts attempts."
+exit 1</code></pre>
+                            </div>
+                        </details>
+                    </li>
+                    
+                    <li class="pt-4 border-t border-slate-700">
+                        <p class="font-sans-cn text-xl font-semibold text-moon-white mb-2">使用 <code class="custom-inline-code">xargs</code> 创建 zip 文件</p>
+                        <p>编写一个命令，递归查找文件夹中的所有 HTML 文件，并用它们创建一个 zip 文件。注意处理文件名中包含空格的情况。</p>
+                        <details class="mb-4">
+                            <summary class="cursor-pointer text-indigo-highlight hover:text-indigo-300">查看解答提示</summary>
+                            <div class="pl-4 pt-2 text-slate-300">
+                                <pre class="custom-code-block"><code class="language-bash"># 推荐解决方案:
+find . -type f -name "*.html" -print0 | xargs -0 zip archive.zip</code></pre>
+                                <p class="mt-2">这个命令使用 <code class="custom-inline-code">-print0</code> 和 <code class="custom-inline-code">-0</code> 标志确保正确处理包含空格或特殊字符的文件名。</p>
+                            </div>
+                        </details>
+                    </li>
+                    
+                    <li class="pt-4 border-t border-slate-700">
+                        <p class="font-sans-cn text-xl font-semibold text-moon-white mb-2">查找最近修改的文件</p>
+                        <p>编写一个命令或脚本来递归查找目录中最近修改的文件，并按近时性列出所有文件。</p>
+                        <details class="mb-4">
+                            <summary class="cursor-pointer text-indigo-highlight hover:text-indigo-300">查看解答提示</summary>
+                            <div class="pl-4 pt-2 text-slate-300">
+                                <p class="font-semibold mb-1">查找最近修改的文件:</p>
+                                <pre class="custom-code-block"><code class="language-bash"># 使用 GNU find
+find . -type f -printf '%T@ %p\n' | sort -nr | head -n 1 | cut -d' ' -f2-</code></pre>
+                                <p class="font-semibold mb-1 mt-2">按近时性列出所有文件:</p>
+                                <pre class="custom-code-block"><code class="language-bash"># 使用 GNU find
+find . -type f -printf '%T@ %p\n' | sort -nr | cut -d' ' -f2-
+
+# 在 zsh 中 (如果可用)
+print -rl -- **/*(D.om)</code></pre>
+                            </div>
+                        </details>
+                    </li>
+                </ol>
+            </div>
+        </div>
+
+        <nav class="mt-16 flex justify-between items-center">
+            <a href="lecture-1.html" class="px-6 py-3 text-indigo-highlight hover:bg-indigo-highlight/10 rounded-md font-sans-cn">
+                &larr; 上一单元 (课程概览与Shell)
+            </a>
+            <a href="lecture-3.html" class="px-6 py-3 text-indigo-highlight hover:bg-indigo-highlight/10 rounded-md font-sans-cn">
+                下一单元 (编辑器 Vim) &rarr; 
+            </a>
+        </nav>
+    </main>
+
+    <footer class="mt-20 py-10 bg-slate-800 border-t border-slate-700 text-center">
+        <p class="font-sans-cn text-slate-400">
+            &copy; 2025 Missing Semester 中文版. 基于 MIT 原始课程.
+        </p>
+        <p class="font-sans-en text-slate-500 text-sm mt-2">
+            <a href="https://missing.csail.mit.edu/" target="_blank" class="hover:text-indigo-highlight">原始课程链接</a> | 
+            <a href="#" class="hover:text-indigo-highlight">GitHub 仓库</a>
+        </p>
+        <p class="font-sans-cn text-slate-400 text-sm mt-2">
+            由 <a href="https://huashanjian.github.io/" target="_blank" class="hover:text-indigo-highlight">Junhua Yao</a> 创建和维护
+        </p>
+    </footer>
+    
+    <script src="https://cdn.jsdelivr.net/npm/framer-motion@latest/dist/framer-motion.js"></script>
+    <script>
+        // Placeholder for Framer Motion scripts
+    </script>
+    <!-- Add PrismJS script (needs to be after content) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+</body>
+</html> 
