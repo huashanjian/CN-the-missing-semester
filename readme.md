@@ -57,7 +57,7 @@
 1. 直接访问 [在线版本](#) (即将上线)
 2. 或克隆此仓库在本地浏览：
    ```bash
-   git clone https://github.com/yourusername/missing-semester-cn.git
+   git clone https://github.com/huashanjian/CN-the-missing-semester.git
    cd missing-semester-cn
    # 使用任意 HTTP 服务器，如
    python -m http.server 8000
